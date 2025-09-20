@@ -2,30 +2,16 @@ import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.5/fireba
 import { getAuth } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js'
 import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js'
 
-const firebaseConfig = {
+export const firebaseConfig = {
   apiKey: "AIzaSyDIsTmg0_-rcz9tH3U-_sZuWk7sUOLgMSw",
   authDomain: "macha-chat.firebaseapp.com",
   projectId: "macha-chat",
-  // perbaikan bucket:
   storageBucket: "macha-chat.appspot.com",
   messagingSenderId: "576142384286",
   appId: "1:576142384286:web:cfed000ac8a50b662a6f8f",
   measurementId: "G-6ZMFHMZVEK"
-};
-
-// Info error kecil biar kelihatan jika ada masalah inisialisasi
-function toastFatal(msg){
-  const el = document.createElement('div');
-  el.style.cssText = 'position:fixed;left:50%;transform:translateX(-50%);bottom:16px;background:#fff;color:#111;padding:10px 14px;border-radius:12px;z-index:9999';
-  el.textContent = msg;
-  document.body.appendChild(el);
 }
 
-try {
-  const app = initializeApp(firebaseConfig);
-  export const auth = getAuth(app);
-  export const db   = getFirestore(app);
-} catch (e) {
-  console.error(e);
-  toastFatal('Gagal init Firebase. Cek console & domain di Authentication > Settings.');
-}
+const app = initializeApp(firebaseConfig)
+export const auth = getAuth(app)
+export const db   = getFirestore(app)
