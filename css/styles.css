@@ -13,3 +13,5 @@ html,body{font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;z-index:9999}
 .toast > div{background:#fff;color:#111;padding:10px 14px;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.3)}
 .hidden{display:none}
+/* card sudah ada; tambahkan kecil-kecil */
+input::placeholder{color:#94a3b8}
