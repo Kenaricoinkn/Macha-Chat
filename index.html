@@ -21,12 +21,6 @@
 
   <main class="px-6 pb-16">
     <div class="max-w-2xl mx-auto card p-5 md:p-7">
-      <!-- Tabs -->
-      <div class="flex gap-2 mb-5">
-        <button id="tab-email" class="tab-btn pill" aria-selected="true">Masuk Email</button>
-        <button id="tab-phone" class="tab-btn pill" aria-selected="false">Masuk Telepon</button>
-      </div>
-
       <!-- EMAIL PANEL -->
       <section id="panel-email" class="grid gap-3">
         <label class="text-sm">Email</label>
@@ -38,32 +32,11 @@
           <button id="togglePass" type="button" class="toggle-eye">👁️</button>
         </div>
 
+        <div id="notice" class="text-sm text-sky-300 hidden"></div>
+
         <button id="btnEmail" class="btn btn-primary mt-3">Masuk</button>
         <p class="text-sm text-slate-300 mt-2">Belum punya akun?
           <a id="linkToRegisterEmail" class="link" href="#">Daftar</a></p>
-      </section>
-
-      <!-- PHONE PANEL -->
-      <section id="panel-phone" class="hidden grid gap-3">
-        <label class="text-sm">Nomor Telepon</label>
-        <input id="phone" inputmode="tel" class="input" placeholder="+62 812-3456-7890"/>
-
-        <div class="grid gap-2 sm:grid-cols-2 mt-2">
-          <button id="sendOTP" class="btn btn-outline">Kirim Kode</button>
-          <button id="useEmail" class="btn btn-outline">Pakai Email</button>
-        </div>
-
-        <div id="otpArea" class="hidden">
-          <label class="mt-3 text-sm">Kode OTP</label>
-          <input id="otp" inputmode="numeric" maxlength="6" class="input" placeholder="6 digit"/>
-          <button id="verifyOTP" class="btn btn-primary mt-3">Verifikasi & Masuk</button>
-        </div>
-
-        <p class="text-sm text-slate-300 mt-2">Belum punya akun?
-          <a id="linkToRegisterPhone" class="link" href="#">Daftar dengan Telepon</a></p>
-
-        <!-- reCAPTCHA container (invisible) -->
-        <div id="recaptcha-container"></div>
       </section>
     </div>
 
@@ -75,11 +48,6 @@
   <!-- Toast -->
   <div id="toast" class="toast hidden"></div>
 
-  <!-- Pemanggilan script: WAJIB path benar & type=module -->
   <script type="module" src="./js/app-core.js"></script>
-
-  <noscript>
-    <div class="noscript">Aktifkan JavaScript agar form bisa digunakan.</div>
-  </noscript>
 </body>
 </html>
