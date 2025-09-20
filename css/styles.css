@@ -1,0 +1,4 @@
+html,body{font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
+video{max-height:70vh}
+/* Utility kecil */
+.hidden{display:none}
