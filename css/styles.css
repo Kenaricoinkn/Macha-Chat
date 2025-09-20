@@ -1,9 +1,6 @@
 html,body{font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
 .card{background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.03));
       border:1px solid rgba(255,255,255,.12); border-radius:22px}
-.pill{border-radius:999px}
-.tab-btn{padding:.5rem 1rem;background:transparent;border:1px solid rgba(255,255,255,.12);color:#c7d2fe}
-.tab-btn[aria-selected="true"]{background:rgba(255,255,255,.12);color:#fff}
 .brand{font-weight:800;font-size:26px;background:linear-gradient(90deg,#7C9BFF,#A07CFF);-webkit-background-clip:text;background-clip:text;color:transparent}
 .brand span{opacity:.8}
 .logo{width:38px;height:38px;border-radius:16px;display:grid;place-items:center;
@@ -11,10 +8,8 @@ html,body{font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
 .input{background:#0f172a;border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:.8rem .9rem;color:#e5e7eb}
 .btn{border-radius:14px;padding:.8rem 1rem}
 .btn-primary{background:linear-gradient(90deg,#7C9BFF,#A07CFF);color:#0b1020;font-weight:700;border:0}
-.btn-outline{background:#0b1222;border:1px solid rgba(255,255,255,.14);color:#dbeafe}
 .link{color:#93c5fd} .link:hover{text-decoration:underline}
 .toggle-eye{position:absolute;right:10px;top:50%;transform:translateY(-50%);padding:4px 6px;color:#cbd5e1}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;z-index:9999}
 .toast > div{background:#fff;color:#111;padding:10px 14px;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.3)}
 .hidden{display:none}
-.noscript{background:#fee;color:#b00;padding:12px;border-radius:12px;margin:12px}
