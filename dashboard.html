@@ -21,7 +21,6 @@
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js'
     import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js'
 
-    // pakai config kamu
     const firebaseConfig = {
       apiKey: "AIzaSyDIsTmg0_-rcz9tH3U-_sZuWk7sUOLgMSw",
       authDomain: "macha-chat.firebaseapp.com",
@@ -31,27 +30,19 @@
       appId: "1:576142384286:web:cfed000ac8a50b662a6f8f",
       measurementId: "G-6ZMFHMZVEK"
     };
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+    const app = initializeApp(firebaseConfig)
+    const auth = getAuth(app)
 
-    // Guard: kalau TIDAK login, balik ke halaman login
-    onAuthStateChanged(auth, (user)=>{
+    onAuthStateChanged(auth,(user)=>{
       if(!user){
-        // pastikan tidak kembali ke dashboard via history
-        window.location.replace('./index.html');
+        window.location.replace('./index.html')
       }
-    });
+    })
 
-    // Logout beneran
     document.getElementById('logoutBtn').onclick = async ()=>{
-      try{
-        await signOut(auth);
-        // replace supaya tidak bisa back ke dashboard tanpa login
-        window.location.replace('./index.html');
-      }catch(e){
-        alert('Gagal logout: ' + e.message);
-      }
-    };
+      await signOut(auth)
+      window.location.replace('./index.html')
+    }
   </script>
 </body>
 </html>
