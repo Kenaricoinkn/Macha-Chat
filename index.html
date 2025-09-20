@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>MiniSocial</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={theme:{extend:{colors:{brand:'#1877F2'}}}}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css"/>
+</head>
+<body class="min-h-screen bg-slate-900 text-slate-100">
+  <header class="sticky top-0 z-40 border-b border-white/10 bg-slate-900/80 backdrop-blur">
+    <div class="mx-auto max-w-[960px] px-4 py-3 flex items-center gap-3">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-xl bg-brand grid place-items-center font-black">f</div>
+        <span class="font-semibold hidden sm:block">MiniSocial</span>
+      </div>
+      <div class="flex-1"></div>
+      <nav id="nav" class="flex items-center gap-1 text-sm">
+        <button data-route="home" class="px-3 py-2 rounded-xl hover:bg-white/5 aria-selected:bg-brand aria-selected:text-white" aria-selected="true">Beranda</button>
+        <button data-route="reels" class="px-3 py-2 rounded-xl hover:bg-white/5">Reels</button>
+        <button data-route="profile" class="px-3 py-2 rounded-xl hover:bg-white/5">Profil</button>
+        <button data-route="accounts" class="px-3 py-2 rounded-xl hover:bg-white/5">Tambah Akun</button>
+      </nav>
+      <div id="authArea" class="ml-2 flex items-center gap-2"></div>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-[960px] px-4 py-6">
+    <!-- GATE: Login / Register -->
+    <section id="gate" class="hidden">
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="p-6 rounded-2xl border border-white/10 bg-white/5">
+          <h2 class="text-xl font-semibold mb-4">Masuk</h2>
+          <form id="loginForm" class="space-y-3">
+            <input id="loginEmail" type="email" required placeholder="Email" class="w-full rounded-xl bg-slate-800 border border-white/10 px-3 py-2">
+            <input id="loginPass" type="password" required placeholder="Kata sandi" class="w-full rounded-xl bg-slate-800 border border-white/10 px-3 py-2">
+            <button class="w-full bg-brand hover:opacity-90 text-white rounded-xl py-2 font-semibold">Masuk</button>
+          </form>
+        </div>
+        <div class="p-6 rounded-2xl border border-white/10 bg-white/5">
+          <h2 class="text-xl font-semibold mb-4">Daftar</h2>
+          <form id="regForm" class="space-y-3">
+            <input id="regName" required placeholder="Nama" class="w-full rounded-xl bg-slate-800 border border-white/10 px-3 py-2">
+            <input id="regEmail" type="email" required placeholder="Email" class="w-full rounded-xl bg-slate-800 border border-white/10 px-3 py-2">
+            <input id="regPass" type="password" minlength="6" required placeholder="Kata sandi (min 6)" class="w-full rounded-xl bg-slate-800 border border-white/10 px-3 py-2">
+            <button class="w-full bg-brand hover:opacity-90 text-white rounded-xl py-2 font-semibold">Buat Akun</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- APP -->
+    <section id="app" class="hidden space-y-6">
+      <!-- Composer -->
+      <div class="rounded-2xl border border-white/10 bg-white/5">
+        <div class="p-4 flex gap-3 items-start">
+          <img id="meAvatar" class="w-10 h-10 rounded-full bg-slate-700"/>
+          <div class="flex-1">
+            <textarea id="composerText" rows="2" placeholder="Apa yang kamu pikirkan?" class="w-full resize-none rounded-xl bg-slate-800 border border-white/10 px-3 py-2"></textarea>
+            <div class="mt-3 flex flex-wrap items-center gap-2">
+              <input id="videoInput" type="file" accept="video/*" class="hidden">
+              <button id="pickVideo" class="px-3 py-1.5 rounded-xl bg-slate-800 border border-white/10">Upload Video</button>
+              <span id="videoName" class="text-xs text-slate-400"></span>
+              <div class="flex-1"></div>
+              <button id="postBtn" class="px-4 py-2 rounded-xl bg-brand text-white font-semibold">Kirim</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feed / Reels -->
+      <div id="feed" class="space-y-4"></div>
+      <div id="reels" class="hidden grid gap-4 md:grid-cols-2"></div>
+
+      <!-- Profile -->
+      <div id="profile" class="hidden">
+        <div class="rounded-2xl border border-white/10 bg-white/5 p-4 flex items-center gap-4">
+          <img id="pAvatar" class="w-16 h-16 rounded-full bg-slate-700"/>
+          <div>
+            <div class="text-lg font-semibold" id="pName">—</div>
+            <div class="text-xs text-slate-400" id="pEmail">—</div>
+          </div>
+          <div class="flex-1"></div>
+          <button id="logoutBtn" class="px-3 py-1.5 rounded-xl bg-slate-800 border border-white/10">Keluar</button>
+        </div>
+        <h3 class="mt-6 mb-2 font-semibold">Postingan Saya</h3>
+        <div id="myPosts" class="grid gap-4"></div>
+      </div>
+
+      <!-- Accounts -->
+      <div id="accounts" class="hidden">
+        <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+          <h3 class="font-semibold mb-2">Profil Tambahan (alias)</h3>
+          <form id="aliasForm" class="flex gap-2">
+            <input id="aliasInput" placeholder="Nama profil baru" class="flex-1 rounded-xl bg-slate-800 border border-white/10 px-3 py-2">
+            <button class="px-3 py-2 rounded-xl bg-brand text-white">Tambah</button>
+          </form>
+          <div id="aliasList" class="mt-3 flex flex-wrap gap-2"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Toast -->
+  <div id="toast" class="fixed left-1/2 -translate-x-1/2 bottom-6 z-50 hidden"></div>
+
+  <!-- App Scripts -->
+  <script type="module" src="js/app-core.js"></script>
+</body>
+</html>
