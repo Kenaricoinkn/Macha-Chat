@@ -3,13 +3,19 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>MiniSocial</title>
+  <title>Macha Chat — MiniSocial</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>tailwind.config={theme:{extend:{colors:{brand:'#1877F2'}}}}</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css"/>
+  <style>
+    html,body{font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
+    video{max-height:70vh}
+    .hidden{display:none}
+    header{backdrop-filter:saturate(140%) blur(8px)}
+    .card{border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.05);border-radius:16px}
+  </style>
 </head>
 <body class="min-h-screen bg-slate-900 text-slate-100">
   <header class="sticky top-0 z-40 border-b border-white/10 bg-slate-900/80 backdrop-blur">
@@ -29,11 +35,11 @@
   </header>
 
   <main class="mx-auto max-w-[960px] px-4 py-6">
-    <!-- GATE: Login / Register -->
-    <section id="gate" class="hidden">
+    <!-- Gate sengaja TIDAK hidden supaya selalu muncul kalau JS error -->
+    <section id="gate">
       <div class="grid md:grid-cols-2 gap-6">
         <!-- LOGIN -->
-        <div class="p-6 rounded-2xl border border-white/10 bg-white/5">
+        <div class="p-6 card">
           <h2 class="text-xl font-semibold mb-4">Masuk</h2>
           <form id="loginForm" class="space-y-3">
             <input id="loginEmail" type="email" required placeholder="Email" class="w-full rounded-xl bg-slate-800 border border-white/10 px-3 py-2">
@@ -42,7 +48,7 @@
           </form>
         </div>
         <!-- REGISTER -->
-        <div class="p-6 rounded-2xl border border-white/10 bg-white/5">
+        <div class="p-6 card">
           <h2 class="text-xl font-semibold mb-4">Daftar</h2>
           <form id="regForm" class="space-y-3">
             <input id="regName" required placeholder="Nama" class="w-full rounded-xl bg-slate-800 border border-white/10 px-3 py-2">
@@ -52,18 +58,23 @@
           </form>
         </div>
       </div>
+      <noscript>
+        <div style="background:#fee;color:#b00;padding:12px;border-radius:12px;margin-top:12px">
+          Javascript nonaktif / gagal dimuat. Aktifkan JS agar login & fitur berfungsi.
+        </div>
+      </noscript>
     </section>
 
     <!-- APP -->
     <section id="app" class="hidden space-y-6">
       <!-- Composer -->
-      <div class="rounded-2xl border border-white/10 bg-white/5">
+      <div class="card">
         <div class="p-4 flex gap-3 items-start">
           <img id="meAvatar" class="w-10 h-10 rounded-full bg-slate-700"/>
           <div class="flex-1">
             <textarea id="composerText" rows="2" placeholder="Apa yang kamu pikirkan?" class="w-full resize-none rounded-xl bg-slate-800 border border-white/10 px-3 py-2"></textarea>
             <div class="mt-3 flex flex-wrap items-center gap-2">
-              <input id="videoUrl" type="url" placeholder="URL video (opsional)" class="min-w-[260px] flex-1 rounded-xl bg-slate-800 border border-white/10 px-3 py-2">
+              <input id="videoUrl" type="url" placeholder="URL video (opsional, YouTube/mp4)" class="min-w-[260px] flex-1 rounded-xl bg-slate-800 border border-white/10 px-3 py-2">
               <div class="flex-1"></div>
               <button id="postBtn" class="px-4 py-2 rounded-xl bg-brand text-white font-semibold">Kirim</button>
             </div>
@@ -71,13 +82,11 @@
         </div>
       </div>
 
-      <!-- Feed / Reels -->
       <div id="feed" class="space-y-4"></div>
       <div id="reels" class="hidden grid gap-4 md:grid-cols-2"></div>
 
-      <!-- Profile -->
       <div id="profile" class="hidden">
-        <div class="rounded-2xl border border-white/10 bg-white/5 p-4 flex items-center gap-4">
+        <div class="card p-4 flex items-center gap-4">
           <img id="pAvatar" class="w-16 h-16 rounded-full bg-slate-700"/>
           <div>
             <div class="text-lg font-semibold" id="pName">—</div>
@@ -94,6 +103,176 @@
 
   <div id="toast" class="fixed left-1/2 -translate-x-1/2 bottom-6 z-50 hidden"></div>
 
-  <script type="module" src="js/app-core.js"></script>
+  <script type="module">
+    // ================= Firebase init =================
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js'
+    import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, signOut } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js'
+    import { getFirestore, collection, addDoc, serverTimestamp, query, orderBy, onSnapshot, doc, setDoc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js'
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDIsTmg0_-rcz9tH3U-_sZuWk7sUOLgMSw",
+      authDomain: "macha-chat.firebaseapp.com",
+      projectId: "macha-chat",
+      storageBucket: "macha-chat.appspot.com",
+      messagingSenderId: "576142384286",
+      appId: "1:576142384286:web:cfed000ac8a50b662a6f8f",
+      measurementId: "G-6ZMFHMZVEK"
+    };
+
+    const app = initializeApp(firebaseConfig)
+    const auth = getAuth(app)
+    const db = getFirestore(app)
+
+    // ================ Helpers ================
+    const $  = s => document.querySelector(s)
+    const $$ = s => Array.from(document.querySelectorAll(s))
+    const show = el => el.classList.remove('hidden')
+    const hide = el => el.classList.add('hidden')
+    const toast = (msg)=>{
+      const t = $('#toast');
+      t.innerHTML = `<div class="px-4 py-2 rounded-xl bg-white text-slate-900 shadow">${msg}</div>`
+      show(t); setTimeout(()=>hide(t), 2200)
+    }
+
+    // ================ Router ================
+    function routeTo(name){
+      $$('#nav button').forEach(b=> b.setAttribute('aria-selected', String(b.dataset.route===name)))
+      const map = { home:'#feed', reels:'#reels', profile:'#profile' }
+      Object.values(map).forEach(sel=> hide($(sel)))
+      show($(map[name] || '#feed'))
+    }
+    $$('#nav button').forEach(btn=> btn.addEventListener('click', ()=> routeTo(btn.dataset.route)))
+
+    // ================ Auth Forms ================
+    $('#loginForm')?.addEventListener('submit', async (e)=>{
+      e.preventDefault()
+      const email=$('#loginEmail').value.trim(), pass=$('#loginPass').value
+      try{ await signInWithEmailAndPassword(auth,email,pass); toast('Berhasil masuk') }catch(err){ toast(err.message) }
+    })
+
+    $('#regForm')?.addEventListener('submit', async (e)=>{
+      e.preventDefault()
+      const name=$('#regName').value.trim(), email=$('#regEmail').value.trim(), pass=$('#regPass').value
+      try{
+        const cred = await createUserWithEmailAndPassword(auth,email,pass)
+        await updateProfile(cred.user,{ displayName:name })
+        await setDoc(doc(db,'users',cred.user.uid),{ name, email, createdAt: serverTimestamp() })
+        toast('Akun dibuat')
+      }catch(err){ toast(err.message) }
+    })
+
+    $('#logoutBtn')?.addEventListener('click', ()=> signOut(auth))
+
+    // ================ Composer (URL video) ================
+    $('#postBtn').onclick = onPost
+
+    async function onPost(){
+      const u = auth.currentUser; if(!u) return toast('Masuk dulu')
+      const text = $('#composerText').value.trim()
+      const videoURL = ($('#videoUrl')?.value || '').trim()
+      if(!text && !videoURL) return toast('Tulis status atau isi URL video')
+
+      try{
+        const alias = u.displayName || u.email || u.phoneNumber || 'Pengguna'
+        await addDoc(collection(db,'posts'), {
+          uid: u.uid, author: alias, text, videoURL,
+          createdAt: serverTimestamp(),
+          type: videoURL ? 'reel' : 'status'
+        })
+        $('#composerText').value = ''
+        if($('#videoUrl')) $('#videoUrl').value = ''
+        toast('Terkirim')
+      }catch(err){ console.error(err); toast(err.message) }
+    }
+
+    // ================ Feed & Reels ================
+    const feedWrap = $('#feed'), reelsWrap = $('#reels'), myPostsWrap = $('#myPosts')
+    const qFeed = query(collection(db,'posts'), orderBy('createdAt','desc'))
+
+    const videoElement = (src)=>{
+      const yt = src.match(/^https?:\/\/(www\.)?youtube\.com\/watch\?v=([A-Za-z0-9_\-]+)/) ||
+                 src.match(/^https?:\/\/youtu\.be\/([A-Za-z0-9_\-]+)/)
+      if(yt){
+        const id = yt[2] || yt[1]
+        return `<div class="aspect-video bg-black"><iframe src="https://www.youtube.com/embed/${id}" class="w-full h-full" allowfullscreen loading="lazy"></iframe></div>`
+      }
+      return `<div class="bg-black"><video src="${src}" controls playsinline class="w-full"></video></div>`
+    }
+
+    const postCard = (p)=>{
+      const time = p.createdAt?.toDate?.() ? p.createdAt.toDate() : new Date()
+      const timeStr = new Intl.DateTimeFormat('id-ID',{ dateStyle:'medium', timeStyle:'short' }).format(time)
+      const el = document.createElement('article')
+      el.className = 'card'
+      el.innerHTML = `
+        <div class="p-4 flex gap-3">
+          <img class="w-10 h-10 rounded-full bg-slate-700"/>
+          <div class="flex-1">
+            <div class="font-semibold">${p.author||'Anon'}</div>
+            <div class="text-xs text-slate-400">${timeStr}</div>
+            ${p.text ? `<div class="mt-2 whitespace-pre-wrap">${p.text}</div>` : ''}
+          </div>
+        </div>
+        ${p.videoURL ? videoElement(p.videoURL) : ''}
+      `
+      return el
+    }
+
+    const reelCard = (p)=>{
+      const el = document.createElement('article')
+      el.className = 'card overflow-hidden'
+      el.innerHTML = `
+        <div class="p-3">
+          <div class="font-semibold">${p.author||'Anon'}</div>
+          <div class="text-xs text-slate-400">Reel</div>
+        </div>
+        ${videoElement(p.videoURL)}
+      `
+      return el
+    }
+
+    onSnapshot(qFeed, (snap)=>{
+      feedWrap.innerHTML = ''
+      reelsWrap.innerHTML = ''
+      myPostsWrap.innerHTML = ''
+      const u = auth.currentUser
+      snap.forEach(docSnap=>{
+        const p = { id:docSnap.id, ...docSnap.data() }
+        feedWrap.appendChild(postCard(p))
+        if(p.videoURL) reelsWrap.appendChild(reelCard(p))
+        if(u && p.uid===u.uid) myPostsWrap.appendChild(postCard(p))
+      })
+    })
+
+    // ================ Auth gate ================
+    onAuthStateChanged(auth, async (user)=>{
+      const gate = $('#gate'), appSec = $('#app'), authArea = $('#authArea')
+      authArea.innerHTML = ''
+      if(user){
+        hide(gate); show(appSec)
+        const name = user.displayName || user.email || user.phoneNumber || 'Tanpa Nama'
+        authArea.innerHTML = `<div class="flex items-center gap-2"><span class="hidden sm:block text-sm">${name}</span><img class="w-8 h-8 rounded-full bg-slate-700"/></div>`
+        $('#meAvatar').src = `https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(name)}`
+        $('#pAvatar').src = `https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(name)}`
+        $('#pName').textContent = name
+        $('#pEmail').textContent = user.email || user.phoneNumber || '—'
+        // ensure user doc exists
+        const uref = doc(db,'users',user.uid); const us = await getDoc(uref)
+        if(!us.exists()) await setDoc(uref,{ name, email:user.email||'', createdAt:serverTimestamp() })
+        routeTo('home')
+      } else {
+        show(gate); hide(appSec)
+        authArea.innerHTML = `<button id="openAuth" class="px-3 py-1.5 rounded-xl bg-brand text-white">Masuk / Daftar</button>`
+        $('#openAuth').onclick = ()=>{ hide(appSec); show(gate) }
+      }
+    })
+
+    // ================ Self-check warnings ================
+    // 1) Authorized domains
+    const hostOK = ['localhost','127.0.0.1','kenaricoinkn.github.io'].some(h=> location.host.includes(h))
+    if(!hostOK){
+      console.warn('Domain ini belum ada di Authorized domains Firebase Auth.')
+    }
+  </script>
 </body>
 </html>
