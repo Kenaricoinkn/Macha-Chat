@@ -6,7 +6,7 @@ setupRoutes()
 bindAuthForms()
 bindComposer()
 
-// Auth watcher membuka/tutup gate & render identitas; saat login siapin feed
+// Watch auth: kalau login tampilkan feed
 watchAuth((user)=>{
   if(user){
     startFeeds()
