@@ -3,55 +3,51 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>MACHA CHAT — Masuk</title>
+  <title>MACHA — Memuat…</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>tailwind.config={theme:{extend:{colors:{brand:'#7C9BFF',brand2:'#A07CFF'}}}}</script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./css/styles.css">
 </head>
-<body class="min-h-screen bg-[#0b1020] text-slate-100">
-  <header class="px-6 py-5">
-    <div class="max-w-2xl mx-auto flex items-center gap-3">
-      <div class="logo">💬</div>
-      <h1 class="brand">MACHA <span>CHAT</span></h1>
-    </div>
-  </header>
+<body class="min-h-screen bg-slate-900 text-slate-100">
 
-  <main class="px-6 pb-16">
-    <div class="max-w-2xl mx-auto card p-5 md:p-7">
-      <!-- EMAIL PANEL -->
-      <section id="panel-email" class="grid gap-3">
-        <label class="text-sm">Email</label>
-        <input id="email" type="email" class="input" placeholder="nama@email.com" autocomplete="email"/>
-
-        <label class="mt-2 text-sm">Kata sandi</label>
-        <div class="relative">
-          <input id="password" type="password" class="input w-full pr-12" placeholder="••••••••" autocomplete="current-password"/>
-          <button id="togglePass" type="button" class="toggle-eye">👁️</button>
-        </div>
-
-        <div id="notice" class="text-sm text-sky-300 hidden"></div>
-
-        <button id="btnEmail" class="btn btn-primary mt-3">Masuk</button>
-        <p class="text-sm text-slate-300 mt-2">Belum punya akun?
-          <a id="linkToRegisterEmail" class="link" href="#">Daftar</a></p>
-      </section>
-    </div>
-
-    <p class="max-w-2xl mx-auto text-center text-xs text-slate-400 mt-4">
-      Dengan masuk, Anda menyetujui ketentuan layanan kami.
-    </p>
-  </main>
-
-  <!-- Toast -->
-  <div id="toast" class="toast hidden"></div>
-
-  <script type="module" src="./js/app-core.js"></script>
+  <!-- Splash universal -->
   <script type="module">
-  import { initSplash } from "./js/splash.js";
-  initSplash();
-</script>
+    import { initSplash } from './js/splash.js';
+    // tampil 10 detik maksimal; bisa hilang lebih cepat saat redirect
+    initSplash({ duration: 10000 });
+  </script>
+
+  <!-- Gate: cek sesi Firebase & redirect -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js'
+    import { getAuth, onAuthStateChanged, setPersistence, browserLocalPersistence } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js'
+
+    // ==== pakai config milikmu ====
+    const firebaseConfig = {
+      apiKey: "AIzaSyDIsTmg0_-rcz9tH3U-_sZuWk7sUOLgMSw",
+      authDomain: "macha-chat.firebaseapp.com",
+      projectId: "macha-chat",
+      storageBucket: "macha-chat.appspot.com",
+      messagingSenderId: "576142384286",
+      appId: "1:576142384286:web:cfed000ac8a50b662a6f8f",
+      measurementId: "G-6ZMFHMZVEK"
+    };
+
+    const app  = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // pastikan sesi tersimpan (tetap login antar-kunjungan)
+    await setPersistence(auth, browserLocalPersistence);
+
+    onAuthStateChanged(auth, (user) => {
+      // sembunyikan splash lalu arahkan
+      window.hideSplash?.();
+      if (user) {
+        // sudah login → langsung ke dashboard
+        location.replace('./dashboard.html');
+      } else {
+        // belum login → ke halaman login
+        location.replace('./login.html');
+      }
+    });
+  </script>
 </body>
 </html>
