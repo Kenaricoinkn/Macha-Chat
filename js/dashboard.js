@@ -1,15 +1,15 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js'
-import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js'
+import { getAuth, onAuthStateChanged, signOut, updateProfile } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js'
 import {
   getFirestore, collection, addDoc, serverTimestamp,
   query, orderBy, onSnapshot, doc, getDoc, deleteDoc,
-  setDoc, getCountFromServer
+  setDoc, getCountFromServer, updateDoc
 } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js'
 import {
   getStorage, ref, uploadBytesResumable, getDownloadURL
 } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-storage.js'
 
-/* === Firebase config punyamu === */
+/* === Firebase config === */
 const firebaseConfig = {
   apiKey: "AIzaSyDIsTmg0_-rcz9tH3U-_sZuWk7sUOLgMSw",
   authDomain: "macha-chat.firebaseapp.com",
@@ -38,26 +38,83 @@ const relTime = (date)=>{
   if(diff < 86400) return `${Math.floor(diff/3600)} jam`
   return new Intl.DateTimeFormat('id-ID',{ dateStyle:'medium', timeStyle:'short' }).format(date)
 }
+function setUploadProgress(pct){
+  $('#uploadBar').classList.remove('hidden')
+  $('#uploadProg').style.width = pct + '%'
+  if(pct >= 100) setTimeout(()=>$('#uploadBar').classList.add('hidden'), 600)
+}
 async function uploadTo(path, file){
   return new Promise((resolve,reject)=>{
     const r = ref(storage, path)
     const task = uploadBytesResumable(r, file)
-    task.on('state_changed', null, reject, async ()=>{
-      resolve(await getDownloadURL(r))
+    task.on('state_changed', (snap)=>{
+      const pct = Math.round( (snap.bytesTransferred / snap.totalBytes) * 100 )
+      setUploadProgress(pct)
+    }, reject, async ()=>{
+      const url = await getDownloadURL(r)
+      setUploadProgress(100)
+      resolve(url)
     })
+  })
+}
+
+/* === MENU drawer handlers === */
+function initMenu(user, displayName, avatarUrl){
+  const panel = $('#menuPanel'), open = $('#btnMenu'), close = $('#menuClose'), back = $('#menuBackdrop')
+  const logoutBtns = [$('#logoutBtn')] // ada di panel
+  const profileName = $('#profileName'), profileAvatar = $('#profileAvatar')
+  profileName.textContent = displayName
+  profileAvatar.src = avatarUrl
+
+  const openMenu = ()=> panel.classList.remove('hidden')
+  const closeMenu = ()=> panel.classList.add('hidden')
+  open.addEventListener('click', openMenu)
+  close.addEventListener('click', closeMenu)
+  back.addEventListener('click', closeMenu)
+  logoutBtns.forEach(btn=> btn?.addEventListener('click', async ()=>{ await signOut(auth); location.replace('./index.html') }))
+
+  // ganti foto profil
+  $('#avatarFile').addEventListener('change', async (e)=>{
+    const file = e.target.files[0]; if(!file) return
+    try{
+      const ext = (file.name.split('.').pop()||'jpg').toLowerCase()
+      const url = await uploadTo(`avatars/${user.uid}/avatar.${ext}`, file)
+      await updateProfile(user, { photoURL: url })
+      // simpan juga ke users doc jika ada
+      try{ await updateDoc(doc(db,'users',user.uid), { photoURL: url }) }catch{}
+      // update UI
+      $('#meAvatar').src = url
+      $('#profileAvatar').src = url
+      toast('Foto profil diperbarui')
+    }catch(err){ console.error(err); toast(err.message) }
   })
 }
 
 /* === guard & header === */
 onAuthStateChanged(auth, async (user)=>{
   if(!user){ window.location.replace('./index.html'); return }
-  const name = user.displayName || user.email || 'Pengguna'
-  $('#meAvatar').src = `https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(name)}`
-  $('#logoutBtn').addEventListener('click', async ()=>{
-    await signOut(auth); window.location.replace('./index.html')
-  })
-  renderStories(name)
-  bindComposer(user)
+
+  // ambil nama & foto dari auth / users doc
+  let displayName = user.displayName || user.email || 'Pengguna'
+  let avatar = user.photoURL || `https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(displayName)}`
+  try{
+    const us = await getDoc(doc(db,'users',user.uid))
+    if(us.exists()){
+      const d = us.data()
+      if(d.name) displayName = d.name
+      if(d.photoURL) avatar = d.photoURL
+    }
+  }catch{}
+
+  $('#meAvatar').src = avatar
+  initMenu(user, displayName, avatar)
+
+  // tombol di topbar kanan lainnya (dummy action)
+  $('#btnPlus').addEventListener('click', ()=> toast('Aksi cepat (tambah kiriman) coming soon'))
+  $('#btnSearch').addEventListener('click', ()=> toast('Pencarian coming soon'))
+
+  renderStories(displayName)
+  bindComposer(user, displayName)
   startFeed(user)
 })
 
@@ -81,8 +138,8 @@ function renderStories(name){
 }
 
 /* === composer === */
-function bindComposer(user){
-  // refresh chip saat pilih file
+function bindComposer(user, displayName){
+  // tampilkan chip saat pilih file
   const refreshChips = ()=>{
     const chips = $('#fileChips'); chips.innerHTML = ''
     const photo = $('#photoFile').files[0]
@@ -90,14 +147,12 @@ function bindComposer(user){
     if(photo){
       const c = document.createElement('span')
       c.className = 'px-2 py-1 rounded-lg bg-slate-900/70 border border-white/10 text-xs'
-      c.textContent = photo.name
-      chips.appendChild(c)
+      c.textContent = photo.name; chips.appendChild(c)
     }
     if(video){
       const c = document.createElement('span')
       c.className = 'px-2 py-1 rounded-lg bg-slate-900/70 border border-white/10 text-xs'
-      c.textContent = video.name
-      chips.appendChild(c)
+      c.textContent = video.name; chips.appendChild(c)
     }
   }
   $('#photoFile').addEventListener('change', refreshChips)
@@ -110,12 +165,6 @@ function bindComposer(user){
     if(!text && !photo && !video) return toast('Tulis sesuatu atau pilih media')
 
     try{
-      let displayName = user.displayName || user.email || 'Pengguna'
-      try{
-        const us = await getDoc(doc(db,'users',user.uid))
-        if(us.exists() && us.data().name) displayName = us.data().name
-      }catch{}
-
       let imageURL = '', videoURL = ''
       if(photo){
         const ext = (photo.name.split('.').pop() || 'jpg').toLowerCase()
@@ -132,10 +181,12 @@ function bindComposer(user){
         createdAt: serverTimestamp()
       })
 
+      // reset
       $('#composer').value = ''
       $('#photoFile').value = ''
       $('#videoFile').value = ''
       $('#fileChips').innerHTML = ''
+      setUploadProgress(100)
       toast('Terkirim')
     }catch(e){ console.error(e); toast(e.message) }
   })
@@ -191,14 +242,14 @@ function card(p, isOwner, user){
     </div>
   `
 
-  // hapus post
+  // hapus
   if(isOwner){
     el.querySelector(`[data-del="${p.id}"]`)?.addEventListener('click', async ()=>{
       try{ await deleteDoc(doc(db,'posts',p.id)); toast('Dihapus') }catch(e){ toast(e.message) }
     })
   }
 
-  // like toggle
+  // like
   const myLikeRef = doc(db, `posts/${p.id}/likes/${user.uid}`)
   el.querySelector(`[data-like="${p.id}"]`)?.addEventListener('click', async ()=>{
     try{
@@ -209,7 +260,7 @@ function card(p, isOwner, user){
     }catch(e){ toast(e.message) }
   })
 
-  // komentar UI
+  // komentar
   el.querySelector(`[data-showcmt="${p.id}"]`)?.addEventListener('click', ()=>{
     document.getElementById(`cmt-${p.id}`).classList.toggle('hidden')
   })
