@@ -1,0 +1,46 @@
+<!doctype html><html lang="id"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Acara — MACHA CHAT</title>
+<script src="https://cdn.tailwindcss.com"></script>
+</head><body class="bg-slate-900 text-slate-100">
+<header class="p-3 border-b border-white/10"><a href="./dashboard.html">← Kembali</a></header>
+<main class="max-w-[980px] mx-auto p-4 space-y-4">
+  <section class="rounded-3xl border border-white/10 bg-slate-800/60 p-4">
+    <div class="font-semibold mb-2">Buat Acara</div>
+    <div class="grid sm:grid-cols-3 gap-2">
+      <input id="eTitle" placeholder="Judul" class="rounded-xl bg-slate-900/70 border border-white/10 px-3 py-2">
+      <input id="eDate"  type="datetime-local" class="rounded-xl bg-slate-900/70 border border-white/10 px-3 py-2">
+      <button id="eCreate" class="rounded-xl bg-brand text-white px-3 py-2">Simpan</button>
+    </div>
+  </section>
+  <section id="events" class="space-y-3"></section>
+</main>
+<script type="module">
+import { auth, db } from './js/config.js'
+import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js'
+import { collection, addDoc, serverTimestamp, query, orderBy, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js'
+onAuthStateChanged(auth, user=>{
+  if(!user){ location.replace('./index.html'); return }
+  document.getElementById('eCreate').onclick = async ()=>{
+    const t = document.getElementById('eTitle').value.trim()
+    const d = document.getElementById('eDate').value
+    if(!t || !d) return alert('Lengkapi')
+    await addDoc(collection(db,'events'), { title:t, when:new Date(d), owner:user.uid, createdAt:serverTimestamp() })
+    document.getElementById('eTitle').value=''; document.getElementById('eDate').value=''
+  }
+  const list=document.getElementById('events')
+  const q=query(collection(db,'events'), orderBy('when','asc'))
+  onSnapshot(q,s=>{
+    list.innerHTML=''
+    s.forEach(d=>{
+      const e=d.data()
+      const el=document.createElement('article')
+      el.className='rounded-3xl border border-white/10 bg-slate-800/60 p-4'
+      el.innerHTML=`<div class="font-semibold">${e.title}</div>
+        <div class="text-sm text-slate-300">${new Date(e.when.seconds?e.when.seconds*1000:e.when).toLocaleString('id-ID')}</div>`
+      list.appendChild(el)
+    })
+  })
+})
+</script>
+</body></html>
