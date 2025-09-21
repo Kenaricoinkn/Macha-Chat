@@ -2,8 +2,12 @@ import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.5/fireba
 import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js'
 import {
   getFirestore, collection, addDoc, serverTimestamp,
-  query, orderBy, onSnapshot, doc, getDoc, deleteDoc
+  query, orderBy, onSnapshot, doc, getDoc, deleteDoc,
+  setDoc
 } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js'
+import {
+  getStorage, ref, uploadBytesResumable, getDownloadURL
+} from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-storage.js'
 
 /* === pakai config milikmu === */
 const firebaseConfig = {
@@ -18,6 +22,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig)
 const auth = getAuth(app)
 const db   = getFirestore(app)
+const storage = getStorage(app)
 
 /* === helpers === */
 const $ = s => document.querySelector(s)
@@ -26,26 +31,30 @@ const toast = (msg)=>{
   t.innerHTML = `<div class="px-4 py-2 rounded-xl bg-white text-slate-900 shadow">${msg}</div>`
   t.classList.remove('hidden'); setTimeout(()=>t.classList.add('hidden'), 2000)
 }
+async function uploadTo(path, file){
+  return new Promise((resolve,reject)=>{
+    const r = ref(storage, path);
+    const task = uploadBytesResumable(r, file);
+    task.on('state_changed', null, reject, async ()=>{
+      resolve(await getDownloadURL(r));
+    });
+  });
+}
 
 /* === guard & header === */
 onAuthStateChanged(auth, async (user)=>{
   if(!user){ window.location.replace('./index.html'); return }
-  // avatar + name
   const name = user.displayName || user.email || 'Pengguna'
   $('#meAvatar').src = `https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(name)}`
-  // logout
   $('#logoutBtn').addEventListener('click', async ()=>{
     await signOut(auth); window.location.replace('./index.html')
   })
-  // stories dummy
   renderStories(name)
-  // composer
   bindComposer(user)
-  // feed
   startFeed(user)
 })
 
-/* === stories (dummy dulu) === */
+/* === stories (dummy) === */
 function storyItem(label){
   const el = document.createElement('div')
   el.className = 'w-28 overflow-hidden rounded-2xl border border-white/10 bg-slate-800 flex-shrink-0'
@@ -68,33 +77,52 @@ function renderStories(name){
 function bindComposer(user){
   $('#postBtn').addEventListener('click', async ()=>{
     const text = $('#composer').value.trim()
-    if(!text) return toast('Tulis sesuatu dulu')
+    const photo = $('#photoFile').files[0]
+    const video = $('#videoFile').files[0]
+    if(!text && !photo && !video) return toast('Tulis sesuatu atau pilih media')
+
     try{
       let displayName = user.displayName || user.email || 'Pengguna'
-      // coba ambil nama dari koleksi users (kalau ada)
       try{
         const us = await getDoc(doc(db,'users',user.uid))
         if(us.exists() && us.data().name) displayName = us.data().name
       }catch{}
+
+      let imageURL = '', videoURL = ''
+      if(photo){
+        const ext = photo.name.split('.').pop()
+        imageURL = await uploadTo(`images/${user.uid}/${Date.now()}.${ext}`, photo)
+      }
+      if(video){
+        const ext = video.name.split('.').pop()
+        videoURL = await uploadTo(`videos/${user.uid}/${Date.now()}.${ext}`, video)
+      }
+
       await addDoc(collection(db,'posts'), {
-        uid: user.uid,
-        author: displayName,
-        text,
-        createdAt: serverTimestamp(),
-        type: 'status'
+        uid: user.uid, author: displayName, text,
+        imageURL, videoURL,
+        createdAt: serverTimestamp()
       })
+
       $('#composer').value = ''
+      $('#photoFile').value = ''
+      $('#videoFile').value = ''
       toast('Terkirim')
     }catch(e){ console.error(e); toast(e.message) }
   })
 }
 
 /* === feed === */
-function card(p, isOwner){
+function card(p, isOwner, user){
   const time = p.createdAt?.toDate?.() ? p.createdAt.toDate() : new Date()
   const timeStr = new Intl.DateTimeFormat('id-ID',{ dateStyle:'medium', timeStyle:'short' }).format(time)
   const el = document.createElement('article')
   el.className = 'rounded-2xl border border-white/10 bg-white/5'
+
+  let media = ''
+  if(p.imageURL) media += `<img src="${p.imageURL}" class="w-full max-h-[70vh] object-contain bg-black/30">`
+  if(p.videoURL) media += `<video src="${p.videoURL}" controls playsinline class="w-full bg-black"></video>`
+
   el.innerHTML = `
     <div class="p-3 sm:p-4">
       <div class="flex gap-3">
@@ -106,18 +134,85 @@ function card(p, isOwner){
         ${isOwner ? `<button data-del="${p.id}" class="text-slate-300 hover:text-red-300">Hapus</button>`:''}
       </div>
       ${p.text ? `<div class="mt-3 whitespace-pre-wrap">${p.text}</div>` : ''}
-      <div class="mt-3 flex gap-2">
-        <button class="px-3 py-1.5 rounded-xl bg-slate-800 border border-white/10 text-sm opacity-60" title="Segera hadir">Suka</button>
-        <button class="px-3 py-1.5 rounded-xl bg-slate-800 border border-white/10 text-sm opacity-60" title="Segera hadir">Komentar</button>
+      ${media ? `<div class="mt-3">${media}</div>` : ''}
+
+      <div class="mt-3 flex items-center gap-3">
+        <button data-like="${p.id}" class="px-3 py-1.5 rounded-xl bg-slate-800 border border-white/10 text-sm">Suka <span data-like-count="${p.id}">0</span></button>
+        <button data-showcmt="${p.id}" class="px-3 py-1.5 rounded-xl bg-slate-800 border border-white/10 text-sm">Komentar</button>
+      </div>
+
+      <div id="cmt-${p.id}" class="hidden mt-3">
+        <div class="flex gap-2">
+          <input id="cmt-input-${p.id}" placeholder="Tulis komentar…" class="flex-1 rounded-xl bg-slate-800 border border-white/10 px-3 py-2 text-sm">
+          <button data-sendcmt="${p.id}" class="px-3 py-2 rounded-xl bg-brand text-white text-sm">Kirim</button>
+        </div>
+        <div id="cmt-list-${p.id}" class="mt-3 space-y-2 text-sm"></div>
       </div>
     </div>
   `
+
+  // hapus post
   if(isOwner){
-    el.querySelector('[data-del]')?.addEventListener('click', async ()=>{
+    el.querySelector(`[data-del="${p.id}"]`)?.addEventListener('click', async ()=>{
       try{ await deleteDoc(doc(db,'posts',p.id)); toast('Dihapus') }catch(e){ toast(e.message) }
     })
   }
+
+  // like toggle
+  const myLikeRef = doc(db, `posts/${p.id}/likes/${user.uid}`)
+  el.querySelector(`[data-like="${p.id}"]`)?.addEventListener('click', async ()=>{
+    try{
+      const snap = await getDoc(myLikeRef)
+      if(snap.exists()){
+        await deleteDoc(myLikeRef)
+      }else{
+        await setDoc(myLikeRef, { uid:user.uid, at: serverTimestamp() })
+      }
+      updateLikeCount(p.id)
+    }catch(e){ toast(e.message) }
+  })
+
+  // komentar UI
+  el.querySelector(`[data-showcmt="${p.id}"]`)?.addEventListener('click', ()=>{
+    document.getElementById(`cmt-${p.id}`).classList.toggle('hidden')
+  })
+  el.querySelector(`[data-sendcmt="${p.id}"]`)?.addEventListener('click', async ()=>{
+    const input = document.getElementById(`cmt-input-${p.id}`)
+    const text = input.value.trim(); if(!text) return
+    await addDoc(collection(db, `posts/${p.id}/comments`), {
+      uid: user.uid, author: user.displayName||user.email||'Pengguna',
+      text, createdAt: serverTimestamp()
+    })
+    input.value = ''
+  })
+
+  // live list komentar
+  const qC = query(collection(db, `posts/${p.id}/comments`), orderBy('createdAt','asc'))
+  onSnapshot(qC, (snap)=>{
+    const wrap = document.getElementById(`cmt-list-${p.id}`)
+    if(!wrap) return
+    wrap.innerHTML = ''
+    snap.forEach(d=>{
+      const c = d.data()
+      const li = document.createElement('div')
+      li.className = 'rounded-xl bg-slate-800/60 border border-white/10 px-3 py-2'
+      li.innerHTML = `<b>${c.author||'Anon'}</b><div class="text-slate-300">${c.text}</div>`
+      wrap.appendChild(li)
+    })
+  })
+
+  // hitung like awal
+  updateLikeCount(p.id)
+
   return el
+}
+
+import { getCountFromServer } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js'
+async function updateLikeCount(postId){
+  const snap = await getCountFromServer(collection(db, `posts/${postId}/likes`))
+  const n = snap.data().count || 0
+  const el = document.querySelector(`[data-like-count="${postId}"]`)
+  if(el) el.textContent = n
 }
 
 function startFeed(user){
@@ -127,7 +222,7 @@ function startFeed(user){
     feed.innerHTML = ''
     snap.forEach(d=>{
       const p = { id:d.id, ...d.data() }
-      feed.appendChild( card(p, user && p.uid===user.uid) )
+      feed.appendChild( card(p, user && p.uid===user.uid, user) )
     })
   })
 }
