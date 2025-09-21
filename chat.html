@@ -1,0 +1,22 @@
+<!doctype html><html lang="id"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pesan — MACHA CHAT</title>
+<script src="https://cdn.tailwindcss.com"></script>
+</head><body class="bg-slate-900 text-slate-100">
+<header class="p-3 border-b border-white/10"><a href="./dashboard.html">← Kembali</a></header>
+<main class="max-w-[980px] mx-auto p-4">
+  <div class="mb-3">
+    <input id="peerEmail" placeholder="Email teman untuk chat"
+      class="w-full max-w-md rounded-xl bg-slate-800/70 border border-white/10 px-3 py-2 outline-none">
+    <button id="startChat" class="mt-2 px-3 py-2 rounded-xl bg-brand text-white">Mulai/Join Chat</button>
+  </div>
+  <section id="room" class="hidden">
+    <div id="log" class="h-[55vh] overflow-y-auto rounded-2xl border border-white/10 bg-slate-800/60 p-3 space-y-2"></div>
+    <div class="mt-2 flex gap-2">
+      <input id="msg" placeholder="Tulis pesan…" class="flex-1 rounded-xl bg-slate-800/70 border border-white/10 px-3 py-2">
+      <button id="send" class="px-4 rounded-xl bg-brand text-white">Kirim</button>
+    </div>
+  </section>
+</main>
+<script type="module" src="./js/chat.js"></script>
+</body></html>
