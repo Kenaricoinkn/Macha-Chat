@@ -1,79 +1,144 @@
 import { auth, db } from './firebase-init.js'
 import {
-  onAuthStateChanged, signInWithEmailAndPassword,
-  createUserWithEmailAndPassword, sendEmailVerification, signOut
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+  signOut,
+  setPersistence,
+  browserLocalPersistence,
 } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js'
-import { doc, setDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js'
+import {
+  doc, setDoc, serverTimestamp
+} from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js'
 
-const $ = s => document.querySelector(s)
-const show = el => el && el.classList.remove('hidden')
-const hide = el => el && el.classList.add('hidden')
-const toast = (msg)=>{
-  const t = $('#toast'); if(!t) return console.warn('toast element missing')
-  t.innerHTML = `<div style="background:#fff;color:#111;padding:10px 14px;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.3)">${msg}</div>`
-  show(t); setTimeout(()=>hide(t), 2200)
+/* ========== helpers ========== */
+const $ = (s) => document.querySelector(s)
+const show = (el) => el && el.classList.remove('hidden')
+const hide = (el) => el && el.classList.add('hidden')
+const toast = (msg) => {
+  const t = $('#toast')
+  if (!t) { console.warn('toast element missing'); return }
+  t.innerHTML =
+    `<div style="background:#fff;color:#111;padding:10px 14px;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.3)">${msg}</div>`
+  show(t); setTimeout(() => hide(t), 2200)
+}
+const setBusy = (busy) => {
+  const btn = $('#btnEmail')
+  if (!btn) return
+  btn.disabled = !!busy
+  btn.classList.toggle('opacity-60', !!busy)
+  btn.textContent = busy ? 'Memproses…' : (state.mode === 'login' ? 'Masuk' : 'Daftar')
 }
 
-// ==== Logic ====
-let emailMode = 'login' // 'login' | 'register'
+/* ========== state ========== */
+const state = {
+  mode: 'login', // 'login' | 'register'
+  working: false,
+}
 
-async function handleEmailSubmit(){
+/* ========== UI bindings ========== */
+function applyModeUI() {
+  const btn = $('#btnEmail')
+  const link = $('#linkToRegisterEmail')
+  const title = $('.brand') // opsional
+
+  if (btn) btn.textContent = state.mode === 'login' ? 'Masuk' : 'Daftar'
+  if (link) link.textContent = state.mode === 'login' ? 'Daftar' : 'Masuk'
+  if (title) title.querySelector?.('span')?.classList.toggle('opacity-80', state.mode === 'register')
+  const notice = $('#notice'); if (notice) hide(notice)
+}
+
+function switchMode(e) {
+  e?.preventDefault?.()
+  if (state.working) return
+  state.mode = state.mode === 'login' ? 'register' : 'login'
+  applyModeUI()
+}
+
+function togglePass() {
+  const p = $('#password'); if (!p) return
+  p.type = p.type === 'password' ? 'text' : 'password'
+}
+
+/* ========== core actions ========== */
+async function handleEmailSubmit() {
   const emailEl = $('#email'), passEl = $('#password'), notice = $('#notice')
-  if(!emailEl || !passEl){ return console.warn('email/password element missing')}
+  if (!emailEl || !passEl) { console.warn('email/password element missing'); return }
   const email = emailEl.value.trim()
   const password = passEl.value
-  if(!email || !password) return toast('Lengkapi email & sandi')
 
-  try{
-    if(emailMode==='login'){
-      const cred = await signInWithEmailAndPassword(auth,email,password)
-      if(!cred.user.emailVerified){
+  if (!email || !password) return toast('Lengkapi email & sandi')
+  if (password.length < 6) return toast('Sandi minimal 6 karakter')
+
+  try {
+    state.working = true; setBusy(true)
+
+    // pastikan sesi tetap tersimpan (sekali lagi di sini agar aman)
+    await setPersistence(auth, browserLocalPersistence)
+
+    if (state.mode === 'login') {
+      const cred = await signInWithEmailAndPassword(auth, email, password)
+      if (!cred.user.emailVerified) {
         await signOut(auth)
-        if(notice){ notice.textContent = 'Email belum diverifikasi. Cek Gmail kamu lalu coba login lagi.'; show(notice) }
+        if (notice) {
+          notice.textContent = 'Email belum diverifikasi. Cek Gmail kamu lalu coba login lagi.'
+          show(notice)
+        }
         return
       }
-      window.location.href = './dashboard.html'
-    }else{
-      const cred = await createUserWithEmailAndPassword(auth,email,password)
-      await setDoc(doc(db,'users',cred.user.uid),{
-        name: email.split('@')[0], email, createdAt: serverTimestamp()
+      // sukses → dashboard
+      location.replace('./dashboard.html')
+    } else {
+      // register
+      const cred = await createUserWithEmailAndPassword(auth, email, password)
+      // buat profil dasar di Firestore
+      await setDoc(doc(db, 'users', cred.user.uid), {
+        name: email.split('@')[0],
+        email,
+        createdAt: serverTimestamp(),
       })
+      // kirim verifikasi email
       await sendEmailVerification(cred.user)
-      if(notice){ notice.textContent = 'Akun dibuat! Silakan cek Gmail kamu untuk verifikasi sebelum login.'; show(notice) }
+      if (notice) {
+        notice.textContent = 'Akun dibuat! Silakan cek Gmail kamu untuk verifikasi sebelum login.'
+        show(notice)
+      }
+      // keluar dulu sampai user verifikasi
       await signOut(auth)
+      // pindah ke mode login agar user tidak bingung
+      state.mode = 'login'; applyModeUI()
     }
-  }catch(err){ console.error(err); toast(err.message) }
+  } catch (err) {
+    console.error(err)
+    // sederhanakan pesan error
+    const msg = (err?.code || err?.message || 'Terjadi kesalahan')
+      .replace('Firebase: ', '')
+      .replace('(auth/', '(')
+    toast(msg)
+  } finally {
+    state.working = false; setBusy(false)
+  }
 }
 
-function togglePass(){
-  const p = $('#password'); if(!p) return
-  p.type = (p.type === 'password') ? 'text' : 'password'
-}
-
-function switchMode(e){
-  e?.preventDefault?.()
-  emailMode = (emailMode === 'login') ? 'register' : 'login'
-  const btn = $('#btnEmail'); if(btn) btn.textContent = (emailMode==='login'?'Masuk':'Daftar')
-}
-
-// ==== Bind safely AFTER DOM ready ====
-export function initAuthUI(){
+/* ========== exported initializer ========== */
+export function initAuthUI() {
   // tombol submit
-  const btn = $('#btnEmail'); if(btn) btn.addEventListener('click', handleEmailSubmit)
+  $('#btnEmail')?.addEventListener('click', handleEmailSubmit)
+  // Enter untuk submit
+  $('#email')?.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleEmailSubmit() })
+  $('#password')?.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleEmailSubmit() })
+  // toggle show/hide password
+  $('#togglePass')?.addEventListener('click', togglePass)
+  // ganti mode login/daftar
+  $('#linkToRegisterEmail')?.addEventListener('click', switchMode)
 
-  // toggle pass
-  const eye = $('#togglePass'); if(eye) eye.addEventListener('click', togglePass)
+  applyModeUI()
 
-  // link ganti mode
-  const link = $('#linkToRegisterEmail'); if(link) link.addEventListener('click', switchMode)
-
-  // set label tombol awal
-  const btn2 = $('#btnEmail'); if(btn2) btn2.textContent = (emailMode==='login'?'Masuk':'Daftar')
-
-  // guard: jika sudah login & verified → dashboard
-  onAuthStateChanged(auth,(user)=>{
-    if(user && user.emailVerified){
-      window.location.href = './dashboard.html'
+  // Jika user sudah login & verified dan entah bagaimana mendarat di login.html → langsung ke dashboard
+  onAuthStateChanged(auth, (user) => {
+    if (user && user.emailVerified) {
+      location.replace('./dashboard.html')
     }
   })
 }
