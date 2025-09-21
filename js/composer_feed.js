@@ -54,7 +54,7 @@ export function initComposer(user){
   })
 }
 
-/* === Card === */
+/* === Card Post === */
 function postCard(p, me){
   const time = p.createdAt?.toDate?.() ? p.createdAt.toDate() : new Date()
   const isOwner = me && p.uid===me.uid
@@ -83,6 +83,9 @@ function postCard(p, me){
         <button data-like class="px-3 py-1.5 rounded-xl bg-slate-900/60 border border-white/10 text-sm hover:bg-slate-900/80">
           👍 Suka <span data-like-count>0</span>
         </button>
+        <button data-save class="px-3 py-1.5 rounded-xl bg-slate-900/60 border border-white/10 text-sm hover:bg-slate-900/80">
+          🔖 Simpan
+        </button>
         <button data-showcmt class="px-3 py-1.5 rounded-xl bg-slate-900/60 border border-white/10 text-sm hover:bg-slate-900/80">
           💬 Komentar
         </button>
@@ -98,14 +101,14 @@ function postCard(p, me){
     </div>
   `
 
-  /* hapus */
+  /* hapus post */
   if(isOwner){
     el.querySelector('[data-del]')?.addEventListener('click', async()=>{
       try{ await deleteDoc(doc(db,'posts',p.id)); toast('Dihapus') }catch(e){ toast(e.message) }
     })
   }
 
-  /* like (optimistic) */
+  /* like */
   const likeBtn=el.querySelector('[data-like]'), likeCnt=el.querySelector('[data-like-count]')
   const myLikeRef = doc(db, `posts/${p.id}/likes/${me.uid}`)
   likeBtn?.addEventListener('click', async()=>{
@@ -119,7 +122,18 @@ function postCard(p, me){
   })
   getCountFromServer(collection(db, `posts/${p.id}/likes`)).then(s=>likeCnt.textContent=s.data().count||0)
 
-  /* komentar real-time */
+  /* simpan / unsave */
+  const saveBtn = el.querySelector('[data-save]')
+  const saveRef = doc(db, `users/${me.uid}/saved/${p.id}`)
+  saveBtn?.addEventListener('click', async ()=>{
+    saveBtn.classList.add('opacity-50')
+    const s = await getDoc(saveRef)
+    if (s.exists()) { await deleteDoc(saveRef); toast('Dihapus dari tersimpan') }
+    else { await setDoc(saveRef, {postId:p.id, savedAt:serverTimestamp()}); toast('Disimpan') }
+    saveBtn.classList.remove('opacity-50')
+  })
+
+  /* komentar */
   const wrap=el.querySelector('[data-cmtwrap]')
   el.querySelector('[data-showcmt]')?.addEventListener('click', ()=>wrap.classList.toggle('hidden'))
   el.querySelector('[data-sendcmt]')?.addEventListener('click', async()=>{
@@ -168,12 +182,12 @@ export async function startFeed(user){
   btn.addEventListener('click', ()=>load(false))
   await load(true)
 
-  // real-time untuk item baru paling atas (opsional ringan)
+  // realtime untuk 1 post terbaru
   const liveQ = query(collection(db,'posts'), orderBy('createdAt','desc'), limit(1))
   onSnapshot(liveQ, (snap)=>{
     if(!snap.docs.length) return
     const d = snap.docs[0]
-    if(!firstLoad){ // prepend jika benar-benar baru
+    if(!firstLoad){ 
       const node = postCard({id:d.id, ...d.data()}, user)
       feed.insertBefore(node, feed.firstChild)
     }
