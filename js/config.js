@@ -1,4 +1,4 @@
-// js/auth.js — FINAL (pakai config.js, no duplicate app)
+// js/auth.js — FINAL (fix preventDefault + submit form)
 
 import { auth, db } from './config.js'
 import {
@@ -10,7 +10,6 @@ import {
 } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js'
 import { doc, setDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js'
 
-/* ---------- helpers kecil ---------- */
 const $ = (s) => document.querySelector(s)
 const show = (el) => el && el.classList.remove('hidden')
 const hide = (el) => el && el.classList.add('hidden')
@@ -20,11 +19,12 @@ const toast = (msg) => {
   show(t); setTimeout(() => hide(t), 2200)
 }
 
-/* ---------- state ---------- */
 let emailMode = 'login' // 'login' | 'register'
 
-/* ---------- actions ---------- */
-async function handleEmailSubmit () {
+async function handleEmailSubmit (e) {
+  // ⬇️ cegah form reload halaman
+  e?.preventDefault?.()
+
   const emailEl = $('#email')
   const passEl  = $('#password')
   const notice  = $('#notice')
@@ -59,7 +59,6 @@ async function handleEmailSubmit () {
         show(notice)
       }
       await signOut(auth)
-      // balikkan ke mode login
       emailMode = 'login'
       renderModeLabels()
     }
@@ -83,7 +82,6 @@ function switchMode (e) {
 function renderModeLabels () {
   const btn = $('#btnEmail')
   const link = $('#linkToRegisterEmail')
-
   if (emailMode === 'login') {
     if (btn)  btn.textContent  = 'Masuk'
     if (link) link.textContent = 'Daftar'
@@ -93,18 +91,16 @@ function renderModeLabels () {
   }
 }
 
-/* ---------- init (dipanggil dari app-core.js) ---------- */
 export function initAuthUI () {
-  // tombol submit
+  // tombol submit (kalau pakai button)
   $('#btnEmail')?.addEventListener('click', handleEmailSubmit)
-  // toggle password
+  // submit via Enter (kalau pakai <form>)
+  $('#formEmail')?.addEventListener('submit', handleEmailSubmit)
+
   $('#togglePass')?.addEventListener('click', togglePass)
-  // ganti mode (login <-> daftar)
   $('#linkToRegisterEmail')?.addEventListener('click', switchMode)
-  // set label awal
   renderModeLabels()
 
-  // guard: kalau sudah login & verified → langsung dashboard
   onAuthStateChanged(auth, (user) => {
     if (user && user.emailVerified) {
       window.location.href = './dashboard.html'
