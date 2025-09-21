@@ -1,14 +1,20 @@
 <!doctype html>
 <html lang="id">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>MACHA CHAT — Dashboard</title>
+
+  <!-- Tailwind (CDN) -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
-    tailwind.config = { theme:{ extend:{ colors:{ brand:'#1877F2' }}}}
+    tailwind.config = {
+      theme: { extend: { colors: { brand: '#1877F2' } } }
+    }
   </script>
-  <style>body{font-family: ui-sans-serif,system-ui,Segoe UI,Roboto,Arial}</style>
+  <style>
+    body{font-family: ui-sans-serif,system-ui,Segoe UI,Roboto,Arial}
+  </style>
 </head>
 <body class="min-h-screen bg-slate-900 text-slate-100">
 
@@ -20,22 +26,23 @@
         <span class="font-semibold tracking-wide">MACHA CHAT</span>
       </div>
       <div class="flex-1"></div>
-      <button id="btnPlus"   class="w-9 h-9 rounded-full bg-slate-800 border border-white/10 grid place-items-center">+</button>
-      <button id="btnSearch" class="w-9 h-9 rounded-full bg-slate-800 border border-white/10 grid place-items-center">🔍</button>
-      <button id="btnMenu"   class="w-9 h-9 rounded-full bg-slate-800 border border-white/10 grid place-items-center">☰</button>
+      <button id="btnPlus"   class="w-9 h-9 rounded-full bg-slate-800 border border-white/10 grid place-items-center" aria-label="Aksi cepat">+</button>
+      <button id="btnSearch" class="w-9 h-9 rounded-full bg-slate-800 border border-white/10 grid place-items-center" aria-label="Cari">🔍</button>
+      <button id="btnMenu"   class="w-9 h-9 rounded-full bg-slate-800 border border-white/10 grid place-items-center" aria-label="Menu">☰</button>
     </div>
   </header>
 
+  <!-- CONTENT -->
   <main class="max-w-[980px] mx-auto px-3 py-4 space-y-4">
 
     <!-- COMPOSER -->
     <section class="rounded-3xl border border-white/10 bg-slate-800/60 shadow-[0_10px_30px_rgba(0,0,0,.25)]">
       <div class="p-4 sm:p-5 flex gap-3">
-        <img id="meAvatar" class="w-11 h-11 rounded-full bg-slate-700" alt="me">
+        <img id="meAvatar" class="w-11 h-11 rounded-full bg-slate-700" alt="Avatar">
         <div class="flex-1">
           <div class="relative">
             <input id="composer" placeholder="Apa yang Anda pikirkan?"
-                   class="w-full rounded-full bg-slate-900/70 border border-white/10 px-4 py-3 pr-28 outline-none focus:ring-2 focus:ring-brand/40">
+                   class="w-full rounded-full bg-slate-900/70 border border-white/10 px-4 py-3 pr-28 outline-none focus:ring-2 focus:ring-brand/40" />
             <button id="postBtn"
                     class="absolute right-1 top-1/2 -translate-y-1/2 px-4 py-2 rounded-full bg-brand text-white font-semibold hover:opacity-90">
               Kirim
@@ -43,10 +50,12 @@
           </div>
 
           <div class="mt-3 flex flex-wrap items-center gap-2">
-            <input id="photoFile" type="file" accept="image/*" class="hidden">
+            <input id="photoFile" type="file" accept="image/*" class="hidden" />
             <label for="photoFile" class="px-3 py-1.5 rounded-xl bg-slate-900/60 border border-white/10 text-sm cursor-pointer hover:bg-slate-900/80">📷 Foto</label>
-            <input id="videoFile" type="file" accept="video/*" class="hidden">
+
+            <input id="videoFile" type="file" accept="video/*" class="hidden" />
             <label for="videoFile" class="px-3 py-1.5 rounded-xl bg-slate-900/60 border border-white/10 text-sm cursor-pointer hover:bg-slate-900/80">🎬 Video</label>
+
             <div id="fileChips" class="flex flex-wrap gap-2 text-xs"></div>
           </div>
 
@@ -66,15 +75,13 @@
 
     <!-- FEED -->
     <section id="feed" class="space-y-3">
-      <!-- skeleton pertama -->
+      <!-- skeleton awal -->
       <div class="rounded-3xl border border-white/10 bg-slate-800/60 animate-pulse h-48"></div>
       <div class="rounded-3xl border border-white/10 bg-slate-800/60 animate-pulse h-72"></div>
     </section>
 
     <div class="flex justify-center">
-      <button id="loadMore" class="px-4 py-2 rounded-xl bg-slate-800 border border-white/10 hidden">
-        Muat lagi
-      </button>
+      <button id="loadMore" class="px-4 py-2 rounded-xl bg-slate-800 border border-white/10 hidden">Muat lagi</button>
     </div>
   </main>
 
@@ -84,40 +91,40 @@
   <!-- MENU DRAWER -->
   <aside id="menuPanel" class="fixed inset-0 z-50 hidden">
     <div id="menuBackdrop" class="absolute inset-0 bg-black/50"></div>
+
     <div class="absolute right-0 top-0 h-full w-[92%] max-w-[420px] bg-white text-slate-900 overflow-y-auto">
+      <!-- header drawer -->
       <div class="p-4 sticky top-0 bg-white/90 backdrop-blur border-b flex items-center justify-between">
         <h2 class="text-xl font-semibold">Menu</h2>
-        <button id="menuClose" class="text-2xl">✕</button>
+        <button id="menuClose" class="text-2xl" aria-label="Tutup">✕</button>
       </div>
 
       <div class="p-4 space-y-4">
-        <div class="p-3 rounded-2xl border bg-slate-50">
-          <div class="flex items-center gap-3">
-            <img id="profileAvatar" class="w-12 h-12 rounded-full bg-slate-200" alt="">
-            <div class="flex-1">
-              <div id="profileName" class="font-semibold">Nama</div>
+        <!-- KARTU PROFIL: link + ganti foto -->
+        <div class="p-3 rounded-2xl border bg-slate-50 flex items-center gap-3">
+          <!-- Link ke profil -->
+          <a href="./profile.html" class="flex items-center gap-3 flex-1 min-w-0 cursor-pointer">
+            <img id="profileAvatar" class="w-12 h-12 rounded-full bg-slate-200" alt="Avatar profil">
+            <div class="min-w-0">
+              <div id="profileName" class="font-semibold truncate">Nama</div>
               <div class="text-sm text-slate-500">Lihat profil Anda</div>
             </div>
-            <label for="avatarFile" class="px-3 py-1.5 rounded-xl bg-slate-200 text-sm cursor-pointer">Ganti foto</label>
-            <input id="avatarFile" type="file" accept="image/*" class="hidden">
-          </div>
+          </a>
+          <!-- Ganti foto -->
+          <label for="avatarFile"
+                 class="px-3 py-1.5 rounded-xl bg-slate-200 text-sm cursor-pointer hover:bg-slate-300 whitespace-nowrap">
+            Ganti foto
+          </label>
+          <input id="avatarFile" type="file" accept="image/*" class="hidden" />
         </div>
 
-        <!-- di dashboard.html -->
-<div class="grid grid-cols-2 gap-3">
-  <a href="./chat.html"   class="p-4 rounded-2xl border bg-slate-50 hover:bg-slate-100">💬 Pesan</a>
-  <a href="./reels.html"  class="p-4 rounded-2xl border bg-slate-50 hover:bg-slate-100">🎞️ Reels</a>
-  <a href="./saved.html"  class="p-4 rounded-2xl border bg-slate-50 hover:bg-slate-100">🔖 Tersimpan</a>
-  <a href="./events.html" class="p-4 rounded-2xl border bg-slate-50 hover:bg-slate-100">📅 Acara</a>
-</div>
-
-<!-- di kartu profil atas, jadikan link -->
-<div class="flex-1">
-  <a href="./profile.html">
-    <div id="profileName" class="font-semibold">Nama</div>
-    <div class="text-sm text-slate-500">Lihat profil Anda</div>
-  </a>
-</div>
+        <!-- MENU GRID -->
+        <div class="grid grid-cols-2 gap-3">
+          <a href="./chat.html"   class="p-4 rounded-2xl border bg-slate-50 hover:bg-slate-100">💬 Pesan</a>
+          <a href="./reels.html"  class="p-4 rounded-2xl border bg-slate-50 hover:bg-slate-100">🎞️ Reels</a>
+          <a href="./saved.html"  class="p-4 rounded-2xl border bg-slate-50 hover:bg-slate-100">🔖 Tersimpan</a>
+          <a href="./events.html" class="p-4 rounded-2xl border bg-slate-50 hover:bg-slate-100">📅 Acara</a>
+        </div>
 
         <div class="mt-6">
           <button id="logoutFromMenu" class="px-4 py-2 rounded-xl bg-slate-200">Keluar</button>
@@ -126,6 +133,7 @@
     </div>
   </aside>
 
+  <!-- Main JS -->
   <script type="module" src="./js/main.js"></script>
 </body>
 </html>
