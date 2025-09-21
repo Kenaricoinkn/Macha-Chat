@@ -19,19 +19,18 @@
 <body class="min-h-screen bg-slate-900 text-slate-100">
 
   <!-- TOPBAR -->
-  <header class="sticky top-0 z-40 border-b border-white/10 bg-gradient-to-b from-slate-900 to-slate-900/90 backdrop-blur">
-    <div class="max-w-[980px] mx-auto px-3 py-2 flex items-center gap-3">
-      <div class="flex items-center gap-2">
-        <div class="w-8 h-8 rounded-xl bg-brand grid place-items-center font-black text-slate-900">M</div>
-        <span class="font-semibold tracking-wide">MACHA CHAT</span>
-      </div>
-      <div class="flex-1"></div>
-      <button id="btnPlus"   class="w-9 h-9 rounded-full bg-slate-800 border border-white/10 grid place-items-center" aria-label="Aksi cepat">+</button>
-      <button id="btnSearch" class="w-9 h-9 rounded-full bg-slate-800 border border-white/10 grid place-items-center" aria-label="Cari">🔍</button>
-      <button id="btnMenu"   class="w-9 h-9 rounded-full bg-slate-800 border border-white/10 grid place-items-center" aria-label="Menu">☰</button>
-    </div>
-  </header>
-
+  <header class="flex items-center justify-between px-4 py-3 bg-slate-800/40 backdrop-blur">
+  <div class="flex items-center gap-2">
+    <!-- Logo pakai gambar -->
+    <img src="./img/macha.png" alt="Macha Logo" class="w-9 h-9 rounded-full object-cover">
+    <h1 class="font-bold text-lg">MACHA CHAT</h1>
+  </div>
+  <div class="flex items-center gap-3">
+    <button id="btnAddPost" class="w-9 h-9 rounded-full bg-slate-700 flex items-center justify-center">＋</button>
+    <button id="btnSearch" class="w-9 h-9 rounded-full bg-slate-700 flex items-center justify-center">🔍</button>
+    <button id="btnMenu" class="w-9 h-9 rounded-full bg-slate-700 flex items-center justify-center">☰</button>
+  </div>
+</header>
   <!-- CONTENT -->
   <main class="max-w-[980px] mx-auto px-3 py-4 space-y-4">
 
