@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>MACHA CHAT — Masuk</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={theme:{extend:{colors:{brand:'#7C9BFF',brand2:'#A07CFF'}}}}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body class="min-h-screen bg-[#0b1020] text-slate-100">
+  <header class="px-6 py-5">
+    <div class="max-w-2xl mx-auto flex items-center gap-3">
+      <div class="logo">💬</div>
+      <h1 class="brand">MACHA <span>CHAT</span></h1>
+    </div>
+  </header>
+
+  <main class="px-6 pb-16">
+    <div class="max-w-2xl mx-auto card p-5 md:p-7">
+      <!-- EMAIL PANEL -->
+      <section id="panel-email" class="grid gap-3">
+        <label class="text-sm">Email</label>
+        <input id="email" type="email" class="input" placeholder="nama@email.com" autocomplete="email"/>
+
+        <label class="mt-2 text-sm">Kata sandi</label>
+        <div class="relative">
+          <input id="password" type="password" class="input w-full pr-12" placeholder="••••••••" autocomplete="current-password"/>
+          <button id="togglePass" type="button" class="toggle-eye">👁️</button>
+        </div>
+
+        <div id="notice" class="text-sm text-sky-300 hidden"></div>
+
+        <button id="btnEmail" class="btn btn-primary mt-3">Masuk</button>
+        <p class="text-sm text-slate-300 mt-2">Belum punya akun?
+          <a id="linkToRegisterEmail" class="link" href="#">Daftar</a></p>
+      </section>
+    </div>
+
+    <p class="max-w-2xl mx-auto text-center text-xs text-slate-400 mt-4">
+      Dengan masuk, Anda menyetujui ketentuan layanan kami.
+    </p>
+  </main>
+
+  <!-- Toast -->
+  <div id="toast" class="toast hidden"></div>
+
+  <!-- skrip login mu -->
+  <script type="module" src="./js/app-core.js"></script>
+</body>
+</html>
