@@ -103,12 +103,21 @@
           </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-3">
-          <a class="p-4 rounded-2xl border bg-slate-50 hover:bg-slate-100">💬 Pesan</a>
-          <a class="p-4 rounded-2xl border bg-slate-50 hover:bg-slate-100">🎞️ Reels</a>
-          <a class="p-4 rounded-2xl border bg-slate-50 hover:bg-slate-100">🔖 Tersimpan</a>
-          <a class="p-4 rounded-2xl border bg-slate-50 hover:bg-slate-100">📅 Acara</a>
-        </div>
+        <!-- di dashboard.html -->
+<div class="grid grid-cols-2 gap-3">
+  <a href="./chat.html"   class="p-4 rounded-2xl border bg-slate-50 hover:bg-slate-100">💬 Pesan</a>
+  <a href="./reels.html"  class="p-4 rounded-2xl border bg-slate-50 hover:bg-slate-100">🎞️ Reels</a>
+  <a href="./saved.html"  class="p-4 rounded-2xl border bg-slate-50 hover:bg-slate-100">🔖 Tersimpan</a>
+  <a href="./events.html" class="p-4 rounded-2xl border bg-slate-50 hover:bg-slate-100">📅 Acara</a>
+</div>
+
+<!-- di kartu profil atas, jadikan link -->
+<div class="flex-1">
+  <a href="./profile.html">
+    <div id="profileName" class="font-semibold">Nama</div>
+    <div class="text-sm text-slate-500">Lihat profil Anda</div>
+  </a>
+</div>
 
         <div class="mt-6">
           <button id="logoutFromMenu" class="px-4 py-2 rounded-xl bg-slate-200">Keluar</button>
