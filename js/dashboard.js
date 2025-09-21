@@ -3,13 +3,13 @@ import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/fi
 import {
   getFirestore, collection, addDoc, serverTimestamp,
   query, orderBy, onSnapshot, doc, getDoc, deleteDoc,
-  setDoc
+  setDoc, getCountFromServer
 } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js'
 import {
   getStorage, ref, uploadBytesResumable, getDownloadURL
 } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-storage.js'
 
-/* === pakai config milikmu === */
+/* === Firebase config punyamu === */
 const firebaseConfig = {
   apiKey: "AIzaSyDIsTmg0_-rcz9tH3U-_sZuWk7sUOLgMSw",
   authDomain: "macha-chat.firebaseapp.com",
@@ -31,14 +31,21 @@ const toast = (msg)=>{
   t.innerHTML = `<div class="px-4 py-2 rounded-xl bg-white text-slate-900 shadow">${msg}</div>`
   t.classList.remove('hidden'); setTimeout(()=>t.classList.add('hidden'), 2000)
 }
+const relTime = (date)=>{
+  const diff = (Date.now() - date.getTime())/1000
+  if(diff < 60) return `${Math.floor(diff)} dtk`
+  if(diff < 3600) return `${Math.floor(diff/60)} mnt`
+  if(diff < 86400) return `${Math.floor(diff/3600)} jam`
+  return new Intl.DateTimeFormat('id-ID',{ dateStyle:'medium', timeStyle:'short' }).format(date)
+}
 async function uploadTo(path, file){
   return new Promise((resolve,reject)=>{
-    const r = ref(storage, path);
-    const task = uploadBytesResumable(r, file);
+    const r = ref(storage, path)
+    const task = uploadBytesResumable(r, file)
     task.on('state_changed', null, reject, async ()=>{
-      resolve(await getDownloadURL(r));
-    });
-  });
+      resolve(await getDownloadURL(r))
+    })
+  })
 }
 
 /* === guard & header === */
@@ -75,6 +82,27 @@ function renderStories(name){
 
 /* === composer === */
 function bindComposer(user){
+  // refresh chip saat pilih file
+  const refreshChips = ()=>{
+    const chips = $('#fileChips'); chips.innerHTML = ''
+    const photo = $('#photoFile').files[0]
+    const video = $('#videoFile').files[0]
+    if(photo){
+      const c = document.createElement('span')
+      c.className = 'px-2 py-1 rounded-lg bg-slate-900/70 border border-white/10 text-xs'
+      c.textContent = photo.name
+      chips.appendChild(c)
+    }
+    if(video){
+      const c = document.createElement('span')
+      c.className = 'px-2 py-1 rounded-lg bg-slate-900/70 border border-white/10 text-xs'
+      c.textContent = video.name
+      chips.appendChild(c)
+    }
+  }
+  $('#photoFile').addEventListener('change', refreshChips)
+  $('#videoFile').addEventListener('change', refreshChips)
+
   $('#postBtn').addEventListener('click', async ()=>{
     const text = $('#composer').value.trim()
     const photo = $('#photoFile').files[0]
@@ -90,11 +118,11 @@ function bindComposer(user){
 
       let imageURL = '', videoURL = ''
       if(photo){
-        const ext = photo.name.split('.').pop()
+        const ext = (photo.name.split('.').pop() || 'jpg').toLowerCase()
         imageURL = await uploadTo(`images/${user.uid}/${Date.now()}.${ext}`, photo)
       }
       if(video){
-        const ext = video.name.split('.').pop()
+        const ext = (video.name.split('.').pop() || 'mp4').toLowerCase()
         videoURL = await uploadTo(`videos/${user.uid}/${Date.now()}.${ext}`, video)
       }
 
@@ -107,6 +135,7 @@ function bindComposer(user){
       $('#composer').value = ''
       $('#photoFile').value = ''
       $('#videoFile').value = ''
+      $('#fileChips').innerHTML = ''
       toast('Terkirim')
     }catch(e){ console.error(e); toast(e.message) }
   })
@@ -115,36 +144,47 @@ function bindComposer(user){
 /* === feed === */
 function card(p, isOwner, user){
   const time = p.createdAt?.toDate?.() ? p.createdAt.toDate() : new Date()
-  const timeStr = new Intl.DateTimeFormat('id-ID',{ dateStyle:'medium', timeStyle:'short' }).format(time)
   const el = document.createElement('article')
-  el.className = 'rounded-2xl border border-white/10 bg-white/5'
+  el.className = 'rounded-3xl border border-white/10 bg-slate-800/60 shadow-[0_10px_30px_rgba(0,0,0,.25)] overflow-hidden'
 
   let media = ''
   if(p.imageURL) media += `<img src="${p.imageURL}" class="w-full max-h-[70vh] object-contain bg-black/30">`
   if(p.videoURL) media += `<video src="${p.videoURL}" controls playsinline class="w-full bg-black"></video>`
 
   el.innerHTML = `
-    <div class="p-3 sm:p-4">
+    <div class="p-4 sm:p-5">
       <div class="flex gap-3">
-        <img class="w-10 h-10 rounded-full bg-slate-700">
+        <div class="w-10 h-10 rounded-full bg-slate-700"></div>
         <div class="flex-1">
-          <div class="font-semibold">${p.author||'Anon'}</div>
-          <div class="text-xs text-slate-400">${timeStr}</div>
+          <div class="font-semibold leading-tight">${p.author||'Anon'}</div>
+          <div class="text-xs text-slate-400">${relTime(time)}</div>
         </div>
-        ${isOwner ? `<button data-del="${p.id}" class="text-slate-300 hover:text-red-300">Hapus</button>`:''}
+        ${isOwner ? `<button data-del="${p.id}" class="px-2 py-1 rounded-lg text-slate-300 hover:text-red-300">Hapus</button>`:''}
       </div>
-      ${p.text ? `<div class="mt-3 whitespace-pre-wrap">${p.text}</div>` : ''}
-      ${media ? `<div class="mt-3">${media}</div>` : ''}
 
-      <div class="mt-3 flex items-center gap-3">
-        <button data-like="${p.id}" class="px-3 py-1.5 rounded-xl bg-slate-800 border border-white/10 text-sm">Suka <span data-like-count="${p.id}">0</span></button>
-        <button data-showcmt="${p.id}" class="px-3 py-1.5 rounded-xl bg-slate-800 border border-white/10 text-sm">Komentar</button>
+      ${p.text ? `<div class="mt-3 whitespace-pre-wrap leading-relaxed">${p.text}</div>` : ''}
+      ${media ? `<div class="mt-3 overflow-hidden rounded-2xl border border-white/10">${media}</div>` : ''}
+
+      <div class="mt-4 flex items-center gap-3">
+        <button data-like="${p.id}"
+                class="px-3 py-1.5 rounded-xl bg-slate-900/60 border border-white/10 text-sm hover:bg-slate-900/80">
+          👍 Suka <span data-like-count="${p.id}">0</span>
+        </button>
+        <button data-showcmt="${p.id}"
+                class="px-3 py-1.5 rounded-xl bg-slate-900/60 border border-white/10 text-sm hover:bg-slate-900/80">
+          💬 Komentar
+        </button>
       </div>
 
       <div id="cmt-${p.id}" class="hidden mt-3">
         <div class="flex gap-2">
-          <input id="cmt-input-${p.id}" placeholder="Tulis komentar…" class="flex-1 rounded-xl bg-slate-800 border border-white/10 px-3 py-2 text-sm">
-          <button data-sendcmt="${p.id}" class="px-3 py-2 rounded-xl bg-brand text-white text-sm">Kirim</button>
+          <input id="cmt-input-${p.id}"
+                 placeholder="Tulis komentar…"
+                 class="flex-1 rounded-xl bg-slate-900/70 border border-white/10 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand/40">
+          <button data-sendcmt="${p.id}"
+                  class="px-3 py-2 rounded-xl bg-brand text-white text-sm hover:opacity-90">
+            Kirim
+          </button>
         </div>
         <div id="cmt-list-${p.id}" class="mt-3 space-y-2 text-sm"></div>
       </div>
@@ -163,11 +203,8 @@ function card(p, isOwner, user){
   el.querySelector(`[data-like="${p.id}"]`)?.addEventListener('click', async ()=>{
     try{
       const snap = await getDoc(myLikeRef)
-      if(snap.exists()){
-        await deleteDoc(myLikeRef)
-      }else{
-        await setDoc(myLikeRef, { uid:user.uid, at: serverTimestamp() })
-      }
+      if(snap.exists()) await deleteDoc(myLikeRef)
+      else await setDoc(myLikeRef, { uid:user.uid, at: serverTimestamp() })
       updateLikeCount(p.id)
     }catch(e){ toast(e.message) }
   })
@@ -186,7 +223,7 @@ function card(p, isOwner, user){
     input.value = ''
   })
 
-  // live list komentar
+  // live comments
   const qC = query(collection(db, `posts/${p.id}/comments`), orderBy('createdAt','asc'))
   onSnapshot(qC, (snap)=>{
     const wrap = document.getElementById(`cmt-list-${p.id}`)
@@ -195,19 +232,16 @@ function card(p, isOwner, user){
     snap.forEach(d=>{
       const c = d.data()
       const li = document.createElement('div')
-      li.className = 'rounded-xl bg-slate-800/60 border border-white/10 px-3 py-2'
+      li.className = 'rounded-xl bg-slate-900/50 border border-white/10 px-3 py-2'
       li.innerHTML = `<b>${c.author||'Anon'}</b><div class="text-slate-300">${c.text}</div>`
       wrap.appendChild(li)
     })
   })
 
-  // hitung like awal
   updateLikeCount(p.id)
-
   return el
 }
 
-import { getCountFromServer } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js'
 async function updateLikeCount(postId){
   const snap = await getCountFromServer(collection(db, `posts/${postId}/likes`))
   const n = snap.data().count || 0
