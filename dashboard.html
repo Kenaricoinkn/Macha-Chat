@@ -1,22 +1,32 @@
 <!doctype html>
 <html lang="id">
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>MACHA CHAT — Dashboard</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<script>tailwind.config={theme:{extend:{colors:{brand:'#1877F2'}}}}</script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="./css/styles.css">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>MACHA CHAT — Dashboard</title>
 
+  <!-- Tailwind untuk styling cepat -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={theme:{extend:{colors:{brand:'#1877F2'}}}}</script>
+
+  <!-- (Opsional) font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- (Opsional) CSS tambahan -->
+  <style>
+    body{font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
+  </style>
+</head>
 <body class="min-h-screen bg-slate-900 text-slate-100">
+
   <!-- Topbar -->
   <header class="sticky top-0 z-40 border-b border-white/10 bg-slate-900/75 backdrop-blur">
     <div class="max-w-[980px] mx-auto px-3 py-2 flex items-center gap-2">
       <div class="flex items-center gap-2">
         <div class="w-8 h-8 rounded-xl bg-brand grid place-items-center font-black">f</div>
-        <span class="font-semibold hidden sm:block">MACHA CHAT</span>
+        <span class="font-semibold">MACHA CHAT</span>
       </div>
       <div class="flex-1"></div>
       <button id="logoutBtn" class="px-3 py-1.5 rounded-xl bg-slate-800 border border-white/10">Keluar</button>
@@ -26,32 +36,30 @@
   <main class="max-w-[980px] mx-auto px-3 py-4 space-y-4">
     <!-- Composer -->
     <section class="rounded-2xl border border-white/10 bg-white/5">
-  <div class="p-3 sm:p-4 flex gap-3">
-    <img id="meAvatar" class="w-10 h-10 rounded-full bg-slate-700">
-    <div class="flex-1">
-      <div class="relative">
-        <input id="composer" 
-               placeholder="Apa yang Anda pikirkan?" 
-               class="w-full rounded-full bg-slate-800/80 border border-white/10 px-4 py-3 pr-28">
-        <button id="postBtn" 
-                class="absolute right-1 top-1/2 -translate-y-1/2 px-4 py-2 rounded-full bg-brand text-white font-semibold">
-          Kirim
-        </button>
+      <div class="p-3 sm:p-4 flex gap-3">
+        <img id="meAvatar" class="w-10 h-10 rounded-full bg-slate-700" alt="me">
+        <div class="flex-1">
+          <div class="relative">
+            <input id="composer"
+                   placeholder="Apa yang Anda pikirkan?"
+                   class="w-full rounded-full bg-slate-800/80 border border-white/10 px-4 py-3 pr-28">
+            <button id="postBtn"
+                    class="absolute right-1 top-1/2 -translate-y-1/2 px-4 py-2 rounded-full bg-brand text-white font-semibold">
+              Kirim
+            </button>
+          </div>
+          <div class="flex gap-2 mt-2">
+            <input id="photoFile" type="file" accept="image/*" class="text-xs" />
+            <input id="videoFile" type="file" accept="video/*" class="text-xs" />
+          </div>
+        </div>
       </div>
-      <div class="flex gap-2 mt-2">
-        <input id="photoFile" type="file" accept="image/*" class="text-xs" />
-        <input id="videoFile" type="file" accept="video/*" class="text-xs" />
-      </div>
-    </div>
-  </div>
-</section>
+    </section>
 
-    <!-- Stories -->
+    <!-- Stories (dummy tampilan) -->
     <section class="rounded-2xl border border-white/10 bg-white/5">
       <div class="p-3 overflow-x-auto">
-        <div id="stories" class="flex gap-3 min-w-max">
-          <!-- item contoh -->
-        </div>
+        <div id="stories" class="flex gap-3 min-w-max"></div>
       </div>
     </section>
 
@@ -59,8 +67,10 @@
     <section id="feed" class="space-y-3"></section>
   </main>
 
+  <!-- Toast -->
   <div id="toast" class="fixed left-1/2 -translate-x-1/2 bottom-6 z-50 hidden"></div>
 
+  <!-- Script utama dashboard (pastikan file ini ada) -->
   <script type="module" src="./js/dashboard.js"></script>
 </body>
 </html>
