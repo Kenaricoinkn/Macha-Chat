@@ -8,19 +8,18 @@
 </head>
 <body class="min-h-screen bg-slate-900 text-slate-100">
 
-  <!-- Splash universal -->
+  <!-- Splash -->
   <script type="module">
     import { initSplash } from './js/splash.js';
-    // tampil 10 detik maksimal; bisa hilang lebih cepat saat redirect
-    initSplash({ duration: 10000 });
+    // tampilkan splash
+    initSplash();
   </script>
 
-  <!-- Gate: cek sesi Firebase & redirect -->
+  <!-- Gate: cek sesi Firebase & redirect setelah 10 detik -->
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js'
     import { getAuth, onAuthStateChanged, setPersistence, browserLocalPersistence } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js'
 
-    // ==== pakai config milikmu ====
     const firebaseConfig = {
       apiKey: "AIzaSyDIsTmg0_-rcz9tH3U-_sZuWk7sUOLgMSw",
       authDomain: "macha-chat.firebaseapp.com",
@@ -34,20 +33,22 @@
     const app  = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    // pastikan sesi tersimpan (tetap login antar-kunjungan)
     await setPersistence(auth, browserLocalPersistence);
 
+    // simpan target, default ke login
+    let target = './login.html';
+
     onAuthStateChanged(auth, (user) => {
-      // sembunyikan splash lalu arahkan
-      window.hideSplash?.();
-      if (user) {
-        // sudah login → langsung ke dashboard
-        location.replace('./dashboard.html');
-      } else {
-        // belum login → ke halaman login
-        location.replace('./login.html');
+      if (user && user.emailVerified) {
+        target = './dashboard.html';
       }
     });
+
+    // tunggu fix 10 detik sebelum redirect
+    setTimeout(() => {
+      window.hideSplash?.();
+      location.replace(target);
+    }, 10000);
   </script>
 </body>
 </html>
