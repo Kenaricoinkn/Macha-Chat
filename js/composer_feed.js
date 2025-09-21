@@ -1,3 +1,4 @@
+// composer_feed.js — versi anti double post + de-dupe feed
 import { auth, db, $, toast, relTime } from './config.js'
 import {
   collection, addDoc, serverTimestamp, doc, getDoc, deleteDoc,
@@ -25,36 +26,65 @@ async function uploadMediaCloudinary(file, folder){
   return json.secure_url
 }
 
-/* === Composer === */
-export function initComposer(user){
-  const chips=()=>{ const c=$('#fileChips'); c.innerHTML=''; ['photoFile','videoFile'].forEach(id=>{
-    const f=document.getElementById(id).files[0]; if(f){ const s=document.createElement('span'); s.className='px-2 py-1 rounded-lg bg-slate-900/70 border border-white/10'; s.textContent=f.name; c.appendChild(s) }
-  }) }
-  $('#photoFile').addEventListener('change', chips)
-  $('#videoFile').addEventListener('change', chips)
+/* ======================================================================
+   COMPOSER
+====================================================================== */
+let __composerBound = false
+let __isPosting = false
 
-  $('#postBtn').addEventListener('click', async ()=>{
-    const text=$('#composer').value.trim()
-    const photo=$('#photoFile').files[0]
-    const video=$('#videoFile').files[0]
+export function initComposer(user){
+  if (__composerBound) return
+  __composerBound = true
+
+  const chips=()=>{ const c=$('#fileChips'); if(!c) return; c.innerHTML=''; ['photoFile','videoFile'].forEach(id=>{
+    const f=document.getElementById(id)?.files?.[0]; if(f){ const s=document.createElement('span'); s.className='px-2 py-1 rounded-lg bg-slate-900/70 border border-white/10'; s.textContent=f.name; c.appendChild(s) }
+  }) }
+  $('#photoFile')?.addEventListener('change', chips)
+  $('#videoFile')?.addEventListener('change', chips)
+
+  const btn = $('#postBtn')
+  btn?.addEventListener('click', async ()=>{
+    if (__isPosting) return
+    const text=$('#composer')?.value.trim() || ''
+    const photo=$('#photoFile')?.files?.[0]
+    const video=$('#videoFile')?.files?.[0]
     if(!text && !photo && !video) return toast('Tulis sesuatu atau pilih media')
+
+    __isPosting = true
+    if (btn){ btn.disabled = true; btn.classList.add('opacity-60','cursor-not-allowed') }
 
     try{
       let displayName=user.displayName||user.email||'Pengguna'
-      try{ const us=await getDoc(doc(db,'users',user.uid)); if(us.exists()&&us.data().name) displayName=us.data().name }catch{}
+      try{
+        const us=await getDoc(doc(db,'users',user.uid))
+        if(us.exists()&&us.data().name) displayName=us.data().name
+      }catch{}
 
       let imageURL='', videoURL=''
       if(photo) imageURL = await uploadMediaCloudinary(photo, `images/${user.uid}`)
       if(video) videoURL = await uploadMediaCloudinary(video, `videos/${user.uid}`)
 
-      await addDoc(collection(db,'posts'), { uid:user.uid, author:displayName, text, imageURL, videoURL, createdAt:serverTimestamp() })
-      $('#composer').value=''; $('#photoFile').value=''; $('#videoFile').value=''; $('#fileChips').innerHTML=''
+      await addDoc(collection(db,'posts'), {
+        uid:user.uid, author:displayName, text, imageURL, videoURL,
+        createdAt:serverTimestamp()
+      })
+
+      const composer = $('#composer'); if(composer) composer.value=''
+      const pf = $('#photoFile'); if(pf) pf.value=''
+      const vf = $('#videoFile'); if(vf) vf.value=''
+      const chipsWrap = $('#fileChips'); if(chipsWrap) chipsWrap.innerHTML=''
       toast('Terkirim ✅')
     }catch(e){ toast(e.message) }
+    finally{
+      __isPosting = false
+      if (btn){ btn.disabled = false; btn.classList.remove('opacity-60','cursor-not-allowed') }
+    }
   })
 }
 
-/* === Card Post === */
+/* ======================================================================
+   CARD
+====================================================================== */
 function postCard(p, me){
   const time = p.createdAt?.toDate?.() ? p.createdAt.toDate() : new Date()
   const isOwner = me && p.uid===me.uid
@@ -65,6 +95,7 @@ function postCard(p, me){
 
   const el=document.createElement('article')
   el.className='rounded-3xl border border-white/10 bg-slate-800/60 shadow-[0_10px_30px_rgba(0,0,0,.25)] overflow-hidden'
+  el.dataset.postId = p.id // <-- penting buat de-dupe
   el.innerHTML=`
     <div class="p-4 sm:p-5">
       <div class="flex gap-3">
@@ -101,14 +132,13 @@ function postCard(p, me){
     </div>
   `
 
-  /* hapus post */
   if(isOwner){
     el.querySelector('[data-del]')?.addEventListener('click', async()=>{
       try{ await deleteDoc(doc(db,'posts',p.id)); toast('Dihapus') }catch(e){ toast(e.message) }
     })
   }
 
-  /* like */
+  // like
   const likeBtn=el.querySelector('[data-like]'), likeCnt=el.querySelector('[data-like-count]')
   const myLikeRef = doc(db, `posts/${p.id}/likes/${me.uid}`)
   likeBtn?.addEventListener('click', async()=>{
@@ -122,7 +152,7 @@ function postCard(p, me){
   })
   getCountFromServer(collection(db, `posts/${p.id}/likes`)).then(s=>likeCnt.textContent=s.data().count||0)
 
-  /* simpan / unsave */
+  // save
   const saveBtn = el.querySelector('[data-save]')
   const saveRef = doc(db, `users/${me.uid}/saved/${p.id}`)
   saveBtn?.addEventListener('click', async ()=>{
@@ -133,7 +163,7 @@ function postCard(p, me){
     saveBtn.classList.remove('opacity-50')
   })
 
-  /* komentar */
+  // komentar
   const wrap=el.querySelector('[data-cmtwrap]')
   el.querySelector('[data-showcmt]')?.addEventListener('click', ()=>wrap.classList.toggle('hidden'))
   el.querySelector('[data-sendcmt]')?.addEventListener('click', async()=>{
@@ -157,39 +187,53 @@ function postCard(p, me){
   return el
 }
 
-/* === Pagination === */
+/* ======================================================================
+   FEED + PAGINATION + REALTIME (de-dupe)
+====================================================================== */
 let pageSize = 10, lastDocSnap = null, firstLoad = true
+const renderedIds = new Set()     // <- daftar post yang sudah pernah dirender
+
+function renderIfNew(feedEl, docSnap, me, prepend=false){
+  const id = docSnap.id
+  if (renderedIds.has(id)) return
+  const node = postCard({id, ...docSnap.data()}, me)
+  if (prepend) feedEl.insertBefore(node, feedEl.firstChild)
+  else feedEl.appendChild(node)
+  renderedIds.add(id)
+}
 
 export async function startFeed(user){
   const feed=$('#feed'); const btn=$('#loadMore')
   const baseQ = query(collection(db,'posts'), orderBy('createdAt','desc'))
 
   async function load(init=false){
-    btn.classList.add('hidden')
-    if(init){ feed.innerHTML=''; lastDocSnap=null }
+    btn?.classList.add('hidden')
+    if(init){ feed.innerHTML=''; lastDocSnap=null; renderedIds.clear() }
     let q = baseQ
     if(lastDocSnap) q = query(baseQ, startAfter(lastDocSnap), limit(pageSize))
     else q = query(baseQ, limit(pageSize))
 
     const snap = await getDocs(q)
-    if(snap.docs.length===0){ if(firstLoad) feed.innerHTML='<div class="text-center text-slate-400">Belum ada postingan</div>'; return }
+    if(snap.docs.length===0){
+      if(firstLoad) feed.innerHTML='<div class="text-center text-slate-400">Belum ada postingan</div>'
+      return
+    }
     lastDocSnap = snap.docs[snap.docs.length-1]
-    snap.forEach(d=> feed.appendChild( postCard({id:d.id, ...d.data()}, user) ))
-    if(snap.docs.length===pageSize) btn.classList.remove('hidden')
+    snap.forEach(d=> renderIfNew(feed, d, user, false))
+    if(snap.docs.length===pageSize) btn?.classList.remove('hidden')
     firstLoad=false
   }
 
-  btn.addEventListener('click', ()=>load(false))
+  btn?.addEventListener('click', ()=>load(false))
   await load(true)
 
-  // realtime untuk 1 post terbaru
-  const liveQ = query(collection(db,'posts'), orderBy('createdAt','desc'), limit(1))
+  // realtime satu (atau beberapa) post terbaru, dedupe via Set
+  const liveQ = query(collection(db,'posts'), orderBy('createdAt','desc'), limit(3))
   onSnapshot(liveQ, (snap)=>{
-    if(!snap.docs.length) return
-    const d = snap.docs[0]
-    if(!firstLoad){ 
-      const node = postCard({id:d.id, ...d.data()}, user)
-      feed.insertBefore(node, feed.firstChild)
-    }
+    snap.docChanges().forEach(ch=>{
+      if (ch.type === 'added') {
+        renderIfNew(feed, ch.doc, user, true)
+      }
+    })
   })
 }
