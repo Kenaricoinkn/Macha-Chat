@@ -23,6 +23,9 @@
   <!-- Heroicons -->
   <script src="https://unpkg.com/heroicons@2.0.18/24/outline/esm/index.js" type="module"></script>
 
+  <!-- Menu Popup Styles -->
+  <link rel="stylesheet" href="./css/menu-popup.css">
+
   <style>
     body {
       font-family:'Inter',sans-serif;
@@ -116,7 +119,7 @@
       <button class="icon-btn" title="Cari">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 21-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15z"/></svg>
       </button>
-      <button class="icon-btn" title="Menu">
+      <button class="icon-btn" id="menuBtn" title="Menu">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
       </button>
     </div>
@@ -176,6 +179,9 @@
 
   <footer>&copy; 2025 Macha Chat — Dibuat dengan 💜 oleh kamu</footer>
 
+  <!-- Menu Popup Container -->
+  <div id="menuPopup" class="hidden"></div>
+
   <!-- 🔥 Firebase Auth -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
@@ -221,5 +227,8 @@
       });
     });
   </script>
+
+  <!-- Menu Popup Script -->
+  <script type="module" src="./js/menu-popup.js"></script>
 </body>
 </html>
