@@ -40,6 +40,26 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
+    header {
+      text-align: center;
+      margin-top: 2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .neon-title {
+      background: linear-gradient(90deg, #7C9BFF, #A07CFF, #FF78C8);
+      background-size: 300% 300%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradientFlow 5s ease infinite;
+    }
+
+    @keyframes gradientFlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
     .card {
       background: rgba(20, 25, 50, 0.55);
       backdrop-filter: blur(12px);
@@ -51,7 +71,7 @@
     }
 
     .card:hover {
-      transform: rotateX(5deg) rotateY(-5deg) scale(1.02);
+      transform: rotateX(4deg) rotateY(-3deg) scale(1.02);
       box-shadow: 0 0 40px rgba(124, 155, 255, 0.35);
     }
 
@@ -70,41 +90,39 @@
       box-shadow: 0 0 25px rgba(160, 124, 255, 0.4);
     }
 
-    .neon-title {
-      background: linear-gradient(90deg, #7C9BFF, #A07CFF, #FF78C8);
-      background-size: 300% 300%;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: gradientFlow 5s ease infinite;
-    }
-
-    @keyframes gradientFlow {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
+    footer {
+      margin-top: 3rem;
+      text-align: center;
+      font-size: 0.75rem;
+      color: #94a3b8;
     }
   </style>
 </head>
 
 <body class="flex flex-col justify-center items-center text-center">
 
-  <header class="mt-8 mb-6">
+  <!-- Header -->
+  <header>
     <h1 class="text-4xl sm:text-5xl font-extrabold tracking-widest neon-title drop-shadow-[0_0_12px_rgba(124,155,255,0.4)]">
       MACHA CHAT
     </h1>
     <p class="mt-2 text-slate-400 text-sm">Selamat datang di dashboard ✨</p>
   </header>
 
+  <!-- Main content -->
   <main class="w-full max-w-xl px-6">
     <div class="card p-8">
       <h2 class="text-xl font-semibold text-brand mb-2">Akun Aktif</h2>
       <p class="text-slate-300 mb-6">Email: <span id="userEmail">Memuat...</span></p>
 
-      <button id="logoutBtn" class="btn-primary w-full">Keluar</button>
+      <div class="flex flex-col gap-3">
+        <button id="chatBtn" class="btn-primary w-full">💬 Mulai Chat</button>
+        <button id="logoutBtn" class="btn-primary w-full bg-gradient-to-r from-pink-500 via-red-400 to-orange-400">Keluar</button>
+      </div>
     </div>
 
     <div class="card mt-8 p-6">
-      <h3 class="text-lg font-bold mb-3 text-brand2">Fitur Segera Hadir 🚧</h3>
+      <h3 class="text-lg font-bold mb-3 text-brand2">Fitur Segera Hadir 🚀</h3>
       <ul class="text-slate-300 text-sm list-disc pl-6 text-left">
         <li>Chat realtime dengan teman</li>
         <li>Status online & notifikasi pesan</li>
@@ -113,7 +131,8 @@
     </div>
   </main>
 
-  <footer class="mt-10 text-xs text-slate-500">
+  <!-- Footer -->
+  <footer>
     &copy; 2025 Macha Chat — Dibuat dengan ❤️ oleh kamu
   </footer>
 
@@ -137,8 +156,9 @@
 
     const userEmail = document.getElementById("userEmail");
     const logoutBtn = document.getElementById("logoutBtn");
+    const chatBtn = document.getElementById("chatBtn");
 
-    // Proteksi halaman — redirect ke login kalau belum login
+    // 🔒 Proteksi halaman
     onAuthStateChanged(auth, (user) => {
       if (!user) {
         window.location.href = "./login.html";
@@ -147,10 +167,15 @@
       }
     });
 
-    // Tombol logout
+    // 🚪 Tombol keluar
     logoutBtn.addEventListener("click", async () => {
       await signOut(auth);
       window.location.href = "./login.html";
+    });
+
+    // 💬 Tombol ke chat
+    chatBtn.addEventListener("click", () => {
+      window.location.href = "./chat.html";
     });
   </script>
 </body>
