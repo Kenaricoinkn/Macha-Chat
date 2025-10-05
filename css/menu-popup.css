@@ -1,97 +1,132 @@
 /* ===========================
-   MENU POPUP (Fullscreen)
+   MENU POPUP STYLE
    =========================== */
-
 #menuPopup {
   position: fixed;
   inset: 0;
   background: rgba(8, 10, 25, 0.95);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(15px);
   color: #e2e8f0;
+  z-index: 100;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  padding: 2rem 1.2rem;
-  overflow-y: auto;
-  z-index: 100;
   opacity: 0;
+  transform: scale(0.95);
   pointer-events: none;
-  transition: opacity 0.4s ease;
+  transition: all 0.25s ease;
 }
 
-#menuPopup.show {
+#menuPopup.active {
   opacity: 1;
+  transform: scale(1);
   pointer-events: auto;
 }
 
-/* Tombol close */
+/* === Header === */
+.menu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.2rem;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.menu-header h2 {
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: #a5b4fc;
+}
 .menu-close {
-  align-self: flex-end;
-  font-size: 1.7rem;
+  color: #94a3b8;
   cursor: pointer;
-  color: #a0a0ff;
-  transition: transform 0.2s, color 0.2s;
+  transition: all .2s;
 }
 .menu-close:hover {
-  color: #c084fc;
+  color: #A07CFF;
   transform: rotate(90deg);
 }
 
-/* Judul */
-.menu-title {
-  font-weight: 800;
-  font-size: 1.5rem;
-  margin-bottom: 1.5rem;
-  background: linear-gradient(90deg, #7C9BFF, #A07CFF, #FF78C8);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: gradientFlow 5s ease infinite;
+/* === Profile Section === */
+.profile-box {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  padding: 1rem 1.3rem;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.profile-img {
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  object-fit: cover;
+  border: 2px solid rgba(124,155,255,0.4);
+}
+.profile-info h3 {
+  font-weight: 600;
+  font-size: 1rem;
+}
+.profile-info p {
+  font-size: .85rem;
+  color: #A07CFF;
+  text-decoration: underline;
 }
 
-/* Grid Menu */
+/* === Menu Grid === */
 .menu-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-  gap: 1rem;
-  width: 100%;
-  max-width: 600px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: .9rem;
+  padding: 1.3rem;
+  flex: 1;
+  overflow-y: auto;
 }
-
 .menu-item {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 0.8rem;
-  padding: 1rem;
-  text-align: center;
-  transition: all 0.25s ease;
-  box-shadow: 0 0 10px rgba(124, 155, 255, 0.1);
-}
-
-.menu-item:hover {
-  background: rgba(124, 155, 255, 0.1);
-  transform: translateY(-3px);
-  box-shadow: 0 0 18px rgba(124, 155, 255, 0.25);
-}
-
-/* Ikon SVG */
-.menu-item svg {
-  width: 34px;
-  height: 34px;
-  margin-bottom: 0.5rem;
-  fill: url(#grad);
-  filter: drop-shadow(0 0 6px rgba(124, 155, 255, 0.6));
-}
-
-/* Label */
-.menu-item span {
-  font-size: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: .4rem;
+  background: rgba(20,25,50,0.4);
+  border: 1px solid rgba(120,150,255,0.15);
+  border-radius: .8rem;
+  padding: .9rem;
   color: #cbd5e1;
+  transition: all .25s ease;
+  box-shadow: 0 0 8px rgba(124,155,255,0.15);
+}
+.menu-item svg {
+  width: 1.6rem;
+  height: 1.6rem;
+  stroke-width: 1.7;
+}
+.menu-item:hover {
+  color: #fff;
+  background: rgba(124,155,255,0.15);
+  box-shadow: 0 0 15px rgba(124,155,255,0.3);
+  transform: translateY(-2px);
 }
 
-/* Animasi gradient */
-@keyframes gradientFlow {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+/* === Footer === */
+.menu-footer {
+  border-top: 1px solid rgba(255,255,255,0.05);
+  padding: .8rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: .6rem;
+  font-size: .9rem;
+}
+.menu-footer button {
+  text-align: left;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  transition: all .2s;
+}
+.menu-footer button:hover {
+  color: #A07CFF;
+  transform: translateX(4px);
+}
+.menu-footer svg {
+  width: 1.2rem;
+  height: 1.2rem;
 }
