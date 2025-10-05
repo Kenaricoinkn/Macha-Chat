@@ -11,11 +11,7 @@
     tailwind.config = {
       theme: {
         extend: {
-          colors: {
-            brand: '#7C9BFF',
-            brand2: '#A07CFF',
-            dark: '#0b1020'
-          }
+          colors: { brand:'#7C9BFF', brand2:'#A07CFF', dark:'#0b1020' }
         }
       }
     }
@@ -26,102 +22,24 @@
 
   <style>
     body {
-      font-family: 'Inter', sans-serif;
-      background: radial-gradient(circle at 20% 20%, #131b3a, #0b1020 80%);
-      overflow-x: hidden;
-      opacity: 0;
-      transform: translateY(15px);
-      animation: fadeInUp 1s ease forwards;
+      font-family:'Inter',sans-serif;
+      background:radial-gradient(circle at 20% 20%,#131b3a,#0b1020 80%);
+      overflow-x:hidden;
+      opacity:0;
+      transform:translateY(10px);
+      animation:fadeInUp 1s ease forwards;
     }
-
     @keyframes fadeInUp {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      to {opacity:1;transform:translateY(0);}
     }
-
-    /* Card 3D Glow */
-    .card {
-      background: rgba(20, 25, 50, 0.55);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(120, 150, 255, 0.2);
-      box-shadow: 0 0 25px rgba(124, 155, 255, 0.2);
-      border-radius: 1rem;
-      transform-style: preserve-3d;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      animation: fadeInCard 1.2s ease forwards;
-      opacity: 0;
-    }
-
-    @keyframes fadeInCard {
-      0% {
-        opacity: 0;
-        transform: scale(0.9) rotateX(6deg);
-      }
-      100% {
-        opacity: 1;
-        transform: scale(1) rotateX(0);
-      }
-    }
-
-    .card:hover {
-      transform: rotateX(6deg) rotateY(-6deg) scale(1.02);
-      box-shadow: 0 0 40px rgba(124, 155, 255, 0.35);
-    }
-
-    /* Input Glow */
-    .input {
-      background-color: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: .5rem;
-      padding: .65rem .9rem;
-      width: 100%;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    .input:focus {
-      border-color: #7C9BFF;
-      box-shadow: 0 0 8px #7C9BFF55;
-      outline: none;
-    }
-
-    /* Button Glow */
-    .btn-primary {
-      background: linear-gradient(90deg, #7C9BFF, #A07CFF);
-      color: white;
-      font-weight: 600;
-      border-radius: .5rem;
-      padding: .65rem;
-      transition: transform 0.2s, box-shadow 0.2s;
-      box-shadow: 0 0 15px rgba(124,155,255,0.3);
-    }
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 0 25px rgba(160,124,255,0.4);
-    }
-
-    /* Toast */
-    #toast {
-      position: fixed;
-      bottom: 1.5rem;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(255, 60, 60, 0.95);
-      color: white;
-      padding: 0.75rem 1.2rem;
-      border-radius: 0.5rem;
-      font-size: 0.875rem;
-      box-shadow: 0 0 15px rgba(255, 60, 60, 0.4);
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.4s ease, transform 0.4s ease;
-      z-index: 100;
-    }
-    #toast.show {
-      opacity: 1;
-      pointer-events: auto;
-      transform: translateX(-50%) translateY(-6px);
-    }
+    .card{background:rgba(20,25,50,.55);backdrop-filter:blur(12px);border:1px solid rgba(120,150,255,.2);box-shadow:0 0 25px rgba(124,155,255,.2);border-radius:1rem;transition:.3s}
+    .card:hover{transform:rotateX(4deg) rotateY(-4deg) scale(1.02);box-shadow:0 0 40px rgba(124,155,255,.35);}
+    .input{background-color:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:.5rem;padding:.65rem .9rem;width:100%;transition:.2s;}
+    .input:focus{border-color:#7C9BFF;box-shadow:0 0 8px #7C9BFF55;outline:none;}
+    .btn-primary{background:linear-gradient(90deg,#7C9BFF,#A07CFF);color:white;font-weight:600;border-radius:.5rem;padding:.65rem;transition:.2s;box-shadow:0 0 15px rgba(124,155,255,.3);}
+    .btn-primary:hover{transform:translateY(-2px);box-shadow:0 0 25px rgba(160,124,255,.4);}
+    #toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:rgba(255,60,60,.95);color:#fff;padding:.75rem 1.2rem;border-radius:.5rem;font-size:.875rem;box-shadow:0 0 15px rgba(255,60,60,.4);opacity:0;pointer-events:none;transition:.4s;z-index:100;}
+    #toast.show{opacity:1;pointer-events:auto;transform:translateX(-50%) translateY(-6px);}
   </style>
 </head>
 
@@ -162,50 +80,74 @@
   <!-- Toast -->
   <div id="toast"></div>
 
-  <script>
-    // ✅ Toast system
+  <!-- Firebase Integrasi -->
+  <script type="module">
+    // Import Firebase
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+    import { getFirestore, setDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+    // ✅ Config milik kamu
+    const firebaseConfig = {
+      apiKey: "AIzaSyDIsTmg0_-rcz9tH3U-_sZuWk7sUOLgMSw",
+      authDomain: "macha-chat.firebaseapp.com",
+      projectId: "macha-chat",
+      storageBucket: "macha-chat.firebasestorage.app",
+      messagingSenderId: "576142384286",
+      appId: "1:576142384286:web:cfed000ac8a50b662a6f8f",
+      measurementId: "G-6ZMFHMZVEK"
+    };
+
+    // 🔥 Inisialisasi Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Elemen DOM
+    const emailEl = document.getElementById("email");
+    const passEl = document.getElementById("password");
+    const confirmEl = document.getElementById("confirm");
+    const btn = document.getElementById("btnRegister");
     const toast = document.getElementById("toast");
-    function showToast(msg, dur = 2500, color = 'rgba(255,60,60,0.95)') {
+
+    function showToast(msg, color = "rgba(255,60,60,0.95)") {
       toast.textContent = msg;
       toast.style.background = color;
       toast.classList.add("show");
-      setTimeout(() => toast.classList.remove("show"), dur);
+      setTimeout(() => toast.classList.remove("show"), 2500);
     }
 
-    // ✅ Register Logic
-    document.getElementById("btnRegister").addEventListener("click", () => {
-      const email = document.getElementById("email").value.trim();
-      const pass = document.getElementById("password").value.trim();
-      const confirm = document.getElementById("confirm").value.trim();
+    // 🧠 Event Register
+    btn.addEventListener("click", async () => {
+      const email = emailEl.value.trim();
+      const password = passEl.value.trim();
+      const confirm = confirmEl.value.trim();
 
-      if (!email || !pass || !confirm) {
-        showToast("⚠️ Harap isi semua kolom!");
-        return;
+      if (!email || !password || !confirm) return showToast("⚠️ Harap isi semua kolom!");
+      if (password !== confirm) return showToast("🔒 Kata sandi tidak cocok!");
+      if (password.length < 6) return showToast("⚠️ Minimal 6 karakter!");
+
+      try {
+        // ✅ Buat akun di Firebase Auth
+        const userCred = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCred.user;
+
+        // ✅ Simpan ke Firestore
+        await setDoc(doc(db, "users", user.uid), {
+          email: email,
+          createdAt: serverTimestamp(),
+          verified: false
+        });
+
+        showToast("✅ Akun berhasil dibuat!", "rgba(0,200,100,0.9)");
+        setTimeout(() => window.location.href = "./login.html", 1500);
+
+      } catch (err) {
+        console.error(err);
+        if (err.code === "auth/email-already-in-use") showToast("📧 Email sudah terdaftar!");
+        else if (err.code === "auth/invalid-email") showToast("❌ Format email tidak valid!");
+        else showToast("⚠️ Gagal membuat akun. Coba lagi.");
       }
-
-      if (!email.includes("@") || !email.includes(".")) {
-        showToast("📧 Masukkan email yang valid!");
-        return;
-      }
-
-      if (email === "demo@macha.app") {
-        showToast("📩 Email sudah terdaftar!");
-        return;
-      }
-
-      if (pass.length < 6) {
-        showToast("🔒 Kata sandi minimal 6 karakter!");
-        return;
-      }
-
-      if (pass !== confirm) {
-        showToast("❌ Kata sandi tidak cocok!");
-        return;
-      }
-
-      // Sukses
-      showToast("✅ Akun berhasil dibuat! Mengalihkan...", 2000, "rgba(0,200,100,0.9)");
-      setTimeout(() => window.location.href = "./login.html", 1500);
     });
   </script>
 </body>
