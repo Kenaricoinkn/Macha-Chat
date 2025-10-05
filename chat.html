@@ -1,22 +1,230 @@
-<!doctype html><html lang="id"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Pesan — MACHA CHAT</title>
-<script src="https://cdn.tailwindcss.com"></script>
-</head><body class="bg-slate-900 text-slate-100">
-<header class="p-3 border-b border-white/10"><a href="./dashboard.html">← Kembali</a></header>
-<main class="max-w-[980px] mx-auto p-4">
-  <div class="mb-3">
-    <input id="peerEmail" placeholder="Email teman untuk chat"
-      class="w-full max-w-md rounded-xl bg-slate-800/70 border border-white/10 px-3 py-2 outline-none">
-    <button id="startChat" class="mt-2 px-3 py-2 rounded-xl bg-brand text-white">Mulai/Join Chat</button>
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>MACHA CHAT — Realtime Chat</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: '#7C9BFF',
+            brand2: '#A07CFF',
+            dark: '#0b1020'
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: radial-gradient(circle at 20% 20%, #131b3a, #0b1020 80%);
+      color: #f8fafc;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      animation: fadeIn 0.8s ease;
+    }
+    @keyframes fadeIn { from {opacity:0; transform:translateY(10px);} to {opacity:1; transform:none;} }
+
+    .chat-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem;
+      scrollbar-width: thin;
+      scrollbar-color: #7C9BFF #1e1e2f;
+    }
+    .chat-container::-webkit-scrollbar {
+      width: 6px;
+    }
+    .chat-container::-webkit-scrollbar-thumb {
+      background: #7C9BFF;
+      border-radius: 10px;
+    }
+
+    .message {
+      padding: .75rem 1rem;
+      margin-bottom: .6rem;
+      max-width: 80%;
+      word-break: break-word;
+      animation: popUp .25s ease;
+    }
+
+    .message.sent {
+      background: linear-gradient(90deg, #7C9BFF, #A07CFF);
+      color: white;
+      margin-left: auto;
+      border-radius: 1rem 1rem 0 1rem;
+      box-shadow: 0 0 15px rgba(124,155,255,0.3);
+    }
+
+    .message.received {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 1rem 1rem 1rem 0;
+      box-shadow: 0 0 10px rgba(255,255,255,0.05);
+    }
+
+    @keyframes popUp {
+      from { transform: translateY(5px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .input-area {
+      display: flex;
+      align-items: center;
+      background: rgba(20,25,50,0.55);
+      border-top: 1px solid rgba(124,155,255,0.2);
+      backdrop-filter: blur(12px);
+      padding: 0.6rem;
+    }
+    .input-area input {
+      flex: 1;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: .5rem;
+      padding: .6rem .9rem;
+      color: white;
+      outline: none;
+    }
+    .input-area button {
+      margin-left: .5rem;
+      background: linear-gradient(90deg, #7C9BFF, #A07CFF);
+      color: white;
+      font-weight: 600;
+      border-radius: .5rem;
+      padding: .6rem 1rem;
+      transition: transform .2s, box-shadow .2s;
+      box-shadow: 0 0 15px rgba(124,155,255,0.3);
+    }
+    .input-area button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 0 25px rgba(160,124,255,0.4);
+    }
+
+    header {
+      text-align: center;
+      padding: 1rem;
+      background: rgba(20,25,50,0.55);
+      border-bottom: 1px solid rgba(124,155,255,0.25);
+      box-shadow: 0 0 15px rgba(124,155,255,0.1);
+      position: sticky;
+      top: 0;
+      backdrop-filter: blur(10px);
+    }
+    header h1 {
+      background: linear-gradient(90deg, #7C9BFF, #A07CFF, #FF78C8);
+      background-size: 300% 300%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradientFlow 6s ease infinite;
+    }
+    @keyframes gradientFlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1 class="text-3xl font-extrabold tracking-widest drop-shadow-[0_0_10px_rgba(124,155,255,0.4)]">
+      MACHA CHAT 💬
+    </h1>
+    <p class="text-sm text-slate-400">Terhubung realtime dengan teman</p>
+  </header>
+
+  <main id="chatBox" class="chat-container"></main>
+
+  <div class="input-area">
+    <input id="msgInput" type="text" placeholder="Ketik pesan..." />
+    <button id="sendBtn">Kirim</button>
   </div>
-  <section id="room" class="hidden">
-    <div id="log" class="h-[55vh] overflow-y-auto rounded-2xl border border-white/10 bg-slate-800/60 p-3 space-y-2"></div>
-    <div class="mt-2 flex gap-2">
-      <input id="msg" placeholder="Tulis pesan…" class="flex-1 rounded-xl bg-slate-800/70 border border-white/10 px-3 py-2">
-      <button id="send" class="px-4 rounded-xl bg-brand text-white">Kirim</button>
-    </div>
-  </section>
-</main>
-<script type="module" src="./js/chat.js"></script>
-</body></html>
+
+  <!-- Firebase Realtime Chat -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDIsTmg0_-rcz9tH3U-_sZuWk7sUOLgMSw",
+      authDomain: "macha-chat.firebaseapp.com",
+      projectId: "macha-chat",
+      storageBucket: "macha-chat.firebasestorage.app",
+      messagingSenderId: "576142384286",
+      appId: "1:576142384286:web:cfed000ac8a50b662a6f8f",
+      measurementId: "G-6ZMFHMZVEK"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    const chatBox = document.getElementById("chatBox");
+    const msgInput = document.getElementById("msgInput");
+    const sendBtn = document.getElementById("sendBtn");
+
+    let currentUser = null;
+
+    // 🚨 Proteksi: hanya user login bisa masuk
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        window.location.href = "./login.html";
+      } else {
+        currentUser = user;
+        loadMessages();
+      }
+    });
+
+    // 📨 Kirim pesan
+    sendBtn.addEventListener("click", async () => {
+      const text = msgInput.value.trim();
+      if (!text || !currentUser) return;
+
+      await addDoc(collection(db, "messages"), {
+        text,
+        email: currentUser.email,
+        createdAt: serverTimestamp()
+      });
+      msgInput.value = "";
+    });
+
+    // 🕒 Load pesan realtime
+    function loadMessages() {
+      const q = query(collection(db, "messages"), orderBy("createdAt", "asc"));
+      onSnapshot(q, (snapshot) => {
+        chatBox.innerHTML = "";
+        snapshot.forEach((doc) => {
+          const data = doc.data();
+          const msgEl = document.createElement("div");
+          msgEl.classList.add("message");
+          msgEl.classList.add(data.email === currentUser.email ? "sent" : "received");
+          msgEl.innerHTML = `
+            <small class="block text-xs opacity-70 mb-1">${data.email}</small>
+            ${data.text}
+          `;
+          chatBox.appendChild(msgEl);
+        });
+        chatBox.scrollTop = chatBox.scrollHeight;
+      });
+    }
+
+    // Tekan Enter untuk kirim
+    msgInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") sendBtn.click();
+    });
+  </script>
+</body>
+</html>
