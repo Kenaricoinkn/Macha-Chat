@@ -130,3 +130,25 @@
   width: 1.2rem;
   height: 1.2rem;
 }
+/* Tombol kembali (panah kiri) */
+.menu-back {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .25s ease;
+}
+.menu-back:hover {
+  color: #A07CFF;
+  transform: translateX(-3px);
+}
+.menu-header {
+  gap: .5rem;
+}
+.menu-header h2 {
+  flex: 1;
+  text-align: left;
+}
