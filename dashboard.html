@@ -28,107 +28,213 @@
     body {
       font-family: 'Inter', sans-serif;
       background: radial-gradient(circle at 20% 20%, #131b3a, #0b1020 80%);
-      min-height: 100vh;
-      overflow-x: hidden;
       color: #f1f5f9;
-      opacity: 0;
-      transform: translateY(10px);
-      animation: fadeInUp 1s ease forwards;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      transition: background 1s ease;
     }
 
-    @keyframes fadeInUp {
-      to { opacity: 1; transform: translateY(0); }
+    /* Top Navbar */
+    .nav-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: .75rem 1rem;
+      background: rgba(10, 15, 35, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: 0 0 20px rgba(124,155,255,.15);
     }
 
-    header {
-      text-align: center;
-      margin-top: 2rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .neon-title {
-      background: linear-gradient(90deg, #7C9BFF, #A07CFF, #FF78C8);
-      background-size: 300% 300%;
+    .logo {
+      font-weight: 900;
+      font-size: 1.4rem;
+      background: linear-gradient(90deg, #7C9BFF, #A07CFF);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      animation: gradientFlow 5s ease infinite;
+      letter-spacing: 1px;
     }
 
-    @keyframes gradientFlow {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
+    .nav-icons {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
     }
 
+    .nav-icons button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #cbd5e1;
+      font-size: 1.35rem;
+      position: relative;
+      transition: all .3s;
+    }
+
+    .nav-icons button:hover {
+      color: #A07CFF;
+      transform: scale(1.15);
+    }
+
+    .nav-icons .active {
+      color: #A07CFF;
+      text-shadow: 0 0 8px #A07CFF88;
+      transform: scale(1.15);
+    }
+
+    .badge {
+      position: absolute;
+      top: -4px;
+      right: -6px;
+      background: #ef4444;
+      color: white;
+      font-size: .65rem;
+      font-weight: 600;
+      border-radius: 999px;
+      padding: 0 4px;
+      box-shadow: 0 0 6px #ef444499;
+    }
+
+    /* Content cards */
     .card {
       background: rgba(20, 25, 50, 0.55);
       backdrop-filter: blur(12px);
       border: 1px solid rgba(120, 150, 255, 0.2);
       border-radius: 1rem;
       box-shadow: 0 0 25px rgba(124, 155, 255, 0.2);
-      transform-style: preserve-3d;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 0.7s ease forwards;
+    }
+
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .card:hover {
-      transform: rotateX(4deg) rotateY(-3deg) scale(1.02);
-      box-shadow: 0 0 40px rgba(124, 155, 255, 0.35);
+      transform: translateY(-4px);
+      box-shadow: 0 0 35px rgba(124,155,255,0.3);
     }
 
+    /* Buttons */
     .btn-primary {
       background: linear-gradient(90deg, #7C9BFF, #A07CFF);
       color: white;
       font-weight: 600;
-      border-radius: 0.5rem;
-      padding: 0.65rem 1rem;
-      transition: transform 0.2s, box-shadow 0.2s;
-      box-shadow: 0 0 15px rgba(124, 155, 255, 0.3);
+      border-radius: .5rem;
+      padding: .65rem 1rem;
+      box-shadow: 0 0 12px rgba(124,155,255,.3);
+      transition: all .2s;
     }
 
     .btn-primary:hover {
       transform: translateY(-2px);
-      box-shadow: 0 0 25px rgba(160, 124, 255, 0.4);
+      box-shadow: 0 0 25px rgba(160,124,255,0.4);
+    }
+
+    /* Tab animations */
+    .tab-content {
+      animation: fadeIn 0.6s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Shake for notification */
+    .shake {
+      animation: shake 0.4s ease;
+    }
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      25% { transform: translateX(-3px); }
+      50% { transform: translateX(3px); }
+      75% { transform: translateX(-3px); }
     }
 
     footer {
-      margin-top: 3rem;
-      text-align: center;
-      font-size: 0.75rem;
+      font-size: .75rem;
       color: #94a3b8;
+      text-align: center;
+      margin-top: auto;
+      padding: 1rem;
     }
   </style>
 </head>
 
-<body class="flex flex-col justify-center items-center text-center">
+<body>
 
-  <!-- Header -->
-  <header>
-    <h1 class="text-4xl sm:text-5xl font-extrabold tracking-widest neon-title drop-shadow-[0_0_12px_rgba(124,155,255,0.4)]">
-      MACHA CHAT
-    </h1>
-    <p class="mt-2 text-slate-400 text-sm">Selamat datang di dashboard ✨</p>
-  </header>
+  <!-- 🔝 NAVBAR -->
+  <div class="nav-top">
+    <div class="logo">MACHA</div>
+    <div class="nav-icons">
+      <button class="tab-btn active" data-tab="home">🏠</button>
+      <button class="tab-btn" data-tab="friends">👥</button>
+      <button class="tab-btn" data-tab="chat">💬</button>
+      <button class="tab-btn" data-tab="notif" id="notifBtn">
+        🔔 <span class="badge">5</span>
+      </button>
+      <button class="tab-btn" data-tab="store">🏪</button>
+    </div>
+  </div>
 
-  <!-- Main content -->
-  <main class="w-full max-w-xl px-6">
-    <div class="card p-8">
-      <h2 class="text-xl font-semibold text-brand mb-2">Akun Aktif</h2>
-      <p class="text-slate-300 mb-6">Email: <span id="userEmail">Memuat...</span></p>
+  <!-- 🌟 MAIN CONTENT -->
+  <main class="flex-1 px-6 py-8 text-center">
 
-      <div class="flex flex-col gap-3">
-        <button id="chatBtn" class="btn-primary w-full">💬 Mulai Chat</button>
-        <button id="logoutBtn" class="btn-primary w-full bg-gradient-to-r from-pink-500 via-red-400 to-orange-400">Keluar</button>
+    <!-- Home -->
+    <section id="home" class="tab-content">
+      <h1 class="text-3xl font-bold bg-gradient-to-r from-brand via-brand2 to-pink-500 text-transparent bg-clip-text mb-4 animate-pulse">
+        Selamat Datang di MACHA CHAT 💫
+      </h1>
+      <p class="text-slate-300">Senang melihatmu kembali, <span id="userEmail">Memuat...</span> 👋</p>
+
+      <div class="card mt-8 p-6 max-w-md mx-auto">
+        <h3 class="text-lg font-semibold text-brand mb-3">Mulai Chat Sekarang 💬</h3>
+        <button id="chatBtn" class="btn-primary w-full">Buka Chat</button>
       </div>
-    </div>
 
-    <div class="card mt-8 p-6">
-      <h3 class="text-lg font-bold mb-3 text-brand2">Fitur Segera Hadir 🚀</h3>
-      <ul class="text-slate-300 text-sm list-disc pl-6 text-left">
-        <li>Chat realtime dengan teman</li>
-        <li>Status online & notifikasi pesan</li>
-        <li>Mode dark neon baru</li>
-      </ul>
-    </div>
+      <button id="logoutBtn" class="btn-primary mt-8 bg-gradient-to-r from-pink-500 via-red-400 to-orange-400">Keluar</button>
+    </section>
+
+    <!-- Friends -->
+    <section id="friends" class="tab-content hidden">
+      <div class="card p-8 max-w-md mx-auto">
+        <h2 class="text-lg font-semibold text-brand2 mb-2">👥 Teman</h2>
+        <p class="text-slate-300">Fitur teman akan segera hadir 🚧</p>
+      </div>
+    </section>
+
+    <!-- Chat -->
+    <section id="chat" class="tab-content hidden">
+      <div class="card p-8 max-w-md mx-auto">
+        <h2 class="text-lg font-semibold text-brand mb-2">💬 Chat</h2>
+        <p class="text-slate-300">Chat realtime akan hadir di versi berikut 🔥</p>
+      </div>
+    </section>
+
+    <!-- Notif -->
+    <section id="notif" class="tab-content hidden">
+      <div class="card p-8 max-w-md mx-auto">
+        <h2 class="text-lg font-semibold text-brand2 mb-2">🔔 Notifikasi</h2>
+        <p class="text-slate-300">Tidak ada notifikasi baru untuk sekarang ✨</p>
+      </div>
+    </section>
+
+    <!-- Store -->
+    <section id="store" class="tab-content hidden">
+      <div class="card p-8 max-w-md mx-auto">
+        <h2 class="text-lg font-semibold text-brand2 mb-2">🏪 Store / Menu</h2>
+        <p class="text-slate-300">Coming Soon 🚧</p>
+      </div>
+    </section>
+
   </main>
 
   <!-- Footer -->
@@ -136,7 +242,7 @@
     &copy; 2025 Macha Chat — Dibuat dengan ❤️ oleh kamu
   </footer>
 
-  <!-- Firebase Auth -->
+  <!-- Firebase Auth + Script -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
@@ -158,24 +264,37 @@
     const logoutBtn = document.getElementById("logoutBtn");
     const chatBtn = document.getElementById("chatBtn");
 
-    // 🔒 Proteksi halaman
     onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        window.location.href = "./login.html";
-      } else {
-        userEmail.textContent = user.email;
-      }
+      if (!user) window.location.href = "./login.html";
+      else userEmail.textContent = user.email;
     });
 
-    // 🚪 Tombol keluar
     logoutBtn.addEventListener("click", async () => {
       await signOut(auth);
       window.location.href = "./login.html";
     });
 
-    // 💬 Tombol ke chat
     chatBtn.addEventListener("click", () => {
       window.location.href = "./chat.html";
+    });
+
+    // Navigasi antar tab
+    const tabs = document.querySelectorAll(".tab-btn");
+    const contents = document.querySelectorAll(".tab-content");
+    tabs.forEach(btn => {
+      btn.addEventListener("click", () => {
+        tabs.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        contents.forEach(c => c.classList.add("hidden"));
+        document.getElementById(btn.dataset.tab).classList.remove("hidden");
+      });
+    });
+
+    // Animasi notifikasi shake
+    const notifBtn = document.getElementById("notifBtn");
+    notifBtn.addEventListener("click", () => {
+      notifBtn.classList.add("shake");
+      setTimeout(() => notifBtn.classList.remove("shake"), 400);
     });
   </script>
 </body>
