@@ -1,154 +1,153 @@
-/* ===========================
-   MENU POPUP STYLE
-   =========================== */
+/* =======================
+   MENU POPUP STYLE (v3)
+======================= */
+
 #menuPopup {
   position: fixed;
   inset: 0;
-  background: rgba(8, 10, 25, 0.95);
-  backdrop-filter: blur(15px);
-  color: #e2e8f0;
   z-index: 100;
-  display: flex;
-  flex-direction: column;
-  opacity: 0;
-  transform: scale(0.95);
-  pointer-events: none;
-  transition: all 0.25s ease;
+  display: none;
 }
-
 #menuPopup.active {
-  opacity: 1;
-  transform: scale(1);
-  pointer-events: auto;
+  display: block;
 }
 
-/* === Header === */
+.menu-overlay {
+  width: 100%;
+  height: 100%;
+  background: rgba(6, 10, 25, 0.85);
+  backdrop-filter: blur(12px);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  animation: fadeSlide 0.4s ease forwards;
+}
+
+.menu-container {
+  width: 100%;
+  max-width: 480px;
+  background: rgba(12, 18, 40, 0.9);
+  border-left: 1px solid rgba(124,155,255,0.2);
+  height: 100%;
+  overflow-y: auto;
+  padding: 1.2rem;
+  box-shadow: 0 0 25px rgba(124,155,255,0.2);
+}
+
+/* Animasi muncul */
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateX(50px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* Header */
 .menu-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 1.2rem;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
+  color: #e0e7ff;
+  font-weight: 600;
+  margin-bottom: 1rem;
 }
 .menu-header h2 {
-  font-weight: 700;
-  font-size: 1.2rem;
-  color: #a5b4fc;
+  font-size: 1.25rem;
+  color: #aab8ff;
+  background: linear-gradient(90deg, #7C9BFF, #A07CFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
-.menu-close {
-  color: #94a3b8;
-  cursor: pointer;
-  transition: all .2s;
-}
-.menu-close:hover {
-  color: #A07CFF;
-  transform: rotate(90deg);
-}
-
-/* === Profile Section === */
-.profile-box {
-  display: flex;
-  align-items: center;
-  gap: .75rem;
-  padding: 1rem 1.3rem;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-}
-.profile-img {
-  width: 48px;
-  height: 48px;
-  border-radius: 999px;
-  object-fit: cover;
-  border: 2px solid rgba(124,155,255,0.4);
-}
-.profile-info h3 {
-  font-weight: 600;
-  font-size: 1rem;
-}
-.profile-info p {
-  font-size: .85rem;
-  color: #A07CFF;
-  text-decoration: underline;
-}
-
-/* === Menu Grid === */
-.menu-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: .9rem;
-  padding: 1.3rem;
-  flex: 1;
-  overflow-y: auto;
-}
-.menu-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: .4rem;
-  background: rgba(20,25,50,0.4);
-  border: 1px solid rgba(120,150,255,0.15);
-  border-radius: .8rem;
-  padding: .9rem;
-  color: #cbd5e1;
-  transition: all .25s ease;
-  box-shadow: 0 0 8px rgba(124,155,255,0.15);
-}
-.menu-item svg {
-  width: 1.6rem;
-  height: 1.6rem;
-  stroke-width: 1.7;
-}
-.menu-item:hover {
-  color: #fff;
-  background: rgba(124,155,255,0.15);
-  box-shadow: 0 0 15px rgba(124,155,255,0.3);
-  transform: translateY(-2px);
-}
-
-/* === Footer === */
-.menu-footer {
-  border-top: 1px solid rgba(255,255,255,0.05);
-  padding: .8rem 1.2rem;
-  display: flex;
-  flex-direction: column;
-  gap: .6rem;
-  font-size: .9rem;
-}
-.menu-footer button {
-  text-align: left;
-  color: #94a3b8;
-  display: flex;
-  align-items: center;
-  gap: .6rem;
-  transition: all .2s;
-}
-.menu-footer button:hover {
-  color: #A07CFF;
-  transform: translateX(4px);
-}
-.menu-footer svg {
-  width: 1.2rem;
-  height: 1.2rem;
-}
-/* Tombol kembali (panah kiri) */
-.menu-back {
-  background: none;
+.menu-back, .menu-close {
+  background: transparent;
   border: none;
   color: #94a3b8;
   cursor: pointer;
+  transition: all .25s;
+}
+.menu-back svg, .menu-close svg {
+  width: 1.8rem;
+  height: 1.8rem;
+}
+.menu-back:hover, .menu-close:hover {
+  color: #A07CFF;
+  transform: scale(1.1);
+}
+
+/* Profil */
+.profile-box {
   display: flex;
   align-items: center;
-  justify-content: center;
-  transition: all .25s ease;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding-bottom: 1rem;
 }
-.menu-back:hover {
+.profile-img {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  border: 2px solid #7C9BFF;
+}
+.profile-info h3 {
+  font-weight: 600;
+}
+.profile-link {
+  font-size: 0.9rem;
+  color: #a07cff;
+  text-decoration: underline;
+}
+
+/* Grid */
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.menu-item {
+  background: rgba(20,25,50,0.5);
+  border: 1px solid rgba(120,150,255,0.2);
+  border-radius: .75rem;
+  padding: 1.25rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #cbd5e1;
+  transition: all .3s ease;
+}
+.menu-item svg {
+  width: 1.8rem;
+  height: 1.8rem;
+  margin-bottom: .4rem;
+}
+.menu-item:hover {
   color: #A07CFF;
-  transform: translateX(-3px);
+  box-shadow: 0 0 15px rgba(160,124,255,0.25);
+  transform: translateY(-4px);
 }
-.menu-header {
-  gap: .5rem;
+
+/* Footer */
+.menu-footer {
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: .6rem;
 }
-.menu-header h2 {
-  flex: 1;
+.menu-footer button {
+  background: transparent;
+  border: none;
+  color: #cbd5e1;
   text-align: left;
+  font-size: .95rem;
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  transition: color .2s;
+}
+.menu-footer button:hover {
+  color: #A07CFF;
+}
+.menu-footer svg {
+  width: 1.3rem;
+  height: 1.3rem;
 }
