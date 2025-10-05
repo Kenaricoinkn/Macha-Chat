@@ -1,92 +1,78 @@
 // /js/splash.js
-// Splash + typing sinkron; judul MACHA & Aepuloh gradient warna-warni (kedip)
+// Splash dengan teks "MACHA CHAT" animasi mengetik + warna-warni
 export function initSplash(options = {}) {
-  const duration = Number(options.duration ?? 10000); // total tampil splash (ms)
-  const typeText = String(options.text ?? 'Created macha by Gojo Satoru');
-
-  // timing
-  const leadIn   = 400;   // jeda sebelum mulai mengetik
-  const fadeOut  = 750;   // durasi fade-out CSS
-  const tailHold = 600;   // diam sejenak setelah mengetik selesai
-
-  const typingWindow = Math.max(800, duration - (leadIn + fadeOut + tailHold));
-  const typeSpeed    = Math.max(15, Math.floor(typingWindow / Math.max(1, typeText.length)));
+  const duration = Number(options.duration ?? 6000); // total tampil splash (ms)
+  const fadeOut  = 800; // durasi fade-out CSS
+  const text     = String(options.text ?? 'MACHA CHAT');
 
   const splash = document.createElement('div');
   splash.id = 'splash';
   splash.className =
-    'fixed inset-0 z-[100] grid place-items-center bg-gradient-to-b from-slate-950 via-slate-900 to-slate-800 text-slate-100 transition-opacity duration-700';
+    'fixed inset-0 z-[100] grid place-items-center bg-slate-950 text-white transition-opacity duration-700';
 
   splash.innerHTML = `
-    <div class="text-center px-6">
-      <div class="text-4xl sm:text-6xl font-black leading-tight tracking-wide">
-        <span class="animate-gradient bg-gradient-to-r from-pink-500 via-yellow-400 to-blue-500 bg-clip-text text-transparent">
-          MACHA
-        </span>
-        <span class="font-semibold">from</span>
-        <span class="animate-gradient-2 bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent">
-          Aepuloh
-        </span>
-      </div>
-
-      <div class="mt-3 text-base sm:text-lg text-slate-300 min-h-[1.8rem]">
-        <span id="typing"></span>
-        <span id="caret" class="inline-block w-3 h-5 align-middle bg-slate-200/80 ml-1"></span>
-      </div>
-
-      <div class="mt-8 flex items-center justify-center gap-1 text-slate-400">
-        <div class="w-2 h-2 rounded-full bg-slate-500 animate-bounce [animation-delay:-200ms]"></div>
-        <div class="w-2 h-2 rounded-full bg-slate-500 animate-bounce [animation-delay:-100ms]"></div>
-        <div class="w-2 h-2 rounded-full bg-slate-500 animate-bounce"></div>
-      </div>
+    <div class="text-center select-none">
+      <h1 id="typingText" class="text-5xl sm:text-7xl font-extrabold tracking-widest">
+        <span class="animate-gradient-text"></span><span id="caret" class="inline-block w-[6px] h-[2rem] bg-white/80 align-bottom ml-1"></span>
+      </h1>
     </div>
   `;
   document.body.appendChild(splash);
 
-  // Animasi gradien & kedip
+  // Tambah gaya animasi gradasi dan caret
   const style = document.createElement('style');
   style.innerHTML = `
-    .animate-gradient {
-      background-size: 300% 300%;
-      animation: gradientMove 5s ease infinite, blinkSoft 2.2s ease-in-out infinite;
+    .animate-gradient-text {
+      background-image: linear-gradient(
+        -45deg,
+        #ff0080,
+        #ff8c00,
+        #40e0d0,
+        #8a2be2,
+        #ff0080
+      );
+      background-size: 400% 400%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradientFlow 5s ease infinite, glowPulse 2s ease-in-out infinite;
     }
-    .animate-gradient-2 {
-      background-size: 300% 300%;
-      animation: gradientMove2 5.5s ease infinite, blinkSoft 2.2s ease-in-out infinite;
-    }
-    @keyframes gradientMove {
+    @keyframes gradientFlow {
       0% { background-position: 0% 50%; }
       50% { background-position: 100% 50%; }
       100% { background-position: 0% 50%; }
     }
-    @keyframes gradientMove2 {
-      0% { background-position: 100% 50%; }
-      50% { background-position: 0% 50%; }
-      100% { background-position: 100% 50%; }
+    @keyframes glowPulse {
+      0%,100% { text-shadow: 0 0 10px rgba(255,255,255,0.5); }
+      50% { text-shadow: 0 0 20px rgba(255,255,255,1); }
     }
-    @keyframes blinkSoft {
-      0%,100% { opacity: 1; }
-      50%     { opacity: .78; }
+    @keyframes caretBlink {
+      0%,49%{opacity:1}
+      50%,100%{opacity:0}
     }
-    #caret { animation: caretBlink 800ms steps(1,end) infinite; }
-    @keyframes caretBlink { 0%,49%{opacity:1} 50%,100%{opacity:0} }
+    #caret {
+      animation: caretBlink 800ms steps(1,end) infinite;
+    }
   `;
   document.head.appendChild(style);
 
-  // efek mengetik (sinkron dengan duration)
-  const el = splash.querySelector('#typing');
+  // Efek mengetik
+  const textTarget = splash.querySelector('.animate-gradient-text');
   const caret = splash.querySelector('#caret');
+  const typeSpeed = Math.max(80, Math.floor(duration / Math.max(1, text.length * 3)));
 
+  let i = 0;
   setTimeout(() => {
-    let i = 0;
     (function type() {
-      el.textContent = typeText.slice(0, i++);
-      if (i <= typeText.length) setTimeout(type, typeSpeed);
-      else setTimeout(() => { caret.style.opacity = '0'; }, tailHold);
+      textTarget.textContent = text.slice(0, i++);
+      if (i <= text.length) setTimeout(type, typeSpeed);
+      else setTimeout(() => caret.style.opacity = '0', 600);
     })();
-  }, leadIn);
+  }, 300);
 
-  // fungsi global hide (kalau mau tutup manual)
+  // Otomatis hilang setelah durasi total
+  setTimeout(() => hideSplash(), duration);
+
+  // Fungsi global untuk menutup manual
   window.hideSplash = function () {
     splash.classList.add('opacity-0', 'pointer-events-none');
     setTimeout(() => splash.remove(), fadeOut);
