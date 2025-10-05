@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="id">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>MACHA CHAT — Dashboard</title>
 
   <!-- Tailwind -->
@@ -20,153 +20,141 @@
   <!-- Font -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
+  <!-- Heroicons -->
+  <script src="https://unpkg.com/heroicons@2.0.18/24/outline/esm/index.js" type="module"></script>
+
   <style>
     body {
-      font-family: 'Inter', sans-serif;
-      background: radial-gradient(circle at 20% 20%, #141933, #0b1020 80%);
+      font-family:'Inter',sans-serif;
+      background: radial-gradient(circle at 20% 20%, #131b3a, #0b1020 80%);
       color: #f1f5f9;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       overflow-x: hidden;
-      transition: background 1s ease;
+      animation: fadeIn 1s ease forwards;
     }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
 
-    /* NAV TOP */
-    .nav-top {
-      @apply flex justify-between items-center px-4 py-3 bg-[#0b1020]/80 backdrop-blur-md border-b border-white/5 sticky top-0 z-50;
-      box-shadow: 0 0 12px rgba(124,155,255,0.1);
+    /* 🔝 Top Navbar */
+    .topbar {
+      display:flex;justify-content:space-between;align-items:center;
+      padding:.75rem 1rem;
+      background:rgba(10,15,35,0.85);backdrop-filter:blur(10px);
+      border-bottom:1px solid rgba(255,255,255,0.05);
+      position:sticky;top:0;z-index:50;
+      box-shadow:0 0 20px rgba(124,155,255,.1);
     }
     .logo {
-      font-weight: 900;
-      font-size: 1.4rem;
-      background: linear-gradient(90deg,#7C9BFF,#A07CFF,#FF7BDA);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      letter-spacing: 1px;
+      font-weight:900;font-size:1.4rem;letter-spacing:1px;
+      background:linear-gradient(90deg,#7C9BFF,#A07CFF);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
     }
-    .nav-right button {
-      color: #cbd5e1;
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 1.4rem;
-      transition: all .3s;
+    .top-icons {
+      display:flex;gap:.8rem;align-items:center;
     }
-    .nav-right button:hover {
-      color: #A07CFF;
-      transform: scale(1.1);
+    .icon-btn {
+      width:1.7rem;height:1.7rem;display:flex;align-items:center;justify-content:center;
+      color:#cbd5e1;transition:all .25s ease;border-radius:50%;
     }
+    .icon-btn:hover {color:#A07CFF;text-shadow:0 0 6px #A07CFF88;transform:translateY(-2px) scale(1.1);}
 
-    /* TAB ICON BAR */
-    .nav-tabs {
-      @apply flex justify-around items-center px-3 py-2 bg-[#10152a]/70 backdrop-blur-md border-b border-white/5;
-      box-shadow: inset 0 -1px 0 rgba(255,255,255,0.05);
+    /* 📂 Tabs */
+    .tabs {
+      display:flex;justify-content:space-around;align-items:center;
+      padding:.6rem 1rem;border-bottom:1px solid rgba(255,255,255,0.05);
+      background:rgba(15,20,45,0.6);backdrop-filter:blur(12px);
     }
     .tab-btn {
-      @apply flex flex-col items-center relative text-slate-400 transition;
+      display:flex;flex-direction:column;align-items:center;
+      color:#94a3b8;font-size:.8rem;gap:.2rem;transition:all .25s ease;
     }
-    .tab-btn svg {
-      width: 24px;
-      height: 24px;
-      stroke-width: 1.8;
-      filter: drop-shadow(0 0 4px rgba(160,124,255,0.2));
-    }
-    .tab-btn.active svg {
-      stroke: #A07CFF;
-      filter: drop-shadow(0 0 6px rgba(160,124,255,0.5));
-    }
-    .tab-btn span {
-      font-size: 0.7rem;
-      margin-top: 0.2rem;
-    }
-    .badge {
-      @apply absolute top-0 right-1 bg-red-500 text-white text-[10px] font-semibold rounded-full px-1 shadow;
+    .tab-btn svg {width:1.6rem;height:1.6rem;stroke-width:1.7;}
+    .tab-btn.active {color:#A07CFF;text-shadow:0 0 6px #A07CFF88;}
+    .tab-btn:hover {color:#7C9BFF;transform:translateY(-2px);}
+    .tab-active-line {
+      height:2px;background:linear-gradient(90deg,#7C9BFF,#A07CFF);
+      border-radius:999px;transition:all .4s ease;width:16%;
+      position:absolute;bottom:0;left:0;
     }
 
-    /* CARDS */
+    /* 🌟 Cards */
     .card {
-      background: rgba(20,25,50,0.55);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(120,150,255,0.2);
-      border-radius: 1rem;
-      box-shadow: 0 0 20px rgba(124,155,255,0.15);
-      transition: transform .3s ease, box-shadow .3s ease;
-      animation: fadeIn .7s ease;
+      background:rgba(20,25,50,0.55);backdrop-filter:blur(12px);
+      border:1px solid rgba(120,150,255,0.2);border-radius:1rem;
+      box-shadow:0 0 25px rgba(124,155,255,0.15);
+      transition:transform .3s ease,box-shadow .3s ease;
+      animation:fadeUp .6s ease forwards;opacity:0;transform:translateY(20px);
     }
-    .card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 0 30px rgba(124,155,255,0.25);
-    }
+    @keyframes fadeUp {to{opacity:1;transform:translateY(0)}}
+    .card:hover {box-shadow:0 0 30px rgba(124,155,255,0.25)}
 
-    @keyframes fadeIn {
-      from {opacity: 0; transform: translateY(8px);}
-      to {opacity: 1; transform: translateY(0);}
+    .btn-primary {
+      background:linear-gradient(90deg,#7C9BFF,#A07CFF);
+      color:white;font-weight:600;border-radius:.5rem;
+      padding:.65rem 1rem;box-shadow:0 0 12px rgba(124,155,255,.3);
+      transition:all .2s ease;
     }
+    .btn-primary:hover {transform:translateY(-2px);box-shadow:0 0 25px rgba(160,124,255,0.4)}
 
     footer {
-      font-size: .75rem;
-      color: #94a3b8;
-      text-align: center;
-      margin-top: auto;
-      padding: 1.2rem;
+      text-align:center;font-size:.75rem;color:#94a3b8;
+      margin-top:auto;padding:1rem;
     }
   </style>
 </head>
 
 <body>
 
-  <!-- 🔝 NAV TOP -->
-  <div class="nav-top">
+  <!-- 🔝 Top Navbar -->
+  <div class="topbar">
     <div class="logo">MACHA</div>
-    <div class="nav-right flex gap-3">
-      <button title="Tambah">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 4v16m8-8H4"/></svg>
+    <div class="top-icons">
+      <button class="icon-btn" title="Tambah">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
       </button>
-      <button title="Cari">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M10 18a8 8 0 100-16 8 8 0 000 16z"/></svg>
+      <button class="icon-btn" title="Cari">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 21-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15z"/></svg>
       </button>
-      <button title="Menu">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      <button class="icon-btn" title="Menu">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
       </button>
     </div>
   </div>
 
-  <!-- 🌈 TAB ICONS -->
-  <div class="nav-tabs">
-    <button class="tab-btn active" data-tab="home" title="Beranda">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 9.75l9-6 9 6M4.5 10.5V21h15V10.5"/></svg>
+  <!-- 📑 Tab Navigation -->
+  <div class="tabs relative">
+    <button class="tab-btn active" data-tab="home">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 9.75 12 4l9 5.75V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V9.75z"/></svg>
       <span>Home</span>
     </button>
-    <button class="tab-btn" data-tab="friends" title="Teman">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a4 4 0 00-4-4h-1m-4 6H2v-2a4 4 0 014-4h1m7-4a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+    <button class="tab-btn" data-tab="friends">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 12a4 4 0 1 0-8 0 4 4 0 0 0 8 0ZM12 14v6m6-6a9 9 0 1 1-12 0"/></svg>
       <span>Friends</span>
     </button>
-    <button class="tab-btn" data-tab="chat" title="Chat">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8 10h8m-8 4h5m1 7.5l-4-4H6a4 4 0 01-4-4V6a4 4 0 014-4h12a4 4 0 014 4v7a4 4 0 01-4 4h-2l-4 4z"/></svg>
+    <button class="tab-btn" data-tab="chat">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0zM8 12h8M12 8v8"/></svg>
       <span>Chat</span>
     </button>
-    <button class="tab-btn" data-tab="notif" title="Notifikasi" id="notifBtn">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V4a2 2 0 10-4 0v1.341C8.67 6.165 8 7.388 8 8.75v5.408c0 .385-.146.758-.405 1.037L6 17h9z"/></svg>
-      <span class="badge">5</span>
+    <button class="tab-btn" data-tab="notif">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0 1 18 14.158V11a6.002 6.002 0 0 0-4-5.659V5a2 2 0 1 0-4 0v.341C8.67 6.165 7 8.388 7 11v3.159c0 .538-.214 1.055-.595 1.436L5 17h5"/></svg>
       <span>Notif</span>
     </button>
-    <button class="tab-btn" data-tab="live" title="Live">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14m-3 6a9 9 0 100-18 9 9 0 000 18z"/></svg>
+    <button class="tab-btn" data-tab="live">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 10l4.553-2.276A1 1 0 0 1 21 8.618v6.764a1 1 0 0 1-1.447.894L15 14m0-4v4m-9 4h9a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2z"/></svg>
       <span>Live</span>
     </button>
-    <button class="tab-btn" data-tab="store" title="Store">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M4 7a2 2 0 00-2 2v1h20V9a2 2 0 00-2-2M4 7V5a2 2 0 012-2h12a2 2 0 012 2v2M3 10v10a2 2 0 002 2h14a2 2 0 002-2V10"/></svg>
+    <button class="tab-btn" data-tab="store">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 7h18l-2 13H5L3 7zM16 3H8v4h8V3z"/></svg>
       <span>Store</span>
     </button>
   </div>
 
-  <!-- 🌟 CONTENT -->
+  <!-- 💫 CONTENT -->
   <main class="flex-1 px-6 py-8 text-center">
-
     <section id="home" class="tab-content">
-      <h1 class="text-3xl font-extrabold bg-gradient-to-r from-brand via-brand2 to-pink-500 text-transparent bg-clip-text mb-4">
-        Selamat Datang di MACHA CHAT 💫
+      <h1 class="text-3xl font-bold bg-gradient-to-r from-brand via-brand2 to-pink-500 text-transparent bg-clip-text mb-4 animate-pulse">
+        Selamat Datang di MACHA CHAT ✨
       </h1>
       <p class="text-slate-300">Senang melihatmu kembali, <span id="userEmail">Memuat...</span></p>
 
@@ -178,46 +166,17 @@
       <button id="logoutBtn" class="btn-primary mt-8 bg-gradient-to-r from-pink-500 via-red-400 to-orange-400">Keluar</button>
     </section>
 
-    <section id="friends" class="tab-content hidden">
-      <div class="card p-8 max-w-md mx-auto">
-        <h2 class="text-lg font-semibold text-brand2 mb-2">Teman</h2>
-        <p class="text-slate-300">Fitur teman akan segera hadir 🚧</p>
-      </div>
-    </section>
-
-    <section id="chat" class="tab-content hidden">
-      <div class="card p-8 max-w-md mx-auto">
-        <h2 class="text-lg font-semibold text-brand mb-2">Chat</h2>
-        <p class="text-slate-300">Chat realtime akan hadir di versi berikut 🔥</p>
-      </div>
-    </section>
-
-    <section id="notif" class="tab-content hidden">
-      <div class="card p-8 max-w-md mx-auto">
-        <h2 class="text-lg font-semibold text-brand2 mb-2">Notifikasi</h2>
-        <p class="text-slate-300">Tidak ada notifikasi baru untuk sekarang ✨</p>
-      </div>
-    </section>
-
-    <section id="live" class="tab-content hidden">
-      <div class="card p-8 max-w-md mx-auto">
-        <h2 class="text-lg font-semibold text-brand mb-2">Live Streaming 📺</h2>
-        <p class="text-slate-300">Fitur live akan segera hadir! Nantikan siaran langsung pengguna lain 🔮</p>
-      </div>
-    </section>
-
-    <section id="store" class="tab-content hidden">
-      <div class="card p-8 max-w-md mx-auto">
-        <h2 class="text-lg font-semibold text-brand2 mb-2">Store / Menu</h2>
-        <p class="text-slate-300">Coming Soon 🚧</p>
-      </div>
-    </section>
-
+    <!-- Others -->
+    <section id="friends" class="hidden tab-content"><div class="card p-8 max-w-md mx-auto"><h2 class="text-lg font-semibold text-brand2 mb-2">Friends 👥</h2><p class="text-slate-300">Fitur teman akan segera hadir 🚧</p></div></section>
+    <section id="chat" class="hidden tab-content"><div class="card p-8 max-w-md mx-auto"><h2 class="text-lg font-semibold text-brand mb-2">Chat 💬</h2><p class="text-slate-300">Chat realtime akan hadir di versi berikut 🔥</p></div></section>
+    <section id="notif" class="hidden tab-content"><div class="card p-8 max-w-md mx-auto"><h2 class="text-lg font-semibold text-brand2 mb-2">Notifikasi 🔔</h2><p class="text-slate-300">Tidak ada notifikasi baru untuk sekarang ✨</p></div></section>
+    <section id="live" class="hidden tab-content"><div class="card p-8 max-w-md mx-auto"><h2 class="text-lg font-semibold text-brand mb-2">Live Streaming 📺</h2><p class="text-slate-300">Fitur live akan segera hadir 🎥</p></div></section>
+    <section id="store" class="hidden tab-content"><div class="card p-8 max-w-md mx-auto"><h2 class="text-lg font-semibold text-brand2 mb-2">Store 🏪</h2><p class="text-slate-300">Coming Soon 🚧</p></div></section>
   </main>
 
-  <footer>&copy; 2025 MACHA CHAT — Dibuat dengan ❤️ oleh kamu</footer>
+  <footer>&copy; 2025 Macha Chat — Dibuat dengan 💜 oleh kamu</footer>
 
-  <!-- Firebase Auth -->
+  <!-- 🔥 Firebase Auth -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
@@ -234,6 +193,7 @@
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
+
     const userEmail = document.getElementById("userEmail");
     const logoutBtn = document.getElementById("logoutBtn");
     const chatBtn = document.getElementById("chatBtn");
@@ -250,23 +210,15 @@
 
     chatBtn.addEventListener("click", () => window.location.href = "./chat.html");
 
-    // Tab navigasi
     const tabs = document.querySelectorAll(".tab-btn");
-    const sections = document.querySelectorAll(".tab-content");
-    tabs.forEach(tab => {
-      tab.addEventListener("click", () => {
-        tabs.forEach(t => t.classList.remove("active"));
-        sections.forEach(s => s.classList.add("hidden"));
-        tab.classList.add("active");
-        document.getElementById(tab.dataset.tab).classList.remove("hidden");
+    const contents = document.querySelectorAll(".tab-content");
+    tabs.forEach(btn=>{
+      btn.addEventListener("click",()=>{
+        tabs.forEach(b=>b.classList.remove("active"));
+        btn.classList.add("active");
+        contents.forEach(c=>c.classList.add("hidden"));
+        document.getElementById(btn.dataset.tab).classList.remove("hidden");
       });
-    });
-
-    // Shake notif
-    const notifBtn = document.getElementById("notifBtn");
-    notifBtn.addEventListener("click", () => {
-      notifBtn.classList.add("animate-pulse");
-      setTimeout(() => notifBtn.classList.remove("animate-pulse"), 500);
     });
   </script>
 </body>
