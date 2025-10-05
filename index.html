@@ -1,40 +1,33 @@
 <!doctype html>
 <html lang="id">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>MACHA — Memuat…</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>MACHA — Memuat...</title>
+
+  <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body {
+      background: #060b18;
+      color: #f1f5f9;
+      min-height: 100vh;
+      overflow: hidden;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
 </head>
-<body class="min-h-screen bg-slate-900 text-slate-100">
+<body>
 
-  <!-- Splash -->
+  <!-- 🔥 Splash -->
   <script type="module">
-    import { initSplash } from './js/splash.js?v=2';
-    initSplash({ duration: 10000 }); // 10 detik
+    import { initSplash } from './js/splash.js?v=5';
+    initSplash(); // otomatis durasi 4 detik & redirect by auth
   </script>
 
-  <!-- Gate: pakai auth dari config.js (tanpa init ulang) -->
-  <script type="module">
-    import { auth } from './js/config.js?v=2'
-    import { onAuthStateChanged, setPersistence, browserLocalPersistence }
-      from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js'
-
-    // simpan target, default ke login
-    let target = './login.html';
-
-    // pastikan sesi tersimpan (tetap login)
-    await setPersistence(auth, browserLocalPersistence);
-
-    onAuthStateChanged(auth, (user) => {
-      if (user && user.emailVerified) target = './dashboard.html';
-    });
-
-    // tunggu fix 10 detik sebelum redirect
-    setTimeout(() => {
-      window.hideSplash?.();
-      location.replace(target);
-    }, 10000);
-  </script>
 </body>
 </html>
