@@ -2,137 +2,156 @@
 <html lang="id">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>MACHA CHAT — Dashboard</title>
 
-  <!-- Tailwind (CDN) -->
+  <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
-      theme: { extend: { colors: { brand: '#1877F2' } } }
+      theme: {
+        extend: {
+          colors: {
+            brand: '#7C9BFF',
+            brand2: '#A07CFF',
+            dark: '#0b1020'
+          }
+        }
+      }
     }
   </script>
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
   <style>
-    body{font-family: ui-sans-serif,system-ui,Segoe UI,Roboto,Arial}
+    body {
+      font-family: 'Inter', sans-serif;
+      background: radial-gradient(circle at 20% 20%, #131b3a, #0b1020 80%);
+      min-height: 100vh;
+      overflow-x: hidden;
+      color: #f1f5f9;
+      opacity: 0;
+      transform: translateY(10px);
+      animation: fadeInUp 1s ease forwards;
+    }
+
+    @keyframes fadeInUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card {
+      background: rgba(20, 25, 50, 0.55);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(120, 150, 255, 0.2);
+      border-radius: 1rem;
+      box-shadow: 0 0 25px rgba(124, 155, 255, 0.2);
+      transform-style: preserve-3d;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      transform: rotateX(5deg) rotateY(-5deg) scale(1.02);
+      box-shadow: 0 0 40px rgba(124, 155, 255, 0.35);
+    }
+
+    .btn-primary {
+      background: linear-gradient(90deg, #7C9BFF, #A07CFF);
+      color: white;
+      font-weight: 600;
+      border-radius: 0.5rem;
+      padding: 0.65rem 1rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 0 15px rgba(124, 155, 255, 0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 25px rgba(160, 124, 255, 0.4);
+    }
+
+    .neon-title {
+      background: linear-gradient(90deg, #7C9BFF, #A07CFF, #FF78C8);
+      background-size: 300% 300%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradientFlow 5s ease infinite;
+    }
+
+    @keyframes gradientFlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
   </style>
 </head>
-<body class="min-h-screen bg-slate-900 text-slate-100">
 
-  <!-- TOPBAR -->
-  <header class="flex items-center justify-between px-4 py-3 bg-slate-800/40 backdrop-blur">
-  <div class="flex items-center gap-2">
-    <!-- Logo pakai gambar -->
-    <img src="./img/macha.png" alt="Macha Logo" class="w-16 h-16 rounded-full object-cover">
-    <h1 class="font-bold text-lg">MACHA CHAT</h1>
-  </div>
-  <div class="flex items-center gap-3">
-    <button id="btnAddPost" class="w-9 h-9 rounded-full bg-slate-700 flex items-center justify-center">＋</button>
-    <button id="btnSearch" class="w-9 h-9 rounded-full bg-slate-700 flex items-center justify-center">🔍</button>
-    <button id="btnMenu" class="w-9 h-9 rounded-full bg-slate-700 flex items-center justify-center">☰</button>
-  </div>
-</header>
-  <!-- CONTENT -->
-  <main class="max-w-[980px] mx-auto px-3 py-4 space-y-4">
+<body class="flex flex-col justify-center items-center text-center">
 
-    <!-- COMPOSER -->
-    <section class="rounded-3xl border border-white/10 bg-slate-800/60 shadow-[0_10px_30px_rgba(0,0,0,.25)]">
-      <div class="p-4 sm:p-5 flex gap-3">
-        <img id="meAvatar" class="w-11 h-11 rounded-full bg-slate-700" alt="Avatar">
-        <div class="flex-1">
-          <div class="relative">
-            <input id="composer" placeholder="Apa yang Anda pikirkan?"
-                   class="w-full rounded-full bg-slate-900/70 border border-white/10 px-4 py-3 pr-28 outline-none focus:ring-2 focus:ring-brand/40" />
-            <button id="postBtn"
-                    class="absolute right-1 top-1/2 -translate-y-1/2 px-4 py-2 rounded-full bg-brand text-white font-semibold hover:opacity-90">
-              Kirim
-            </button>
-          </div>
+  <header class="mt-8 mb-6">
+    <h1 class="text-4xl sm:text-5xl font-extrabold tracking-widest neon-title drop-shadow-[0_0_12px_rgba(124,155,255,0.4)]">
+      MACHA CHAT
+    </h1>
+    <p class="mt-2 text-slate-400 text-sm">Selamat datang di dashboard ✨</p>
+  </header>
 
-          <div class="mt-3 flex flex-wrap items-center gap-2">
-            <input id="photoFile" type="file" accept="image/*" class="hidden" />
-            <label for="photoFile" class="px-3 py-1.5 rounded-xl bg-slate-900/60 border border-white/10 text-sm cursor-pointer hover:bg-slate-900/80">📷 Foto</label>
+  <main class="w-full max-w-xl px-6">
+    <div class="card p-8">
+      <h2 class="text-xl font-semibold text-brand mb-2">Akun Aktif</h2>
+      <p class="text-slate-300 mb-6">Email: <span id="userEmail">Memuat...</span></p>
 
-            <input id="videoFile" type="file" accept="video/*" class="hidden" />
-            <label for="videoFile" class="px-3 py-1.5 rounded-xl bg-slate-900/60 border border-white/10 text-sm cursor-pointer hover:bg-slate-900/80">🎬 Video</label>
+      <button id="logoutBtn" class="btn-primary w-full">Keluar</button>
+    </div>
 
-            <div id="fileChips" class="flex flex-wrap gap-2 text-xs"></div>
-          </div>
-
-          <div id="uploadBar" class="h-1 mt-3 w-full bg-slate-800/80 rounded hidden">
-            <div id="uploadProg" class="h-1 bg-brand rounded" style="width:0%"></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- STORIES -->
-    <section class="rounded-3xl border border-white/10 bg-slate-800/60 shadow-[0_10px_30px_rgba(0,0,0,.25)]">
-      <div class="p-3 overflow-x-auto">
-        <div id="stories" class="flex gap-3 min-w-max"></div>
-      </div>
-    </section>
-
-    <!-- FEED -->
-    <section id="feed" class="space-y-3">
-      <!-- skeleton awal -->
-      <div class="rounded-3xl border border-white/10 bg-slate-800/60 animate-pulse h-48"></div>
-      <div class="rounded-3xl border border-white/10 bg-slate-800/60 animate-pulse h-72"></div>
-    </section>
-
-    <div class="flex justify-center">
-      <button id="loadMore" class="px-4 py-2 rounded-xl bg-slate-800 border border-white/10 hidden">Muat lagi</button>
+    <div class="card mt-8 p-6">
+      <h3 class="text-lg font-bold mb-3 text-brand2">Fitur Segera Hadir 🚧</h3>
+      <ul class="text-slate-300 text-sm list-disc pl-6 text-left">
+        <li>Chat realtime dengan teman</li>
+        <li>Status online & notifikasi pesan</li>
+        <li>Mode dark neon baru</li>
+      </ul>
     </div>
   </main>
 
-  <!-- TOAST -->
-  <div id="toast" class="fixed left-1/2 -translate-x-1/2 bottom-6 z-50 hidden"></div>
+  <footer class="mt-10 text-xs text-slate-500">
+    &copy; 2025 Macha Chat — Dibuat dengan ❤️ oleh kamu
+  </footer>
 
-  <!-- MENU DRAWER -->
-  <aside id="menuPanel" class="fixed inset-0 z-50 hidden">
-    <div id="menuBackdrop" class="absolute inset-0 bg-black/50"></div>
+  <!-- Firebase Auth -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
-    <div class="absolute right-0 top-0 h-full w-[92%] max-w-[420px] bg-white text-slate-900 overflow-y-auto">
-      <!-- header drawer -->
-      <div class="p-4 sticky top-0 bg-white/90 backdrop-blur border-b flex items-center justify-between">
-        <h2 class="text-xl font-semibold">Menu</h2>
-        <button id="menuClose" class="text-2xl" aria-label="Tutup">✕</button>
-      </div>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDIsTmg0_-rcz9tH3U-_sZuWk7sUOLgMSw",
+      authDomain: "macha-chat.firebaseapp.com",
+      projectId: "macha-chat",
+      storageBucket: "macha-chat.firebasestorage.app",
+      messagingSenderId: "576142384286",
+      appId: "1:576142384286:web:cfed000ac8a50b662a6f8f",
+      measurementId: "G-6ZMFHMZVEK"
+    };
 
-      <div class="p-4 space-y-4">
-        <!-- KARTU PROFIL: link + ganti foto -->
-        <div class="p-3 rounded-2xl border bg-slate-50 flex items-center gap-3">
-          <!-- Link ke profil -->
-          <a href="./profile.html" class="flex items-center gap-3 flex-1 min-w-0 cursor-pointer">
-            <img id="profileAvatar" class="w-12 h-12 rounded-full bg-slate-200" alt="Avatar profil">
-            <div class="min-w-0">
-              <div id="profileName" class="font-semibold truncate">Nama</div>
-              <div class="text-sm text-slate-500">Lihat profil Anda</div>
-            </div>
-          </a>
-          <!-- Ganti foto -->
-          <label for="avatarFile"
-                 class="px-3 py-1.5 rounded-xl bg-slate-200 text-sm cursor-pointer hover:bg-slate-300 whitespace-nowrap">
-            Ganti foto
-          </label>
-          <input id="avatarFile" type="file" accept="image/*" class="hidden" />
-        </div>
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
 
-        <!-- MENU GRID -->
-        <div class="grid grid-cols-2 gap-3">
-          <a href="./chat.html"   class="p-4 rounded-2xl border bg-slate-50 hover:bg-slate-100">💬 Pesan</a>
-          <a href="./reels.html"  class="p-4 rounded-2xl border bg-slate-50 hover:bg-slate-100">🎞️ Reels</a>
-          <a href="./saved.html"  class="p-4 rounded-2xl border bg-slate-50 hover:bg-slate-100">🔖 Tersimpan</a>
-          <a href="./events.html" class="p-4 rounded-2xl border bg-slate-50 hover:bg-slate-100">📅 Acara</a>
-        </div>
+    const userEmail = document.getElementById("userEmail");
+    const logoutBtn = document.getElementById("logoutBtn");
 
-        <div class="mt-6">
-          <button id="logoutFromMenu" class="px-4 py-2 rounded-xl bg-slate-200">Keluar</button>
-        </div>
-      </div>
-    </div>
-  </aside>
+    // Proteksi halaman — redirect ke login kalau belum login
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        window.location.href = "./login.html";
+      } else {
+        userEmail.textContent = user.email;
+      }
+    });
 
-  <!-- Main JS -->
-  <script type="module" src="./js/main.js"></script>
+    // Tombol logout
+    logoutBtn.addEventListener("click", async () => {
+      await signOut(auth);
+      window.location.href = "./login.html";
+    });
+  </script>
 </body>
 </html>
