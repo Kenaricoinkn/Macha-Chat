@@ -9,11 +9,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
-      theme: {
-        extend: {
-          colors: { brand:'#7C9BFF', brand2:'#A07CFF', dark:'#0b1020' }
-        }
-      }
+      theme: { extend: { colors: { brand:'#7C9BFF', brand2:'#A07CFF', dark:'#0b1020' } } }
     }
   </script>
 
@@ -58,7 +54,6 @@
 
         <p class="text-sm text-slate-300 mt-3 text-center">
           Belum punya akun?
-          <!-- ⬇️ FIX: langsung ke register.html -->
           <a id="linkToRegisterEmail" class="underline text-brand hover:text-brand2" href="./register.html">Daftar</a>
         </p>
       </section>
@@ -69,51 +64,70 @@
     Dengan masuk, Anda menyetujui ketentuan layanan kami.
   </p>
 
-  <!-- Toast -->
   <div id="toast"></div>
 
+  <!-- Firebase Login -->
   <script type="module">
-    // Toggle password visibility
-    const togglePass = document.getElementById("togglePass");
-    const passwordInput = document.getElementById("password");
-    togglePass.addEventListener("click", () => {
-      const isHidden = passwordInput.type === "password";
-      passwordInput.type = isHidden ? "text" : "password";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+    // 🔥 Firebase config kamu
+    const firebaseConfig = {
+      apiKey: "AIzaSyDIsTmg0_-rcz9tH3U-_sZuWk7sUOLgMSw",
+      authDomain: "macha-chat.firebaseapp.com",
+      projectId: "macha-chat",
+      storageBucket: "macha-chat.firebasestorage.app",
+      messagingSenderId: "576142384286",
+      appId: "1:576142384286:web:cfed000ac8a50b662a6f8f",
+      measurementId: "G-6ZMFHMZVEK"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    const emailInput = document.getElementById("email");
+    const passInput = document.getElementById("password");
+    const btn = document.getElementById("btnEmail");
+    const toast = document.getElementById("toast");
+
+    function showToast(msg, color = "rgba(255,60,60,0.95)") {
+      toast.textContent = msg;
+      toast.style.background = color;
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 2500);
+    }
+
+    // 👁️ Toggle password
+    document.getElementById("togglePass").addEventListener("click", () => {
+      const isHidden = passInput.type === "password";
+      passInput.type = isHidden ? "text" : "password";
       togglePass.textContent = isHidden ? "🙈" : "👁️";
     });
 
-    // Toast
-    const toast = document.getElementById("toast");
-    function showToast(message, duration = 2500) {
-      toast.textContent = message;
-      toast.classList.add("show");
-      setTimeout(() => toast.classList.remove("show"), duration);
-    }
-
-    // Login dummy (ganti ke API/SDK-mu)
-    document.getElementById("btnEmail").addEventListener("click", () => {
-      const email = document.getElementById("email").value.trim();
-      const pass  = document.getElementById("password").value.trim();
-
-      if (!email || !pass) { showToast("⚠️ Harap isi semua kolom!"); return; }
-      if (email !== "demo@macha.app") { showToast("❌ Akun belum terdaftar!"); return; }
-      if (pass !== "123456") { showToast("🔒 Kata sandi salah!"); return; }
-
-      showToast("✅ Login berhasil! Mengalihkan...");
-      setTimeout(() => (window.location.href = "dashboard.html"), 1500);
+    // ✅ Auto redirect jika sudah login
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        window.location.href = "./dashboard.html";
+      }
     });
 
-    // Fallback: kalau register.html belum ada, kasih toast
-    const linkRegister = document.getElementById("linkToRegisterEmail");
-    linkRegister.addEventListener("click", async (e) => {
-      // biarkan browser navigate dulu; jika gagal (404), kita handle toast
-      e.preventDefault();
+    // 🔐 Login Firebase
+    btn.addEventListener("click", async () => {
+      const email = emailInput.value.trim();
+      const password = passInput.value.trim();
+
+      if (!email || !password) return showToast("⚠️ Harap isi semua kolom!");
+
       try {
-        const res = await fetch(linkRegister.getAttribute("href"), { method: "HEAD" });
-        if (res.ok) window.location.href = linkRegister.getAttribute("href");
-        else showToast("🚧 Halaman daftar belum tersedia.");
-      } catch {
-        showToast("🚧 Halaman daftar belum tersedia.");
+        await signInWithEmailAndPassword(auth, email, password);
+        showToast("✅ Login berhasil!", "rgba(0,200,100,0.9)");
+        setTimeout(() => window.location.href = "./dashboard.html", 1000);
+      } catch (err) {
+        console.error(err);
+        if (err.code === "auth/user-not-found") showToast("❌ Akun belum terdaftar!");
+        else if (err.code === "auth/wrong-password") showToast("🔒 Kata sandi salah!");
+        else if (err.code === "auth/invalid-email") showToast("📧 Format email tidak valid!");
+        else showToast("⚠️ Gagal login. Coba lagi.");
       }
     });
   </script>
