@@ -1,5 +1,5 @@
 // /js/splash.js
-// Splash dengan teks "MACHA CHAT" animasi mengetik + warna-warni
+// Splash dengan teks "MACHA CHAT" animasi mengetik + warna-warni (ukuran lebih kecil)
 export function initSplash(options = {}) {
   const duration = Number(options.duration ?? 6000); // total tampil splash (ms)
   const fadeOut  = 800; // durasi fade-out CSS
@@ -8,18 +8,19 @@ export function initSplash(options = {}) {
   const splash = document.createElement('div');
   splash.id = 'splash';
   splash.className =
-    'fixed inset-0 z-[100] grid place-items-center bg-slate-950 text-white transition-opacity duration-700';
+    'fixed inset-0 z-[100] grid place-items-center bg-[#0a0a17] text-white transition-opacity duration-700';
 
   splash.innerHTML = `
     <div class="text-center select-none">
-      <h1 id="typingText" class="text-5xl sm:text-7xl font-extrabold tracking-widest">
-        <span class="animate-gradient-text"></span><span id="caret" class="inline-block w-[6px] h-[2rem] bg-white/80 align-bottom ml-1"></span>
+      <h1 id="typingText" class="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-[0.2em] leading-tight">
+        <span class="animate-gradient-text"></span>
+        <span id="caret" class="inline-block w-[6px] h-[1.5rem] sm:h-[2rem] bg-white/80 align-bottom ml-1"></span>
       </h1>
     </div>
   `;
   document.body.appendChild(splash);
 
-  // Tambah gaya animasi gradasi dan caret
+  // CSS untuk efek gradasi, glow, dan caret
   const style = document.createElement('style');
   style.innerHTML = `
     .animate-gradient-text {
@@ -42,8 +43,8 @@ export function initSplash(options = {}) {
       100% { background-position: 0% 50%; }
     }
     @keyframes glowPulse {
-      0%,100% { text-shadow: 0 0 10px rgba(255,255,255,0.5); }
-      50% { text-shadow: 0 0 20px rgba(255,255,255,1); }
+      0%,100% { text-shadow: 0 0 6px rgba(255,255,255,0.3); }
+      50% { text-shadow: 0 0 12px rgba(255,255,255,0.8); }
     }
     @keyframes caretBlink {
       0%,49%{opacity:1}
