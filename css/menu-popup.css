@@ -1,0 +1,97 @@
+/* ===========================
+   MENU POPUP (Fullscreen)
+   =========================== */
+
+#menuPopup {
+  position: fixed;
+  inset: 0;
+  background: rgba(8, 10, 25, 0.95);
+  backdrop-filter: blur(12px);
+  color: #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 2rem 1.2rem;
+  overflow-y: auto;
+  z-index: 100;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+#menuPopup.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Tombol close */
+.menu-close {
+  align-self: flex-end;
+  font-size: 1.7rem;
+  cursor: pointer;
+  color: #a0a0ff;
+  transition: transform 0.2s, color 0.2s;
+}
+.menu-close:hover {
+  color: #c084fc;
+  transform: rotate(90deg);
+}
+
+/* Judul */
+.menu-title {
+  font-weight: 800;
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(90deg, #7C9BFF, #A07CFF, #FF78C8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientFlow 5s ease infinite;
+}
+
+/* Grid Menu */
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 1rem;
+  width: 100%;
+  max-width: 600px;
+}
+
+.menu-item {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.8rem;
+  padding: 1rem;
+  text-align: center;
+  transition: all 0.25s ease;
+  box-shadow: 0 0 10px rgba(124, 155, 255, 0.1);
+}
+
+.menu-item:hover {
+  background: rgba(124, 155, 255, 0.1);
+  transform: translateY(-3px);
+  box-shadow: 0 0 18px rgba(124, 155, 255, 0.25);
+}
+
+/* Ikon SVG */
+.menu-item svg {
+  width: 34px;
+  height: 34px;
+  margin-bottom: 0.5rem;
+  fill: url(#grad);
+  filter: drop-shadow(0 0 6px rgba(124, 155, 255, 0.6));
+}
+
+/* Label */
+.menu-item span {
+  font-size: 0.85rem;
+  color: #cbd5e1;
+}
+
+/* Animasi gradient */
+@keyframes gradientFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
