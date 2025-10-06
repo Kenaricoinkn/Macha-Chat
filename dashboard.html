@@ -83,20 +83,6 @@
     .btn-primary:hover {transform:translateY(-2px);box-shadow:0 0 25px rgba(160,124,255,0.4)}
 
     footer {text-align:center;font-size:.75rem;color:#94a3b8;margin-top:auto;padding:1rem;}
-
-    /* 🔮 Glowing popup effect */
-    #menuOverlay div {
-      box-shadow: 0 0 25px rgba(124,155,255,0.15), 0 0 50px rgba(160,124,255,0.1);
-      transition: box-shadow .4s ease;
-    }
-    #menuOverlay div:hover {
-      box-shadow: 0 0 40px rgba(124,155,255,0.25), 0 0 80px rgba(160,124,255,0.15);
-    }
-
-    @keyframes slideUp {
-      from { transform: translateY(100%); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
   </style>
 </head>
 
@@ -124,52 +110,32 @@
   </div>
 
   <!-- 📑 Tabs -->
-  <div class="tabs relative">
+  <div class="tabs">
     <a href="./dashboard.html" class="tab-btn active">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 9.75 12 4l9 5.75V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V9.75z"/>
-      </svg>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 9.75 12 4l9 5.75V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V9.75z"/></svg>
       <span>Home</span>
     </a>
     <a href="./friends.html" class="tab-btn">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M17 20h5v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2h5m6-16a4 4 0 1 1-8 0 4 4 0 0 1 8 0z"/>
-      </svg>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M17 20h5v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2h5m6-16a4 4 0 1 1-8 0 4 4 0 0 1 8 0z"/></svg>
       <span>Friends</span>
     </a>
     <a href="./chat.html" class="tab-btn">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0zM8 12h8M12 8v8"/>
-      </svg>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0zM8 12h8M12 8v8"/></svg>
       <span>Chat</span>
     </a>
     <a href="./notif.html" class="tab-btn">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0 1 18 14.158V11a6.002 6.002 0 0 0-4-5.659V5a2 2 0 1 0-4 0v.341C8.67 6.165 7 8.388 7 11v3.159c0 .538-.214 1.055-.595 1.436L5 17h5"/>
-      </svg>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0 1 18 14.158V11a6.002 6.002 0 0 0-4-5.659V5a2 2 0 1 0-4 0v.341C8.67 6.165 7 8.388 7 11v3.159c0 .538-.214 1.055-.595 1.436L5 17h5"/></svg>
       <span>Notif</span>
-    </a>
-    <a href="./live.html" class="tab-btn">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 10l4.553-2.276A1 1 0 0 1 21 8.618v6.764a1 1 0 0 1-1.447.894L15 14m0-4v4m-9 4h9a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2z"/>
-      </svg>
-      <span>Live</span>
-    </a>
-    <a href="./store.html" class="tab-btn">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 7h18l-2 13H5L3 7zM16 3H8v4h8V3z"/>
-      </svg>
-      <span>Store</span>
     </a>
   </div>
 
   <!-- 💫 Content -->
   <main class="flex-1 px-6 py-8 text-center">
-    <section id="home" class="tab-content">
+    <section id="home">
       <h1 class="text-3xl font-bold bg-gradient-to-r from-brand via-brand2 to-pink-500 text-transparent bg-clip-text mb-4 animate-pulse">
         Selamat Datang di MACHA CHAT ✨
       </h1>
-      <p class="text-slate-300">Senang melihatmu kembali, <span id="userEmail">Memuat...</span></p>
+      <p class="text-slate-300">Senang melihatmu kembali, <span id="displayName">Memuat...</span> 👋</p>
 
       <div class="card mt-8 p-6 max-w-md mx-auto">
         <h3 class="text-lg font-semibold text-brand mb-3">Mulai Chat Sekarang</h3>
@@ -182,27 +148,45 @@
 
   <footer>&copy; 2025 Macha Chat — Dibuat dengan 💜 oleh kamu</footer>
 
-  <!-- 🔮 Popup Container -->
+  <!-- Popup -->
   <div id="menuPopup"></div>
 
-  <!-- 🔥 Scripts -->
+  <!-- Scripts -->
   <script type="module" src="./js/config.js"></script>
   <script type="module" src="./js/menu-popup.js"></script>
-  <script type="module">
-    import { auth } from "./js/config.js";
-    import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
-    const userEmail = document.getElementById("userEmail");
+  <script type="module">
+    import { auth, db } from "./js/config.js";
+    import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+    import { doc, getDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+    const displayNameEl = document.getElementById("displayName");
     const logoutBtn = document.getElementById("logoutBtn");
     const chatBtn = document.getElementById("chatBtn");
 
+    async function loadName(user) {
+      let name = localStorage.getItem("machaName");
+      if (!name) {
+        const ref = doc(db, "users", user.uid);
+        const snap = await getDoc(ref);
+        if (snap.exists()) {
+          name = snap.data().name || user.email;
+          localStorage.setItem("machaName", name);
+        } else {
+          name = user.email;
+        }
+      }
+      displayNameEl.textContent = name.split("@")[0];
+    }
+
     onAuthStateChanged(auth, (user) => {
-      if (!user) window.location.href = "./login.html";
-      else userEmail.textContent = user.email;
+      if (!user) return window.location.href = "./login.html";
+      loadName(user);
     });
 
     logoutBtn.addEventListener("click", async () => {
       await signOut(auth);
+      localStorage.removeItem("machaName");
       window.location.href = "./login.html";
     });
 
