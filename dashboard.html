@@ -20,9 +20,6 @@
   <!-- Font -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
-  <!-- Menu Popup Styles -->
-  <link rel="stylesheet" href="./css/menu-popup.css">
-
   <style>
     body {
       font-family:'Inter',sans-serif;
@@ -36,7 +33,6 @@
     }
     @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
 
-    /* 🔝 Top Navbar */
     .topbar {
       display:flex;justify-content:space-between;align-items:center;
       padding:.75rem 1rem;
@@ -57,7 +53,6 @@
     }
     .icon-btn:hover {color:#A07CFF;text-shadow:0 0 6px #A07CFF88;transform:translateY(-2px) scale(1.1);}
 
-    /* 📂 Tabs */
     .tabs {
       display:flex;justify-content:space-around;align-items:center;
       padding:.6rem 1rem;border-bottom:1px solid rgba(255,255,255,0.05);
@@ -71,7 +66,6 @@
     .tab-btn.active {color:#A07CFF;text-shadow:0 0 6px #A07CFF88;}
     .tab-btn:hover {color:#7C9BFF;transform:translateY(-2px);}
 
-    /* 🌟 Cards */
     .card {
       background:rgba(20,25,50,0.55);backdrop-filter:blur(12px);
       border:1px solid rgba(120,150,255,0.2);border-radius:1rem;
@@ -95,7 +89,7 @@
 </head>
 
 <body>
-  <!-- 🔝 Top Navbar -->
+  <!-- 🔝 Navbar -->
   <div class="topbar">
     <div class="logo">MACHA</div>
     <div class="top-icons">
@@ -111,35 +105,17 @@
     </div>
   </div>
 
-  <!-- 📑 Tab Navigation -->
+  <!-- 📑 Tabs -->
   <div class="tabs relative">
-    <button class="tab-btn active" data-tab="home">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 9.75 12 4l9 5.75V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V9.75z"/></svg>
-      <span>Home</span>
-    </button>
-    <button class="tab-btn" data-tab="friends">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 12a4 4 0 1 0-8 0 4 4 0 0 0 8 0ZM12 14v6m6-6a9 9 0 1 1-12 0"/></svg>
-      <span>Friends</span>
-    </button>
-    <button class="tab-btn" data-tab="chat">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0zM8 12h8M12 8v8"/></svg>
-      <span>Chat</span>
-    </button>
-    <button class="tab-btn" data-tab="notif">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0 1 18 14.158V11a6.002 6.002 0 0 0-4-5.659V5a2 2 0 1 0-4 0v.341C8.67 6.165 7 8.388 7 11v3.159c0 .538-.214 1.055-.595 1.436L5 17h5"/></svg>
-      <span>Notif</span>
-    </button>
-    <button class="tab-btn" data-tab="live">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 10l4.553-2.276A1 1 0 0 1 21 8.618v6.764a1 1 0 0 1-1.447.894L15 14m0-4v4m-9 4h9a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2z"/></svg>
-      <span>Live</span>
-    </button>
-    <button class="tab-btn" data-tab="store">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 7h18l-2 13H5L3 7zM16 3H8v4h8V3z"/></svg>
-      <span>Store</span>
-    </button>
+    <button class="tab-btn active" data-tab="home"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 9.75 12 4l9 5.75V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V9.75z"/></svg><span>Home</span></button>
+    <button class="tab-btn" data-tab="friends"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 12a4 4 0 1 0-8 0 4 4 0 0 0 8 0ZM12 14v6m6-6a9 9 0 1 1-12 0"/></svg><span>Friends</span></button>
+    <button class="tab-btn" data-tab="chat"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0zM8 12h8M12 8v8"/></svg><span>Chat</span></button>
+    <button class="tab-btn" data-tab="notif"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0 1 18 14.158V11a6.002 6.002 0 0 0-4-5.659V5a2 2 0 1 0-4 0v.341C8.67 6.165 7 8.388 7 11v3.159c0 .538-.214 1.055-.595 1.436L5 17h5"/></svg><span>Notif</span></button>
+    <button class="tab-btn" data-tab="live"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 10l4.553-2.276A1 1 0 0 1 21 8.618v6.764a1 1 0 0 1-1.447.894L15 14m0-4v4m-9 4h9a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2z"/></svg><span>Live</span></button>
+    <button class="tab-btn" data-tab="store"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 7h18l-2 13H5L3 7zM16 3H8v4h8V3z"/></svg><span>Store</span></button>
   </div>
 
-  <!-- 💫 CONTENT -->
+  <!-- 💫 Content -->
   <main class="flex-1 px-6 py-8 text-center">
     <section id="home" class="tab-content">
       <h1 class="text-3xl font-bold bg-gradient-to-r from-brand via-brand2 to-pink-500 text-transparent bg-clip-text mb-4 animate-pulse">
@@ -154,36 +130,19 @@
 
       <button id="logoutBtn" class="btn-primary mt-8 bg-gradient-to-r from-pink-500 via-red-400 to-orange-400">Keluar</button>
     </section>
-
-    <section id="friends" class="hidden tab-content"><div class="card p-8 max-w-md mx-auto"><h2 class="text-lg font-semibold text-brand2 mb-2">Friends 👥</h2><p class="text-slate-300">Fitur teman akan segera hadir 🚧</p></div></section>
-    <section id="chat" class="hidden tab-content"><div class="card p-8 max-w-md mx-auto"><h2 class="text-lg font-semibold text-brand mb-2">Chat 💬</h2><p class="text-slate-300">Chat realtime akan hadir di versi berikut 🔥</p></div></section>
-    <section id="notif" class="hidden tab-content"><div class="card p-8 max-w-md mx-auto"><h2 class="text-lg font-semibold text-brand2 mb-2">Notifikasi 🔔</h2><p class="text-slate-300">Tidak ada notifikasi baru untuk sekarang ✨</p></div></section>
-    <section id="live" class="hidden tab-content"><div class="card p-8 max-w-md mx-auto"><h2 class="text-lg font-semibold text-brand mb-2">Live Streaming 📺</h2><p class="text-slate-300">Fitur live akan segera hadir 🎥</p></div></section>
-    <section id="store" class="hidden tab-content"><div class="card p-8 max-w-md mx-auto"><h2 class="text-lg font-semibold text-brand2 mb-2">Store 🏪</h2><p class="text-slate-300">Coming Soon 🚧</p></div></section>
   </main>
 
   <footer>&copy; 2025 Macha Chat — Dibuat dengan 💜 oleh kamu</footer>
 
-  <!-- Menu Popup Container -->
+  <!-- Menu Popup -->
   <div id="menuPopup"></div>
 
-  <!-- 🔥 Firebase Auth -->
+  <!-- 🔥 Script -->
+  <script type="module" src="./js/config.js"></script>
+  <script type="module" src="./js/menu-popup.js"></script>
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyDIsTmg0_-rcz9tH3U-_sZuWk7sUOLgMSw",
-      authDomain: "macha-chat.firebaseapp.com",
-      projectId: "macha-chat",
-      storageBucket: "macha-chat.firebasestorage.app",
-      messagingSenderId: "576142384286",
-      appId: "1:576142384286:web:cfed000ac8a50b662a6f8f",
-      measurementId: "G-6ZMFHMZVEK"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+    import { auth } from "./js/config.js";
+    import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
     const userEmail = document.getElementById("userEmail");
     const logoutBtn = document.getElementById("logoutBtn");
@@ -200,21 +159,6 @@
     });
 
     chatBtn.addEventListener("click", () => window.location.href = "./chat.html");
-
-    const tabs = document.querySelectorAll(".tab-btn");
-    const contents = document.querySelectorAll(".tab-content");
-    tabs.forEach(btn=>{
-      btn.addEventListener("click",()=>{
-        tabs.forEach(b=>b.classList.remove("active"));
-        btn.classList.add("active");
-        contents.forEach(c=>c.classList.add("hidden"));
-        document.getElementById(btn.dataset.tab).classList.remove("hidden");
-      });
-    });
   </script>
-
-  <!-- Menu Popup Script (DOM-safe) -->
-<script type="module" src="./js/config.js"></script>
-<script type="module" src="./js/menu-popup.js"></script>
 </body>
 </html>
