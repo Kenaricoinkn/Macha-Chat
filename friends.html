@@ -10,9 +10,7 @@
   <script>
     tailwind.config = {
       theme: {
-        extend: {
-          colors: { brand:'#7C9BFF', brand2:'#A07CFF', dark:'#0b1020' }
-        }
+        extend: { colors: { brand:'#7C9BFF', brand2:'#A07CFF', dark:'#0b1020' } }
       }
     }
   </script>
@@ -28,6 +26,7 @@
       flex-direction:column;
       overflow-x:hidden;
     }
+
     .card {
       background:rgba(20,25,50,0.55);
       backdrop-filter:blur(10px);
@@ -61,12 +60,16 @@
       overflow:hidden;
       box-shadow:0 0 10px rgba(124,155,255,0.3);
     }
+
+    .topbar {background:rgba(15,20,45,0.85);backdrop-filter:blur(12px);}
+    .icon-btn {transition:all .2s ease;}
+    .icon-btn:hover {color:#A07CFF;text-shadow:0 0 6px #A07CFF88;transform:translateY(-2px);}
   </style>
 </head>
 
 <body>
   <!-- 🔝 Navbar -->
-  <div class="topbar flex justify-between items-center px-4 py-2 bg-[#0f142b]/90 backdrop-blur-md border-b border-slate-700/40 shadow-lg sticky top-0 z-50">
+  <div class="topbar flex justify-between items-center px-4 py-2 border-b border-slate-700/40 shadow-lg sticky top-0 z-50">
     <div class="logo text-2xl font-extrabold bg-gradient-to-r from-brand to-brand2 bg-clip-text text-transparent">MACHA</div>
     <div class="flex gap-3 items-center">
       <button onclick="window.location.href='./dashboard.html'" class="icon-btn text-slate-300 hover:text-brand transition">
@@ -75,7 +78,8 @@
       <button class="icon-btn text-slate-300 hover:text-brand transition">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 21-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15z"/></svg>
       </button>
-      <button class="icon-btn text-slate-300 hover:text-brand transition">
+      <!-- ✅ Tombol Menu Aktif -->
+      <button id="menuBtn" class="icon-btn text-slate-300 hover:text-brand transition" title="Menu">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
       </button>
     </div>
@@ -84,49 +88,68 @@
   <!-- 📑 Tabs -->
   <div class="tabs flex justify-around items-center py-2 bg-[#141a35]/70 backdrop-blur-md border-b border-slate-700/40">
     <a href="./dashboard.html" class="tab-btn flex flex-col items-center text-slate-400 hover:text-brand">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 9.75 12 4l9 5.75V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V9.75z"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 9.75 12 4l9 5.75V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V9.75z"/>
+      </svg>
     </a>
     <a href="./friends.html" class="tab-btn flex flex-col items-center text-brand">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M17 20h5v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2h5m6-16a4 4 0 1 1-8 0 4 4 0 0 1 8 0z"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M17 20h5v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2h5m6-16a4 4 0 1 1-8 0 4 4 0 0 1 8 0z"/>
+      </svg>
     </a>
     <a href="./chat.html" class="tab-btn flex flex-col items-center text-slate-400 hover:text-brand">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0zM8 12h8M12 8v8"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0zM8 12h8M12 8v8"/>
+      </svg>
     </a>
     <a href="./notif.html" class="tab-btn flex flex-col items-center text-slate-400 hover:text-brand">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0 1 18 14.158V11a6.002 6.002 0 0 0-4-5.659V5a2 2 0 1 0-4 0v.341C8.67 6.165 7 8.388 7 11v3.159c0 .538-.214 1.055-.595 1.436L5 17h5"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0 1 18 14.158V11a6.002 6.002 0 0 0-4-5.659V5a2 2 0 1 0-4 0v.341C8.67 6.165 7 8.388 7 11v3.159c0 .538-.214 1.055-.595 1.436L5 17h5"/>
+      </svg>
     </a>
     <a href="./live.html" class="tab-btn flex flex-col items-center text-slate-400 hover:text-brand">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 10l4.553-2.276A1 1 0 0 1 21 8.618v6.764a1 1 0 0 1-1.447.894L15 14m0-4v4m-9 4h9a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2z"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 10l4.553-2.276A1 1 0 0 1 21 8.618v6.764a1 1 0 0 1-1.447.894L15 14m0-4v4m-9 4h9a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2z"/>
+      </svg>
     </a>
     <a href="./store.html" class="tab-btn flex flex-col items-center text-slate-400 hover:text-brand">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 7h18l-2 13H5L3 7zM16 3H8v4h8V3z"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 7h18l-2 13H5L3 7zM16 3H8v4h8V3z"/>
+      </svg>
     </a>
   </div>
 
   <!-- 💫 Content -->
   <main class="p-4 flex-1 space-y-6">
-    <section class="space-y-2">
+    <section>
       <h2 class="text-xl font-bold bg-gradient-to-r from-brand via-brand2 to-pink-500 bg-clip-text text-transparent">Saran Teman</h2>
-      <p class="text-slate-400 text-sm">Orang yang mungkin kamu kenal</p>
+      <p class="text-slate-400 text-sm mb-3">Orang yang mungkin kamu kenal</p>
+      <div id="suggestList" class="flex flex-col gap-3"></div>
     </section>
 
-    <section class="space-y-2">
+    <section>
       <h2 class="text-xl font-bold bg-gradient-to-r from-brand via-brand2 to-pink-500 bg-clip-text text-transparent">Teman Anda</h2>
-      <p class="text-slate-400 text-sm">Daftar teman yang sudah terhubung</p>
+      <p class="text-slate-400 text-sm mb-3">Daftar teman yang sudah terhubung</p>
+      <div id="myFriendsList" class="flex flex-col gap-3"></div>
     </section>
 
-    <section class="space-y-2">
+    <section>
       <div class="flex justify-between items-center">
         <h2 class="text-xl font-bold bg-gradient-to-r from-brand via-brand2 to-pink-500 bg-clip-text text-transparent">Permintaan Pertemanan</h2>
         <button class="text-brand2 hover:text-brand text-sm">Lihat Semua</button>
       </div>
-      <div id="friendsList" class="flex flex-col gap-3"></div>
+      <div id="friendsList" class="flex flex-col gap-3 mt-2"></div>
     </section>
   </main>
 
   <footer class="text-center text-slate-500 text-sm py-3">&copy; 2025 Macha Chat</footer>
 
-  <!-- Logic -->
+  <!-- 🔮 Popup Container -->
+  <div id="menuPopup"></div>
+
+  <!-- Scripts -->
+  <script type="module" src="./js/config.js"></script>
+  <script type="module" src="./js/menu-popup.js"></script>
   <script type="module" src="./js/friends.js"></script>
 </body>
 </html>
