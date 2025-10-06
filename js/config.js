@@ -1,9 +1,9 @@
 // ============================
-// Firebase Global Config (v6.5)
+// Firebase Global Config (v7.2 Stable)
 // ============================
 import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDIsTmg0_-rcz9tH3U-_sZuWk7sUOLgMSw",
@@ -15,7 +15,7 @@ const firebaseConfig = {
   measurementId: "G-6ZMFHMZVEK"
 };
 
-// Gunakan app yang sudah ada, hindari duplikasi
+// hindari inisialisasi dobel
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 
 export const auth = getAuth(app);
