@@ -136,7 +136,72 @@
 
   <!-- Menu Popup -->
   <div id="menuPopup"></div>
+<!-- Popup Friends -->
+<div id="friendsPopup" class="hidden fixed inset-0 z-[90] bg-black/60 backdrop-blur-sm flex justify-center items-end opacity-0 transition-opacity duration-500">
+  <div class="bg-[#0f142b]/95 w-full max-w-md rounded-t-2xl shadow-xl border-t border-slate-700/50 text-slate-100 p-6 animate-[slideUp_0.4s_ease_forwards]">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-lg font-semibold text-indigo-400">Teman</h2>
+      <button id="closeFriendsPopup" class="text-slate-300 hover:text-red-400 transition">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
 
+    <div class="flex flex-col gap-3">
+      <button id="btnCariTeman" class="w-full text-left px-4 py-3 bg-slate-800/50 hover:bg-indigo-600/40 rounded-lg flex items-center gap-3">
+        🔍 <span>Cari Teman</span>
+      </button>
+      <button id="btnTambahTeman" class="w-full text-left px-4 py-3 bg-slate-800/50 hover:bg-indigo-600/40 rounded-lg flex items-center gap-3">
+        ➕ <span>Tambah Teman</span>
+      </button>
+      <button id="btnKonfirmasiTeman" class="w-full text-left px-4 py-3 bg-slate-800/50 hover:bg-indigo-600/40 rounded-lg flex items-center gap-3">
+        ✅ <span>Konfirmasi</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<style>
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+</style>
+  <script type="module">
+// Tombol dan elemen popup
+const friendsTab = document.querySelector('[data-tab="friends"]');
+const friendsPopup = document.getElementById("friendsPopup");
+const closeFriendsPopup = document.getElementById("closeFriendsPopup");
+
+// Buka popup Friends
+friendsTab.addEventListener("click", () => {
+  friendsPopup.classList.remove("hidden");
+  setTimeout(() => friendsPopup.classList.remove("opacity-0"), 20);
+});
+
+// Tutup popup Friends
+closeFriendsPopup.addEventListener("click", () => {
+  friendsPopup.classList.add("opacity-0");
+  setTimeout(() => friendsPopup.classList.add("hidden"), 400);
+});
+
+// Klik di luar popup untuk menutup
+friendsPopup.addEventListener("click", (e) => {
+  if (e.target === friendsPopup) {
+    friendsPopup.classList.add("opacity-0");
+    setTimeout(() => friendsPopup.classList.add("hidden"), 400);
+  }
+});
+
+// Aksi tombol-tombol popup
+document.getElementById("btnCariTeman").addEventListener("click", () => {
+  alert("🔍 Fitur Cari Teman akan segera hadir!");
+});
+document.getElementById("btnTambahTeman").addEventListener("click", () => {
+  alert("➕ Tambah Teman ke database Firestore nanti di versi berikut!");
+});
+document.getElementById("btnKonfirmasiTeman").addEventListener("click", () => {
+  alert("✅ Lihat permintaan pertemanan kamu nanti di sini!");
+});
+  </script>
   <!-- 🔥 Script -->
   <script type="module" src="./js/config.js"></script>
   <script type="module" src="./js/menu-popup.js"></script>
