@@ -1,124 +1,128 @@
 // ============================
-// MENU POPUP FIX (v5.2 — slide-up + glow)
+// MACHA MENU POPUP — FINAL FIX v6 (works in Vercel)
 // ============================
 
-// Tunggu sampai seluruh DOM siap
 document.addEventListener("DOMContentLoaded", () => {
   const menuBtn = document.getElementById("menuBtn");
-  const menuPopup = document.getElementById("menuPopup");
+  if (!menuBtn) {
+    console.warn("⚠️ menuBtn tidak ditemukan di DOM.");
+    return;
+  }
 
-  if (!menuBtn || !menuPopup) return console.warn("Menu button or popup not found");
+  // Buat elemen overlay popup langsung di body
+  const overlay = document.createElement("div");
+  overlay.id = "menuOverlay";
+  overlay.style.cssText = `
+    position:fixed;inset:0;background:rgba(0,0,0,.45);
+    backdrop-filter:blur(6px);display:flex;align-items:flex-end;
+    justify-content:center;opacity:0;pointer-events:none;
+    transition:opacity .3s ease;z-index:9999;
+  `;
 
-  // Struktur popup HTML
-  menuPopup.innerHTML = `
-    <div class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-end justify-center z-[200] opacity-0 pointer-events-none transition-opacity duration-300" id="menuOverlay">
-      <div class="bg-[#0b1020] w-full max-w-md rounded-t-2xl shadow-[0_0_30px_#7C9BFF55] translate-y-full transition-transform duration-500" id="menuPanel">
-        <div class="flex items-center justify-between px-4 py-3 border-b border-white/10">
-          <button id="backMenu" class="text-slate-300 hover:text-brand transition">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-            </svg>
-          </button>
-          <h2 class="text-lg font-bold text-indigo-400">Menu</h2>
-          <button id="closeMenu" class="text-slate-300 hover:text-brand transition">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-            </svg>
-          </button>
+  const panel = document.createElement("div");
+  panel.id = "menuPanel";
+  panel.style.cssText = `
+    background:#0b1020;width:100%;max-width:420px;
+    border-radius:1.2rem 1.2rem 0 0;
+    box-shadow:0 0 25px #7C9BFF44;
+    transform:translateY(100%);
+    transition:transform .35s ease;
+    color:#f1f5f9;
+  `;
+
+  // Isi konten popup
+  panel.innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:1rem;border-bottom:1px solid rgba(255,255,255,.1)">
+      <button id="menuBack" style="color:#94a3b8">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="26" height="26">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+        </svg>
+      </button>
+      <h2 style="font-weight:700;font-size:1.1rem;color:#a78bfa;">Menu</h2>
+      <button id="menuClose" style="color:#94a3b8">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="26" height="26">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+
+    <div style="padding:1.2rem">
+      <div style="display:flex;align-items:center;gap:.8rem;margin-bottom:1rem">
+        <img src="https://ui-avatars.com/api/?name=User" width="48" height="48" style="border-radius:50%;border:1px solid rgba(167,139,250,.3)">
+        <div>
+          <p style="font-weight:600;">Pengguna</p>
+          <a href="./profile.html" style="color:#a78bfa;font-size:.9rem;text-decoration:underline;">Lihat profil Anda</a>
         </div>
+      </div>
 
-        <div class="p-5">
-          <div class="flex items-center gap-3 mb-4">
-            <img src="https://ui-avatars.com/api/?name=User" class="w-12 h-12 rounded-full border border-indigo-400/30" alt="Profile">
-            <div>
-              <p class="font-semibold text-slate-100">Pengguna</p>
-              <a href="./profile.html" class="text-sm text-indigo-400 hover:text-indigo-300 underline">Lihat profil Anda</a>
-            </div>
-          </div>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:.8rem;">
+        ${["Beranda","Postingan","Grup","Live","Store","Reels"].map(name=>`
+          <button style="padding:1rem;border-radius:.8rem;background:rgba(255,255,255,.05);color:#e2e8f0;font-weight:500;font-size:.9rem;transition:.25s;">
+            ${name}
+          </button>`).join("")}
+      </div>
 
-          <div class="grid grid-cols-2 gap-3 mb-5">
-            ${[
-              ["Beranda", "M3 9.75 12 4l9 5.75V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V9.75z"],
-              ["Postingan", "M12 8v8m-4-4h8"],
-              ["Grup", "M9 17v-2a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2m4 0V9a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v8m12 0H5"],
-              ["Live", "M15 10l4.553-2.276A1 1 0 0 1 21 8.618v6.764a1 1 0 0 1-1.447.894L15 14m0-4v4M6 6h9a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z"],
-              ["Store", "M3 7h18l-2 13H5L3 7zM16 3H8v4h8V3z"],
-              ["Reels", "M4.75 4.75l14.5 14.5m0-14.5L4.75 19.25"]
-            ].map(([label, path]) => `
-              <div class="flex flex-col items-center justify-center gap-1 py-4 rounded-xl bg-white/5 hover:bg-white/10 transition">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6 text-indigo-400">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${path}"/>
-                </svg>
-                <span class="text-sm">${label}</span>
-              </div>
-            `).join("")}
-          </div>
+      <hr style="margin:1rem 0;border-color:rgba(255,255,255,.1)">
+      
+      <button id="toggleSettings" style="display:flex;align-items:center;justify-content:space-between;width:100%;color:#a78bfa;font-weight:600">
+        <span>⚙️ Pengaturan & Privasi</span>
+        <span id="arrowIcon">▼</span>
+      </button>
 
-          <button id="settingsToggle" class="flex items-center justify-between w-full py-2 text-indigo-400 hover:text-indigo-300 border-t border-white/10 transition">
-            <span class="flex items-center gap-2">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-5 h-5">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6l4 2"/>
-              </svg>
-              Pengaturan & Privasi
-            </span>
-            <svg id="arrowIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-4 h-4 transition-transform">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 9l6 6 6-6"/>
-            </svg>
-          </button>
+      <div id="settingsDropdown" style="display:none;margin-top:.6rem;margin-left:.8rem;font-size:.9rem;color:#cbd5e1">
+        <button class="dropdownItem">🛠 Pengaturan</button><br>
+        <button class="dropdownItem">💳 Pesanan & Pembayaran</button><br>
+        <button id="darkModeBtn" class="dropdownItem">🌙 Mode Gelap</button><br>
+        <button class="dropdownItem">🌐 Bahasa</button><br>
+        <button class="dropdownItem">🧹 Bersihkan Ruang</button><br>
+        <button class="dropdownItem">🚀 Akses Awal</button>
+      </div>
 
-          <div id="settingsDropdown" class="hidden ml-5 mt-2 space-y-2 text-slate-300 text-sm">
-            <button class="hover:text-indigo-300 flex items-center gap-2"><span>⚙️</span> Pengaturan</button>
-            <button class="hover:text-indigo-300 flex items-center gap-2"><span>💳</span> Pesanan & Pembayaran</button>
-            <button id="btnDarkMode" class="hover:text-indigo-300 flex items-center gap-2"><span>🌙</span> Mode Gelap</button>
-            <button class="hover:text-indigo-300 flex items-center gap-2"><span>🌐</span> Bahasa</button>
-            <button class="hover:text-indigo-300 flex items-center gap-2"><span>🧹</span> Bersihkan Ruang</button>
-            <button class="hover:text-indigo-300 flex items-center gap-2"><span>🚀</span> Akses Awal</button>
-          </div>
+      <hr style="margin:1rem 0;border-color:rgba(255,255,255,.1)">
 
-          <div class="mt-5 space-y-2 text-sm text-slate-300">
-            <button class="flex items-center gap-2 hover:text-indigo-300"><span>💬</span> Bantuan & Dukungan</button>
-            <button class="flex items-center gap-2 hover:text-indigo-300"><span>➕</span> Tambahkan Akun</button>
-            <button id="logoutMenu" class="flex items-center gap-2 text-red-400 hover:text-red-300"><span>↩️</span> Keluar</button>
-          </div>
-        </div>
+      <div style="display:flex;flex-direction:column;gap:.6rem;">
+        <button style="color:#a5b4fc;text-align:left;">💬 Bantuan & Dukungan</button>
+        <button style="color:#a5b4fc;text-align:left;">➕ Tambahkan Akun</button>
+        <button id="logoutMenu" style="color:#f87171;text-align:left;">↩️ Keluar</button>
       </div>
     </div>
   `;
 
-  // Referensi elemen
-  const overlay = document.getElementById("menuOverlay");
-  const panel = document.getElementById("menuPanel");
-  const closeMenu = document.getElementById("closeMenu");
-  const backMenu = document.getElementById("backMenu");
-  const settingsToggle = document.getElementById("settingsToggle");
-  const settingsDropdown = document.getElementById("settingsDropdown");
-  const arrowIcon = document.getElementById("arrowIcon");
+  overlay.appendChild(panel);
+  document.body.appendChild(overlay);
 
-  // Fungsi open/close animasi
+  // Fungsi buka / tutup
   const openMenu = () => {
-    overlay.classList.remove("opacity-0", "pointer-events-none");
-    panel.classList.remove("translate-y-full");
+    overlay.style.opacity = "1";
+    overlay.style.pointerEvents = "auto";
+    panel.style.transform = "translateY(0)";
   };
-  const closePopup = () => {
-    panel.classList.add("translate-y-full");
-    overlay.classList.add("opacity-0", "pointer-events-none");
+  const closeMenu = () => {
+    overlay.style.opacity = "0";
+    overlay.style.pointerEvents = "none";
+    panel.style.transform = "translateY(100%)";
   };
 
-  // Event
-  menuBtn.onclick = openMenu;
-  closeMenu.onclick = closePopup;
-  backMenu.onclick = closePopup;
-  overlay.addEventListener("click", (e) => { if (e.target.id === "menuOverlay") closePopup(); });
+  // Klik event
+  menuBtn.addEventListener("click", openMenu);
+  overlay.addEventListener("click", (e) => { if (e.target.id === "menuOverlay") closeMenu(); });
+  panel.querySelector("#menuClose").addEventListener("click", closeMenu);
+  panel.querySelector("#menuBack").addEventListener("click", closeMenu);
 
-  // Toggle dropdown
-  settingsToggle.addEventListener("click", () => {
-    settingsDropdown.classList.toggle("hidden");
-    arrowIcon.classList.toggle("rotate-180");
+  // Dropdown pengaturan
+  const settingsBtn = panel.querySelector("#toggleSettings");
+  const dropdown = panel.querySelector("#settingsDropdown");
+  const arrow = panel.querySelector("#arrowIcon");
+
+  settingsBtn.addEventListener("click", () => {
+    const show = dropdown.style.display === "none";
+    dropdown.style.display = show ? "block" : "none";
+    arrow.textContent = show ? "▲" : "▼";
   });
 
-  // Mode gelap toggle
-  const darkModeBtn = document.getElementById("btnDarkMode");
-  darkModeBtn.addEventListener("click", () => {
+  // Mode gelap
+  const darkBtn = panel.querySelector("#darkModeBtn");
+  darkBtn.addEventListener("click", () => {
     const dark = document.documentElement.classList.toggle("dark");
     localStorage.setItem("machaDarkMode", dark);
   });
@@ -127,9 +131,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Logout
-  const logoutMenu = document.getElementById("logoutMenu");
-  if (logoutMenu) logoutMenu.addEventListener("click", () => {
-    const logoutBtn = document.getElementById("logoutBtn");
-    if (logoutBtn) logoutBtn.click();
+  const logoutMenu = panel.querySelector("#logoutMenu");
+  logoutMenu.addEventListener("click", () => {
+    const btn = document.getElementById("logoutBtn");
+    if (btn) btn.click();
   });
 });
