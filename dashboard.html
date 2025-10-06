@@ -20,9 +20,6 @@
   <!-- Font -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
-  <!-- Heroicons -->
-  <script src="https://unpkg.com/heroicons@2.0.18/24/outline/esm/index.js" type="module"></script>
-
   <!-- Menu Popup Styles -->
   <link rel="stylesheet" href="./css/menu-popup.css">
 
@@ -53,9 +50,7 @@
       background:linear-gradient(90deg,#7C9BFF,#A07CFF);
       -webkit-background-clip:text;-webkit-text-fill-color:transparent;
     }
-    .top-icons {
-      display:flex;gap:.8rem;align-items:center;
-    }
+    .top-icons {display:flex;gap:.8rem;align-items:center;}
     .icon-btn {
       width:1.7rem;height:1.7rem;display:flex;align-items:center;justify-content:center;
       color:#cbd5e1;transition:all .25s ease;border-radius:50%;
@@ -75,11 +70,6 @@
     .tab-btn svg {width:1.6rem;height:1.6rem;stroke-width:1.7;}
     .tab-btn.active {color:#A07CFF;text-shadow:0 0 6px #A07CFF88;}
     .tab-btn:hover {color:#7C9BFF;transform:translateY(-2px);}
-    .tab-active-line {
-      height:2px;background:linear-gradient(90deg,#7C9BFF,#A07CFF);
-      border-radius:999px;transition:all .4s ease;width:16%;
-      position:absolute;bottom:0;left:0;
-    }
 
     /* 🌟 Cards */
     .card {
@@ -100,15 +90,11 @@
     }
     .btn-primary:hover {transform:translateY(-2px);box-shadow:0 0 25px rgba(160,124,255,0.4)}
 
-    footer {
-      text-align:center;font-size:.75rem;color:#94a3b8;
-      margin-top:auto;padding:1rem;
-    }
+    footer {text-align:center;font-size:.75rem;color:#94a3b8;margin-top:auto;padding:1rem;}
   </style>
 </head>
 
 <body>
-
   <!-- 🔝 Top Navbar -->
   <div class="topbar">
     <div class="logo">MACHA</div>
@@ -169,7 +155,6 @@
       <button id="logoutBtn" class="btn-primary mt-8 bg-gradient-to-r from-pink-500 via-red-400 to-orange-400">Keluar</button>
     </section>
 
-    <!-- Others -->
     <section id="friends" class="hidden tab-content"><div class="card p-8 max-w-md mx-auto"><h2 class="text-lg font-semibold text-brand2 mb-2">Friends 👥</h2><p class="text-slate-300">Fitur teman akan segera hadir 🚧</p></div></section>
     <section id="chat" class="hidden tab-content"><div class="card p-8 max-w-md mx-auto"><h2 class="text-lg font-semibold text-brand mb-2">Chat 💬</h2><p class="text-slate-300">Chat realtime akan hadir di versi berikut 🔥</p></div></section>
     <section id="notif" class="hidden tab-content"><div class="card p-8 max-w-md mx-auto"><h2 class="text-lg font-semibold text-brand2 mb-2">Notifikasi 🔔</h2><p class="text-slate-300">Tidak ada notifikasi baru untuk sekarang ✨</p></div></section>
@@ -180,7 +165,7 @@
   <footer>&copy; 2025 Macha Chat — Dibuat dengan 💜 oleh kamu</footer>
 
   <!-- Menu Popup Container -->
-  <div id="menuPopup" class="hidden"></div>
+  <div id="menuPopup"></div>
 
   <!-- 🔥 Firebase Auth -->
   <script type="module">
@@ -228,7 +213,7 @@
     });
   </script>
 
-  <!-- Menu Popup Script -->
-<script type="module" src="./js/menu-popup.js"></script>
+  <!-- Menu Popup Script (DOM-safe) -->
+  <script type="module" src="./js/menu-popup.js?v=5.1"></script>
 </body>
 </html>
