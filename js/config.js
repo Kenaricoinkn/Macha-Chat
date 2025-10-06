@@ -1,4 +1,6 @@
-// ✅ Firebase CONFIG GLOBAL (digunakan bersama)
+// ============================
+// Firebase Global Config (v6.5)
+// ============================
 import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
@@ -13,7 +15,7 @@ const firebaseConfig = {
   measurementId: "G-6ZMFHMZVEK"
 };
 
-// 🧠 Gunakan app yang sudah ada, hindari duplikasi init
+// Gunakan app yang sudah ada, hindari duplikasi
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 
 export const auth = getAuth(app);
