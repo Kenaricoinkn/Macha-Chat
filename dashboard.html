@@ -1,199 +1,197 @@
 <!doctype html>
-<html lang="id">
-<head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>MACHA CHAT — Dashboard</title>
 
-  <!-- Tailwind -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: { brand:'#7C9BFF', brand2:'#A07CFF', dark:'#0b1020' }
-        }
-      }
-    }
-  </script>
+<html lang="id">  
+<head>  
+  <meta charset="utf-8"/>  
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>  
+  <title>MACHA CHAT — Dashboard</title>    <!-- Tailwind -->    <script src="https://cdn.tailwindcss.com"></script>    <script>  
+    tailwind.config = {  
+      theme: {  
+        extend: {  
+          colors: { brand:'#7C9BFF', brand2:'#A07CFF', dark:'#0b1020' }  
+        }  
+      }  
+    }  
+  </script>    <!-- Font -->    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">    <style>  
+    body {  
+      font-family:'Inter',sans-serif;  
+      background: radial-gradient(circle at 20% 20%, #131b3a, #0b1020 80%);  
+      color: #f1f5f9;  
+      min-height: 100vh;  
+      display: flex;  
+      flex-direction: column;  
+      overflow-x: hidden;  
+      animation: fadeIn 1s ease forwards;  
+    }  
+    @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }  
+  
+    .topbar {  
+      display:flex;justify-content:space-between;align-items:center;  
+      padding:.75rem 1rem;  
+      background:rgba(10,15,35,0.85);backdrop-filter:blur(10px);  
+      border-bottom:1px solid rgba(255,255,255,0.05);  
+      position:sticky;top:0;z-index:50;  
+      box-shadow:0 0 20px rgba(124,155,255,.1);  
+    }  
+    .logo {  
+      font-weight:900;font-size:1.4rem;letter-spacing:1px;  
+      background:linear-gradient(90deg,#7C9BFF,#A07CFF);  
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;  
+    }  
+    .top-icons {display:flex;gap:.8rem;align-items:center;}  
+    .icon-btn {  
+      width:1.7rem;height:1.7rem;display:flex;align-items:center;justify-content:center;  
+      color:#cbd5e1;transition:all .25s ease;border-radius:50%;  
+    }  
+    .icon-btn:hover {color:#A07CFF;text-shadow:0 0 6px #A07CFF88;transform:translateY(-2px) scale(1.1);}  
+  
+    .tabs {  
+      display:flex;justify-content:space-around;align-items:center;  
+      padding:.6rem 1rem;border-bottom:1px solid rgba(255,255,255,0.05);  
+      background:rgba(15,20,45,0.6);backdrop-filter:blur(12px);  
+    }  
+    .tab-btn {  
+      display:flex;flex-direction:column;align-items:center;  
+      color:#94a3b8;font-size:.8rem;gap:.2rem;transition:all .25s ease;  
+    }  
+    .tab-btn svg {width:1.6rem;height:1.6rem;stroke-width:1.7;}  
+    .tab-btn.active {color:#A07CFF;text-shadow:0 0 6px #A07CFF88;}  
+    .tab-btn:hover {color:#7C9BFF;transform:translateY(-2px);}  
+  
+    .card {  
+      background:rgba(20,25,50,0.55);backdrop-filter:blur(12px);  
+      border:1px solid rgba(120,150,255,0.2);border-radius:1rem;  
+      box-shadow:0 0 25px rgba(124,155,255,0.15);  
+      transition:transform .3s ease,box-shadow .3s ease;  
+      animation:fadeUp .6s ease forwards;opacity:0;transform:translateY(20px);  
+    }  
+    @keyframes fadeUp {to{opacity:1;transform:translateY(0)}}  
+    .card:hover {box-shadow:0 0 30px rgba(124,155,255,0.25)}  
+  
+    .btn-primary {  
+      background:linear-gradient(90deg,#7C9BFF,#A07CFF);  
+      color:white;font-weight:600;border-radius:.5rem;  
+      padding:.65rem 1rem;box-shadow:0 0 12px rgba(124,155,255,.3);  
+      transition:all .2s ease;  
+    }  
+    .btn-primary:hover {transform:translateY(-2px);box-shadow:0 0 25px rgba(160,124,255,0.4)}  
+  
+    footer {text-align:center;font-size:.75rem;color:#94a3b8;margin-top:auto;padding:1rem;}  
+  </style>  </head>  <body>  
+  <!-- 🔝 Navbar -->  
+  <div class="topbar">  
+    <div class="logo">MACHA</div>  
+    <div class="top-icons">  
+      <button class="icon-btn" title="Tambah">  
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>  
+      </button>  
+      <button class="icon-btn" title="Cari">  
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 21-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15z"/></svg>  
+      </button>  
+      <button class="icon-btn" id="menuBtn" title="Menu">  
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>  
+      </button>  
+    </div>  
+  </div>    <!-- 📑 Tabs -->    <div class="tabs relative">  
+    <button class="tab-btn active" data-tab="home"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 9.75 12 4l9 5.75V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V9.75z"/></svg><span>Home</span></button>  
+    <button class="tab-btn" data-tab="friends"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 12a4 4 0 1 0-8 0 4 4 0 0 0 8 0ZM12 14v6m6-6a9 9 0 1 1-12 0"/></svg><span>Friends</span></button>  
+    <button class="tab-btn" data-tab="chat"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0zM8 12h8M12 8v8"/></svg><span>Chat</span></button>  
+    <button class="tab-btn" data-tab="notif"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0 1 18 14.158V11a6.002 6.002 0 0 0-4-5.659V5a2 2 0 1 0-4 0v.341C8.67 6.165 7 8.388 7 11v3.159c0 .538-.214 1.055-.595 1.436L5 17h5"/></svg><span>Notif</span></button>  
+    <button class="tab-btn" data-tab="live"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 10l4.553-2.276A1 1 0 0 1 21 8.618v6.764a1 1 0 0 1-1.447.894L15 14m0-4v4m-9 4h9a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2z"/></svg><span>Live</span></button>  
+    <button class="tab-btn" data-tab="store"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 7h18l-2 13H5L3 7zM16 3H8v4h8V3z"/></svg><span>Store</span></button>  
+  </div>    <!-- 💫 Content -->    <main class="flex-1 px-6 py-8 text-center">  
+    <section id="home" class="tab-content">  
+      <h1 class="text-3xl font-bold bg-gradient-to-r from-brand via-brand2 to-pink-500 text-transparent bg-clip-text mb-4 animate-pulse">  
+        Selamat Datang di MACHA CHAT ✨  
+      </h1>  
+      <p class="text-slate-300">Senang melihatmu kembali, <span id="userEmail">Memuat...</span></p>  <div class="card mt-8 p-6 max-w-md mx-auto">  
+    <h3 class="text-lg font-semibold text-brand mb-3">Mulai Chat Sekarang</h3>  
+    <button id="chatBtn" class="btn-primary w-full">Buka Chat</button>  
+  </div>  
 
-  <!-- Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <button id="logoutBtn" class="btn-primary mt-8 bg-gradient-to-r from-pink-500 via-red-400 to-orange-400">Keluar</button>  
+</section>
 
-  <style>
-    body {
-      font-family:'Inter',sans-serif;
-      background: radial-gradient(circle at 20% 20%, #131b3a, #0b1020 80%);
-      color: #f1f5f9;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      overflow-x: hidden;
-      animation: fadeIn 1s ease forwards;
-    }
-    @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+  </main>    <footer>&copy; 2025 Macha Chat — Dibuat dengan 💜 oleh kamu</footer>    <!-- Menu Popup -->    <div id="menuPopup"></div>  
+<!-- Popup Friends -->  
+<div id="friendsPopup" class="hidden fixed inset-0 z-[90] bg-black/60 backdrop-blur-sm flex justify-center items-end opacity-0 transition-opacity duration-500">  
+  <div class="bg-[#0f142b]/95 w-full max-w-md rounded-t-2xl shadow-xl border-t border-slate-700/50 text-slate-100 p-6 animate-[slideUp_0.4s_ease_forwards]">  
+    <div class="flex justify-between items-center mb-4">  
+      <h2 class="text-lg font-semibold text-indigo-400">Teman</h2>  
+      <button id="closeFriendsPopup" class="text-slate-300 hover:text-red-400 transition">  
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">  
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>  
+        </svg>  
+      </button>  
+    </div>  <div class="flex flex-col gap-3">  
+  <button id="btnCariTeman" class="w-full text-left px-4 py-3 bg-slate-800/50 hover:bg-indigo-600/40 rounded-lg flex items-center gap-3">  
+    🔍 <span>Cari Teman</span>  
+  </button>  
+  <button id="btnTambahTeman" class="w-full text-left px-4 py-3 bg-slate-800/50 hover:bg-indigo-600/40 rounded-lg flex items-center gap-3">  
+    ➕ <span>Tambah Teman</span>  
+  </button>  
+  <button id="btnKonfirmasiTeman" class="w-full text-left px-4 py-3 bg-slate-800/50 hover:bg-indigo-600/40 rounded-lg flex items-center gap-3">  
+    ✅ <span>Konfirmasi</span>  
+  </button>  
+</div>
 
-    /* 🔝 Navbar */
-    .topbar {
-      display:flex;justify-content:space-between;align-items:center;
-      padding:.75rem 1rem;
-      background:rgba(10,15,35,0.85);backdrop-filter:blur(10px);
-      border-bottom:1px solid rgba(255,255,255,0.05);
-      position:sticky;top:0;z-index:50;
-      box-shadow:0 0 20px rgba(124,155,255,.1);
-    }
-    .logo {
-      font-weight:900;font-size:1.4rem;letter-spacing:1px;
-      background:linear-gradient(90deg,#7C9BFF,#A07CFF);
-      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-    }
-    .icon-btn {
-      width:1.8rem;height:1.8rem;display:flex;align-items:center;justify-content:center;
-      color:#cbd5e1;transition:all .25s ease;border-radius:50%;
-    }
-    .icon-btn:hover {color:#A07CFF;text-shadow:0 0 6px #A07CFF88;transform:translateY(-2px) scale(1.1);}
-    .tabs {display:flex;justify-content:space-around;align-items:center;padding:.6rem 1rem;border-bottom:1px solid rgba(255,255,255,0.05);background:rgba(15,20,45,0.6);backdrop-filter:blur(12px);}
-    .tab-btn {display:flex;flex-direction:column;align-items:center;color:#94a3b8;font-size:.8rem;gap:.2rem;transition:all .25s ease;}
-    .tab-btn svg {width:1.6rem;height:1.6rem;stroke-width:1.7;}
-    .tab-btn.active {color:#A07CFF;text-shadow:0 0 6px #A07CFF88;}
-    .tab-btn:hover {color:#7C9BFF;transform:translateY(-2px);}
-    .btn-primary {background:linear-gradient(90deg,#7C9BFF,#A07CFF);color:white;font-weight:600;border-radius:.5rem;padding:.65rem 1rem;box-shadow:0 0 12px rgba(124,155,255,.3);transition:all .2s ease;}
-    .btn-primary:hover {transform:translateY(-2px);box-shadow:0 0 25px rgba(160,124,255,0.4);}
-    .card {background:rgba(20,25,50,0.55);backdrop-filter:blur(12px);border:1px solid rgba(120,150,255,0.2);border-radius:1rem;box-shadow:0 0 25px rgba(124,155,255,0.15);transition:transform .3s ease,box-shadow .3s ease;animation:fadeUp .6s ease forwards;opacity:0;transform:translateY(20px);}
-    @keyframes fadeUp {to{opacity:1;transform:translateY(0)}}
-    footer {text-align:center;font-size:.75rem;color:#94a3b8;margin-top:auto;padding:1rem;}
-  </style>
-</head>
-
-<body>
-  <!-- 🔝 Navbar -->
-  <div class="topbar">
-    <div class="logo">MACHA</div>
-    <div class="top-icons flex gap-3 items-center">
-      <button class="icon-btn" id="addFriendBtn" title="Teman">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 1 0-8 0 4 4 0 0 0 8 0zM12 14v6m6-6a9 9 0 1 1-12 0"/>
-        </svg>
-      </button>
-      <button class="icon-btn" id="menuBtn" title="Menu">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-        </svg>
-      </button>
-    </div>
-  </div>
-
-  <!-- 📑 Tabs -->
-  <div class="tabs">
-    <button class="tab-btn active" data-tab="home">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 9.75 12 4l9 5.75V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V9.75z"/></svg>
-      <span>Home</span>
-    </button>
-    <button class="tab-btn" data-tab="chat">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0zM8 12h8M12 8v8"/></svg>
-      <span>Chat</span>
-    </button>
-  </div>
-
-  <!-- 💫 Content -->
-  <main class="flex-1 px-6 py-8 text-center">
-    <section id="home" class="tab-content">
-      <h1 class="text-3xl font-bold bg-gradient-to-r from-brand via-brand2 to-pink-500 text-transparent bg-clip-text mb-4 animate-pulse">
-        Selamat Datang di MACHA CHAT ✨
-      </h1>
-      <p class="text-slate-300">Senang melihatmu kembali, <span id="userEmail">Memuat...</span></p>
-
-      <div class="card mt-8 p-6 max-w-md mx-auto">
-        <h3 class="text-lg font-semibold text-brand mb-3">Mulai Chat Sekarang</h3>
-        <button id="chatBtn" class="btn-primary w-full">Buka Chat</button>
-      </div>
-
-      <button id="logoutBtn" class="btn-primary mt-8 bg-gradient-to-r from-pink-500 via-red-400 to-orange-400">Keluar</button>
-    </section>
-  </main>
-
-  <footer>&copy; 2025 Macha Chat — Dibuat dengan 💜 oleh kamu</footer>
-
-  <!-- Menu Popup -->
-  <div id="menuPopup"></div>
-
-  <!-- Friends Popup -->
-  <div id="friendsPopup" class="hidden fixed inset-0 z-[90] bg-black/60 backdrop-blur-sm flex justify-center items-end opacity-0 transition-opacity duration-500">
-    <div class="bg-[#0f142b]/95 w-full max-w-md rounded-t-2xl shadow-xl border-t border-slate-700/50 text-slate-100 p-6 animate-[slideUp_0.4s_ease_forwards]">
-      <div class="flex justify-between items-center mb-4">
-        <h2 class="text-lg font-semibold text-indigo-400">Teman</h2>
-        <button id="closeFriendsPopup" class="text-slate-300 hover:text-red-400 transition">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-          </svg>
-        </button>
-      </div>
-
-      <div class="flex flex-col gap-3">
-        <button id="btnCariTeman" class="w-full text-left px-4 py-3 bg-slate-800/50 hover:bg-indigo-600/40 rounded-lg flex items-center gap-3">
-          🔍 <span>Cari Teman</span>
-        </button>
-        <button id="btnTambahTeman" class="w-full text-left px-4 py-3 bg-slate-800/50 hover:bg-indigo-600/40 rounded-lg flex items-center gap-3">
-          ➕ <span>Tambah Teman</span>
-        </button>
-        <button id="btnKonfirmasiTeman" class="w-full text-left px-4 py-3 bg-slate-800/50 hover:bg-indigo-600/40 rounded-lg flex items-center gap-3">
-          ✅ <span>Konfirmasi</span>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <style>@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }</style>
-
-  <!-- Scripts -->
-  <script type="module" src="./js/config.js"></script>
-  <script type="module" src="./js/menu-popup.js"></script>
-
-  <script type="module">
-    import { auth } from "./js/config.js";
-    import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-
-    const userEmail = document.getElementById("userEmail");
-    const logoutBtn = document.getElementById("logoutBtn");
-    const chatBtn = document.getElementById("chatBtn");
-
-    // Auth listener
-    onAuthStateChanged(auth, (user) => {
-      if (!user) window.location.href = "./login.html";
-      else userEmail.textContent = user.email;
-    });
-
-    logoutBtn.addEventListener("click", async () => {
-      await signOut(auth);
-      window.location.href = "./login.html";
-    });
-
-    chatBtn.addEventListener("click", () => window.location.href = "./chat.html");
-
-    // Popup Friends
-    const friendsPopup = document.getElementById("friendsPopup");
-    const addFriendBtn = document.getElementById("addFriendBtn");
-    const closeFriendsPopup = document.getElementById("closeFriendsPopup");
-
-    addFriendBtn.addEventListener("click", () => {
-      friendsPopup.classList.remove("hidden");
-      setTimeout(() => friendsPopup.classList.remove("opacity-0"), 20);
-    });
-    closeFriendsPopup.addEventListener("click", () => {
-      friendsPopup.classList.add("opacity-0");
-      setTimeout(() => friendsPopup.classList.add("hidden"), 400);
-    });
-    friendsPopup.addEventListener("click", (e) => {
-      if (e.target === friendsPopup) {
-        friendsPopup.classList.add("opacity-0");
-        setTimeout(() => friendsPopup.classList.add("hidden"), 400);
-      }
-    });
-
-    // Actions inside popup
-    document.getElementById("btnCariTeman").onclick = () => alert("🔍 Fitur Cari Teman akan segera hadir!");
-    document.getElementById("btnTambahTeman").onclick = () => alert("➕ Tambah Teman ke database Firestore nanti di versi berikut!");
-    document.getElementById("btnKonfirmasiTeman").onclick = () => alert("✅ Lihat permintaan pertemanan kamu nanti di sini!");
-  </script>
-</body>
+  </div>  
+</div>  <style>  
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }  
+</style>    <script type="module">  
+// Tombol dan elemen popup  
+const friendsTab = document.querySelector('[data-tab="friends"]');  
+const friendsPopup = document.getElementById("friendsPopup");  
+const closeFriendsPopup = document.getElementById("closeFriendsPopup");  
+  
+// Buka popup Friends  
+friendsTab.addEventListener("click", () => {  
+  friendsPopup.classList.remove("hidden");  
+  setTimeout(() => friendsPopup.classList.remove("opacity-0"), 20);  
+});  
+  
+// Tutup popup Friends  
+closeFriendsPopup.addEventListener("click", () => {  
+  friendsPopup.classList.add("opacity-0");  
+  setTimeout(() => friendsPopup.classList.add("hidden"), 400);  
+});  
+  
+// Klik di luar popup untuk menutup  
+friendsPopup.addEventListener("click", (e) => {  
+  if (e.target === friendsPopup) {  
+    friendsPopup.classList.add("opacity-0");  
+    setTimeout(() => friendsPopup.classList.add("hidden"), 400);  
+  }  
+});  
+  
+// Aksi tombol-tombol popup  
+document.getElementById("btnCariTeman").addEventListener("click", () => {  
+  alert("🔍 Fitur Cari Teman akan segera hadir!");  
+});  
+document.getElementById("btnTambahTeman").addEventListener("click", () => {  
+  alert("➕ Tambah Teman ke database Firestore nanti di versi berikut!");  
+});  
+document.getElementById("btnKonfirmasiTeman").addEventListener("click", () => {  
+  alert("✅ Lihat permintaan pertemanan kamu nanti di sini!");  
+});  
+  </script>    <!-- 🔥 Script -->    <script type="module" src="./js/config.js"></script>    <script type="module" src="./js/menu-popup.js"></script>    <script type="module">  
+    import { auth } from "./js/config.js";  
+    import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";  
+  
+    const userEmail = document.getElementById("userEmail");  
+    const logoutBtn = document.getElementById("logoutBtn");  
+    const chatBtn = document.getElementById("chatBtn");  
+  
+    onAuthStateChanged(auth, (user) => {  
+      if (!user) window.location.href = "./login.html";  
+      else userEmail.textContent = user.email;  
+    });  
+  
+    logoutBtn.addEventListener("click", async () => {  
+      await signOut(auth);  
+      window.location.href = "./login.html";  
+    });  
+  
+    chatBtn.addEventListener("click", () => window.location.href = "./chat.html");  
+  </script>  </body>  
 </html>
