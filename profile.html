@@ -1,19 +1,73 @@
-<!doctype html><html lang="id"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Profil — MACHA CHAT</title>
-<script src="https://cdn.tailwindcss.com"></script>
-</head><body class="bg-slate-900 text-slate-100">
-<header class="p-3 border-b border-white/10"><a href="./dashboard.html">← Kembali</a></header>
-<main class="max-w-[980px] mx-auto p-4 space-y-4">
-  <section class="rounded-3xl border border-white/10 bg-slate-800/60 p-4 flex gap-3">
-    <img id="avatar" class="w-16 h-16 rounded-full bg-slate-700">
-    <div class="flex-1">
-      <div id="name" class="font-semibold text-lg">Nama</div>
-      <div id="email" class="text-slate-300 text-sm"></div>
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Profil Teman — Macha Chat</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: { colors: { brand:'#7C9BFF', brand2:'#A07CFF', dark:'#0b1020' } } }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family:'Inter',sans-serif;
+      background:radial-gradient(circle at 20% 20%,#131b3a,#0b1020 80%);
+      color:#f1f5f9;min-height:100vh;display:flex;flex-direction:column;
+    }
+    .card {
+      background:rgba(20,25,50,0.55);backdrop-filter:blur(12px);
+      border:1px solid rgba(120,150,255,0.2);border-radius:1rem;
+      box-shadow:0 0 25px rgba(124,155,255,0.15);
+      transition:transform .3s ease,box-shadow .3s ease;
+    }
+    .btn {
+      padding:.6rem 1.2rem;border-radius:.6rem;font-weight:600;transition:.25s;
+    }
+    .btn-primary {
+      background:linear-gradient(90deg,#7C9BFF,#A07CFF);color:#fff;
+      box-shadow:0 0 20px rgba(124,155,255,.3);
+    }
+    .btn-primary:hover {
+      transform:translateY(-2px);
+      box-shadow:0 0 25px rgba(160,124,255,0.5);
+    }
+  </style>
+</head>
+
+<body>
+  <!-- 🔝 Navbar -->
+  <div class="flex justify-between items-center px-4 py-3 bg-[#0f142b]/90 border-b border-slate-700/40 backdrop-blur-md">
+    <div class="flex items-center gap-2">
+      <button onclick="history.back()" class="text-slate-300 hover:text-brand transition">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+        </svg>
+      </button>
+      <h1 class="font-bold text-lg text-brand">Profil</h1>
     </div>
-  </section>
-  <h2 class="font-semibold">Postingan saya</h2>
-  <section id="myPosts" class="space-y-3"></section>
-</main>
-<script type="module" src="./js/profile.js"></script>
-</body></html>
+  </div>
+
+  <!-- 💫 Profil Card -->
+  <main class="flex-1 flex justify-center items-center px-6 py-8">
+    <div class="card w-full max-w-sm p-6 text-center">
+      <img id="userPhoto" src="https://ui-avatars.com/api/?name=User" class="w-24 h-24 rounded-full mx-auto border border-slate-600 shadow-md">
+      <h2 id="userName" class="text-2xl font-bold mt-4 text-brand2">Nama</h2>
+      <p id="userEmail" class="text-slate-400 text-sm mt-1">memuat...</p>
+
+      <div class="mt-6 flex flex-col gap-3">
+        <button id="chatNow" class="btn btn-primary">💬 Chat Sekarang</button>
+        <button id="addFriend" class="btn bg-slate-700/50 hover:bg-slate-600">➕ Tambah Teman</button>
+      </div>
+    </div>
+  </main>
+
+  <footer class="text-center text-xs text-slate-500 py-4">&copy; 2025 Macha Chat</footer>
+
+  <script type="module" src="./js/profile.js"></script>
+</body>
+</html>
