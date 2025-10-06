@@ -54,7 +54,10 @@
   <main class="px-6 pb-16">
     <div class="max-w-md mx-auto card p-6 md:p-8">
       <section id="panel-register" class="grid gap-3">
-        <label class="text-sm">Email</label>
+        <label class="text-sm">Nama Lengkap</label>
+        <input id="name" type="text" class="input" placeholder="Nama Anda" autocomplete="name"/>
+
+        <label class="text-sm mt-2">Email</label>
         <input id="email" type="email" class="input" placeholder="nama@email.com" autocomplete="email"/>
 
         <label class="mt-2 text-sm">Kata sandi</label>
@@ -82,12 +85,14 @@
 
   <!-- Firebase Integrasi -->
   <script type="module">
-    // Import Firebase
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-    import { getFirestore, setDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+    import { 
+      getAuth, createUserWithEmailAndPassword, updateProfile 
+    } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+    import { 
+      getFirestore, setDoc, doc, serverTimestamp 
+    } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-    // ✅ Config milik kamu
     const firebaseConfig = {
       apiKey: "AIzaSyDIsTmg0_-rcz9tH3U-_sZuWk7sUOLgMSw",
       authDomain: "macha-chat.firebaseapp.com",
@@ -98,12 +103,11 @@
       measurementId: "G-6ZMFHMZVEK"
     };
 
-    // 🔥 Inisialisasi Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // Elemen DOM
+    const nameEl = document.getElementById("name");
     const emailEl = document.getElementById("email");
     const passEl = document.getElementById("password");
     const confirmEl = document.getElementById("confirm");
@@ -117,24 +121,33 @@
       setTimeout(() => toast.classList.remove("show"), 2500);
     }
 
-    // 🧠 Event Register
     btn.addEventListener("click", async () => {
+      const name = nameEl.value.trim();
       const email = emailEl.value.trim();
       const password = passEl.value.trim();
       const confirm = confirmEl.value.trim();
 
-      if (!email || !password || !confirm) return showToast("⚠️ Harap isi semua kolom!");
-      if (password !== confirm) return showToast("🔒 Kata sandi tidak cocok!");
-      if (password.length < 6) return showToast("⚠️ Minimal 6 karakter!");
+      if (!name || !email || !password || !confirm)
+        return showToast("⚠️ Harap isi semua kolom!");
+      if (password !== confirm)
+        return showToast("🔒 Kata sandi tidak cocok!");
+      if (password.length < 6)
+        return showToast("⚠️ Minimal 6 karakter!");
 
       try {
         // ✅ Buat akun di Firebase Auth
         const userCred = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCred.user;
 
-        // ✅ Simpan ke Firestore
+        // ✅ Tambahkan nama ke profil Auth
+        await updateProfile(user, { displayName: name });
+
+        // ✅ Simpan data user ke Firestore
         await setDoc(doc(db, "users", user.uid), {
+          uid: user.uid,
+          name: name,
           email: email,
+          photoURL: "",
           createdAt: serverTimestamp(),
           verified: false
         });
@@ -144,9 +157,12 @@
 
       } catch (err) {
         console.error(err);
-        if (err.code === "auth/email-already-in-use") showToast("📧 Email sudah terdaftar!");
-        else if (err.code === "auth/invalid-email") showToast("❌ Format email tidak valid!");
-        else showToast("⚠️ Gagal membuat akun. Coba lagi.");
+        if (err.code === "auth/email-already-in-use")
+          showToast("📧 Email sudah terdaftar!");
+        else if (err.code === "auth/invalid-email")
+          showToast("❌ Format email tidak valid!");
+        else
+          showToast("⚠️ Gagal membuat akun. Coba lagi.");
       }
     });
   </script>
