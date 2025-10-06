@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Akses Awal — Macha Chat</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body{font-family:'Inter',sans-serif;background:radial-gradient(circle at 20% 20%,#131b3a,#0b1020 80%);color:#f1f5f9;}
+    .card{background:rgba(20,25,50,0.55);backdrop-filter:blur(10px);border-radius:1rem;border:1px solid rgba(124,155,255,.2);}
+  </style>
+</head>
+
+<body class="p-6 space-y-6 text-center">
+  <header class="flex items-center justify-between">
+    <button onclick="history.back()" class="flex items-center gap-1 text-slate-300 hover:text-indigo-400 transition">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+      Kembali
+    </button>
+    <h1 class="text-xl font-bold text-indigo-400">Akses Awal</h1>
+  </header>
+
+  <div class="card p-6 space-y-4">
+    <h2 class="text-lg font-semibold text-indigo-300">🚧 Fitur Beta</h2>
+    <p>Selamat datang di area pengujian fitur baru! 💫</p>
+    <p>Di sini kamu bisa mencoba versi baru Macha Chat sebelum rilis publik.</p>
+    <button onclick="alert('Tidak ada fitur beta saat ini 😅')" class="bg-indigo-500 px-4 py-2 rounded-lg hover:bg-indigo-400 transition">Cek Pembaruan</button>
+  </div>
+</body>
+</html>
