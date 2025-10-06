@@ -3,13 +3,16 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Friends — MACHA CHAT</title>
+  <title>MACHA CHAT — Friends</title>
 
+  <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       theme: {
-        extend: { colors: { brand:'#7C9BFF', brand2:'#A07CFF', dark:'#0b1020' } }
+        extend: {
+          colors: { brand:'#7C9BFF', brand2:'#A07CFF', dark:'#0b1020' }
+        }
       }
     }
   </script>
@@ -73,33 +76,61 @@
 </head>
 
 <body>
-  <!-- Navbar dan Tab dari dashboard -->
+  <!-- 🔝 Navbar -->
   <div class="topbar flex justify-between items-center px-4 py-2 bg-[#0f142b]/90 backdrop-blur-md border-b border-slate-700/40 shadow-lg sticky top-0 z-50">
     <div class="logo text-2xl font-extrabold bg-gradient-to-r from-brand to-brand2 bg-clip-text text-transparent">MACHA</div>
     <div class="flex gap-3 items-center">
-      <button class="text-slate-300 hover:text-brand transition" onclick="window.location.href='./dashboard.html'">🏠</button>
-      <button class="text-slate-300 hover:text-brand transition">➕</button>
-      <button class="text-slate-300 hover:text-brand transition">☰</button>
+      <button onclick="window.location.href='./dashboard.html'" class="icon-btn text-slate-300 hover:text-brand transition">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+      </button>
+      <button class="icon-btn text-slate-300 hover:text-brand transition">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 21-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15z"/></svg>
+      </button>
+      <button class="icon-btn text-slate-300 hover:text-brand transition">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
     </div>
   </div>
 
+  <!-- 📑 Tabs -->
   <div class="tabs flex justify-around items-center py-2 bg-[#141a35]/70 backdrop-blur-md border-b border-slate-700/40">
-    <a href="./dashboard.html" class="tab-btn flex flex-col items-center text-slate-400 hover:text-brand"><span>Home</span></a>
-    <a href="./friends.html" class="tab-btn flex flex-col items-center text-brand font-semibold"><span>Friends</span></a>
-    <a href="./chat.html" class="tab-btn flex flex-col items-center text-slate-400 hover:text-brand"><span>Chat</span></a>
-    <a href="./notif.html" class="tab-btn flex flex-col items-center text-slate-400 hover:text-brand"><span>Notif</span></a>
-    <a href="./live.html" class="tab-btn flex flex-col items-center text-slate-400 hover:text-brand"><span>Live</span></a>
-    <a href="./store.html" class="tab-btn flex flex-col items-center text-slate-400 hover:text-brand"><span>Store</span></a>
+    <a href="./dashboard.html" class="tab-btn flex flex-col items-center text-slate-400 hover:text-brand">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 9.75 12 4l9 5.75V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V9.75z"/></svg>
+      <span>Home</span>
+    </a>
+    <a href="./friends.html" class="tab-btn flex flex-col items-center text-brand">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M17 20h5v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2h5m6-16a4 4 0 1 1-8 0 4 4 0 0 1 8 0z"/></svg>
+      <span>Friends</span>
+    </a>
+    <a href="./chat.html" class="tab-btn flex flex-col items-center text-slate-400 hover:text-brand">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0zM8 12h8M12 8v8"/></svg>
+      <span>Chat</span>
+    </a>
+    <a href="./notif.html" class="tab-btn flex flex-col items-center text-slate-400 hover:text-brand">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0 1 18 14.158V11a6.002 6.002 0 0 0-4-5.659V5a2 2 0 1 0-4 0v.341C8.67 6.165 7 8.388 7 11v3.159c0 .538-.214 1.055-.595 1.436L5 17h5"/></svg>
+      <span>Notif</span>
+    </a>
+    <a href="./live.html" class="tab-btn flex flex-col items-center text-slate-400 hover:text-brand">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 10l4.553-2.276A1 1 0 0 1 21 8.618v6.764a1 1 0 0 1-1.447.894L15 14m0-4v4m-9 4h9a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2z"/></svg>
+      <span>Live</span>
+    </a>
+    <a href="./store.html" class="tab-btn flex flex-col items-center text-slate-400 hover:text-brand">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 7h18l-2 13H5L3 7zM16 3H8v4h8V3z"/></svg>
+      <span>Store</span>
+    </a>
   </div>
 
+  <!-- 💫 Content -->
   <main class="p-4 flex-1">
-    <h1 class="text-2xl font-bold mb-4 text-center bg-gradient-to-r from-brand via-brand2 to-pink-500 bg-clip-text text-transparent">Permintaan Pertemanan 💫</h1>
+    <h1 class="text-2xl font-bold mb-4 text-center bg-gradient-to-r from-brand via-brand2 to-pink-500 bg-clip-text text-transparent">
+      Permintaan Pertemanan ✨
+    </h1>
     <div id="friendsList" class="friends-list"></div>
   </main>
 
   <footer class="text-center text-slate-500 text-sm py-3">&copy; 2025 Macha Chat</footer>
 
-  <!-- Firebase -->
+  <!-- Firebase Logic -->
   <script type="module">
     import { auth, db } from "./js/config.js";
     import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
