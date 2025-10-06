@@ -1,28 +1,28 @@
 // ============================
-// MENU POPUP FINAL (v6.5) — Fullscreen + Firebase Linked
+// MENU POPUP v7.2 — Fullscreen + Firebase Linked
 // ============================
-import app, { auth, db } from "./config.js";
+import { auth } from "./config.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
 window.addEventListener("DOMContentLoaded", () => {
   const menuBtn = document.getElementById("menuBtn");
   const menuPopup = document.getElementById("menuPopup");
 
-  if (!menuBtn || !menuPopup) return console.warn("❌ menuBtn/menuPopup tidak ditemukan.");
+  if (!menuBtn || !menuPopup) return;
 
   menuPopup.innerHTML = `
-    <div id="menuOverlay" class="fixed inset-0 hidden z-[99] bg-black/70 backdrop-blur-xl flex justify-center items-start pt-10 opacity-0 transition-opacity duration-500">
+    <div id="menuOverlay" class="fixed inset-0 hidden z-[999] bg-black/70 backdrop-blur-xl flex justify-center items-start pt-10 opacity-0 transition-opacity duration-500">
       <div class="bg-[#0d1022]/95 w-full sm:w-11/12 max-w-md rounded-2xl shadow-xl border border-slate-700/50 text-slate-100 overflow-y-auto max-h-[95vh] animate-[slideUp_0.4s_ease]">
-        
+
         <!-- HEADER -->
         <div class="flex items-center justify-between px-4 py-3 border-b border-slate-700/40">
-          <button id="backMenu" class="text-slate-300 hover:text-indigo-400 transition">
+          <button id="backMenu" class="text-slate-300 hover:text-indigo-400">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
             </svg>
           </button>
           <h2 class="text-lg font-semibold text-indigo-300">Menu</h2>
-          <button id="closeMenu" class="text-slate-300 hover:text-red-400 transition">
+          <button id="closeMenu" class="text-slate-300 hover:text-red-400">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
             </svg>
@@ -65,23 +65,21 @@ window.addEventListener("DOMContentLoaded", () => {
           </button>
 
           <div id="settingsDropdown" class="hidden ml-6 mt-3 space-y-2 text-slate-300 text-[0.9rem]">
-            <button id="btnSettings" class="flex items-center gap-2 hover:text-indigo-300">⚙️ Pengaturan</button>
-            <button id="btnPayments" class="flex items-center gap-2 hover:text-indigo-300">💳 Pesanan & Pembayaran</button>
-            <button id="btnDarkMode" class="flex items-center gap-2 hover:text-indigo-300">🌙 Mode Gelap</button>
-            <button id="btnLanguage" class="flex items-center gap-2 hover:text-indigo-300">🌐 Bahasa</button>
-            <button id="btnClean" class="flex items-center gap-2 hover:text-indigo-300">🧹 Bersihkan Ruang</button>
-            <button id="btnAccess" class="flex items-center gap-2 hover:text-indigo-300">🚀 Akses Awal</button>
+            <button id="btnSettings" class="hover:text-indigo-300">⚙️ Pengaturan</button>
+            <button id="btnPayments" class="hover:text-indigo-300">💳 Pesanan & Pembayaran</button>
+            <button id="btnDarkMode" class="hover:text-indigo-300">🌙 Mode Gelap</button>
+            <button id="btnLanguage" class="hover:text-indigo-300">🌐 Bahasa</button>
+            <button id="btnClean" class="hover:text-indigo-300">🧹 Bersihkan Ruang</button>
+            <button id="btnAccess" class="hover:text-indigo-300">🚀 Akses Awal</button>
           </div>
 
-          <button id="logoutMenu" class="flex items-center gap-2 text-red-400 hover:text-red-300">
-            🚪 Keluar
-          </button>
+          <button id="logoutMenu" class="flex items-center gap-2 text-red-400 hover:text-red-300">🚪 Keluar</button>
         </div>
       </div>
     </div>
   `;
 
-  // Ambil elemen penting
+  // event setup
   const overlay = document.getElementById("menuOverlay");
   const closeMenu = document.getElementById("closeMenu");
   const backMenu = document.getElementById("backMenu");
@@ -89,13 +87,10 @@ window.addEventListener("DOMContentLoaded", () => {
   const settingsDropdown = document.getElementById("settingsDropdown");
   const arrowIcon = document.getElementById("arrowIcon");
 
-  // Buka Popup
   menuBtn.onclick = () => {
     overlay.classList.remove("hidden");
     requestAnimationFrame(() => overlay.classList.remove("opacity-0"));
   };
-
-  // Tutup Popup
   const closeOverlay = () => {
     overlay.classList.add("opacity-0");
     setTimeout(() => overlay.classList.add("hidden"), 400);
@@ -103,49 +98,34 @@ window.addEventListener("DOMContentLoaded", () => {
   closeMenu.onclick = closeOverlay;
   backMenu.onclick = closeOverlay;
 
-  // Toggle Dropdown
   settingsToggle.onclick = () => {
     settingsDropdown.classList.toggle("hidden");
     arrowIcon.classList.toggle("rotate-180");
   };
 
-  // 🌙 Mode Gelap
+  // fungsi tambahan
   document.getElementById("btnDarkMode").onclick = () => {
     const dark = document.documentElement.classList.toggle("dark");
     localStorage.setItem("machaDarkMode", dark);
   };
-
-  // 🌐 Bahasa
   document.getElementById("btnLanguage").onclick = () => {
     const lang = prompt("Pilih Bahasa: id / en", localStorage.getItem("machaLang") || "id");
-    if (lang) {
-      localStorage.setItem("machaLang", lang.toLowerCase());
-      alert("Bahasa diubah ke: " + lang);
-    }
+    if (lang) localStorage.setItem("machaLang", lang.toLowerCase());
   };
-
-  // 🧹 Bersihkan Cache
   document.getElementById("btnClean").onclick = () => {
     if (confirm("Bersihkan cache dan data lokal?")) {
       localStorage.clear();
       caches.keys().then(keys => keys.forEach(k => caches.delete(k)));
       alert("Cache dibersihkan!");
-      location.reload();
     }
   };
-
-  // 🚪 Logout
   document.getElementById("logoutMenu").onclick = async () => {
-    if (confirm("Yakin ingin keluar?")) {
-      await signOut(auth);
-      location.href = "./login.html";
-    }
+    await signOut(auth);
+    location.href = "./login.html";
   };
 
-  // 🔄 Tampilkan nama user aktif
+  // tampilkan nama user
   onAuthStateChanged(auth, (user) => {
-    if (user) {
-      document.getElementById("userName").textContent = user.displayName || user.email;
-    }
+    if (user) document.getElementById("userName").textContent = user.displayName || user.email;
   });
 });
